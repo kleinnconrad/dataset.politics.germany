@@ -101,22 +101,28 @@ class Settings:
         max_gemini_calls_per_run (int): Upper bound for Gemini calls in one run,
             including retries.
         max_annotations_per_run (int): Maximum number of news articles and press
-            releases annotated in one run.
+            releases annotated in one run; further items are stored without labels.
+        gemini_concurrency (int): Number of Gemini requests sent at the same time.
         news_lookback_hours (int): Feed and sitemap items published longer ago
             are ignored.
         fetch_pages (bool): Whether article pages are fetched for metadata and
             lead text (where robots.txt and TDM reservations permit).
+        run_deadline_minutes (int): Minutes after the start of the run after which
+            the collectors start no new work, so that the workflow can commit
+            before its timeout.
         collectors (Optional[tuple[str, ...]]): Names of the collectors to run;
-            None runs all.
+            None runs all that are due.
         output_dir (Path): Folder for the datasets and ``state/``.
     """
     gemini_model: str = DEFAULT_GEMINI_MODEL
     gemini_api_key: Optional[str] = None
     dip_api_key: Optional[str] = None
-    max_gemini_calls_per_run: int = 250
-    max_annotations_per_run: int = 2500
+    max_gemini_calls_per_run: int = 50
+    max_annotations_per_run: int = 400
+    gemini_concurrency: int = 4
     news_lookback_hours: int = 96
     fetch_pages: bool = True
+    run_deadline_minutes: int = 25
     collectors: Optional[tuple[str, ...]] = None
     output_dir: Path = Path("data")
 
@@ -140,8 +146,10 @@ class Settings:
             dip_api_key=_env_secret("DIP_API_KEY"),
             max_gemini_calls_per_run=_env_int("MAX_GEMINI_CALLS_PER_RUN", cls.max_gemini_calls_per_run),
             max_annotations_per_run=_env_int("MAX_ANNOTATIONS_PER_RUN", cls.max_annotations_per_run),
+            gemini_concurrency=_env_int("GEMINI_CONCURRENCY", cls.gemini_concurrency),
             news_lookback_hours=_env_int("NEWS_LOOKBACK_HOURS", cls.news_lookback_hours),
             fetch_pages=_env_bool("NEWS_FETCH_PAGES", cls.fetch_pages),
+            run_deadline_minutes=_env_int("RUN_DEADLINE_MINUTES", cls.run_deadline_minutes),
             collectors=collectors,
             output_dir=default_output_dir(),
         )

@@ -2,7 +2,8 @@
 Entry point of a pipeline run.
 
 Usage:
-    uv run python src/main.py [--dry-run] [--collectors NAME,...] [--max-annotations N] [--output-dir PATH]
+    uv run python src/main.py [--dry-run | --backfill] [--collectors NAME,...] [--max-annotations N]
+                              [--output-dir PATH]
 """
 import argparse
 import logging
@@ -14,7 +15,7 @@ from typing import Optional
 from dotenv import load_dotenv
 
 from annotation import GeminiAnnotator
-from pipeline import COLLECTOR_ORDER, build_collectors, run_pipeline
+from pipeline import BACKFILL_COLLECTORS, COLLECTOR_ORDER, build_collectors, run_pipeline
 from settings import Settings
 
 logger = logging.getLogger(__name__)
@@ -47,8 +48,12 @@ def parse_args(argv: Optional[list[str]]) -> argparse.Namespace:
         argparse.Namespace: The parsed arguments.
     """
     parser = argparse.ArgumentParser(description="Runs the German politics dataset pipeline.")
-    parser.add_argument("--dry-run", action="store_true",
-                        help="read the sources without fetching pages, calling Gemini or writing data")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--dry-run", action="store_true",
+                      help="read the sources without fetching pages, calling Gemini or writing data")
+    mode.add_argument("--backfill", action="store_true",
+                      help="import the history of the structured collectors without the per-run caps "
+                           f"(default collectors: {', '.join(BACKFILL_COLLECTORS)}); no feeds")
     parser.add_argument("--collectors", type=_collector_list,
                         help=f"comma-separated collectors to run (default: all of {', '.join(COLLECTOR_ORDER)})")
     parser.add_argument("--max-annotations", type=_positive_int,
@@ -76,7 +81,9 @@ def main(argv: Optional[list[str]] = None) -> int:
     logging.getLogger("httpx").setLevel(logging.WARNING)
     try:
         settings = Settings.from_env()
-    except ValueError as e:
+        if settings.collectors is not None:
+            _collector_list(",".join(settings.collectors))
+    except (ValueError, argparse.ArgumentTypeError) as e:
         logger.error("Invalid settings: %s", e)
         return 1
     if args.output_dir is not None:
@@ -85,12 +92,18 @@ def main(argv: Optional[list[str]] = None) -> int:
         settings = replace(settings, collectors=args.collectors)
     if args.max_annotations is not None:
         settings = replace(settings, max_annotations_per_run=args.max_annotations)
+    if args.backfill:
+        if settings.collectors is not None and "feeds" in settings.collectors:
+            logger.error("The feeds collector has no backfill; select only %s.", ", ".join(BACKFILL_COLLECTORS))
+            return 1
+        settings = replace(settings, collectors=settings.collectors or BACKFILL_COLLECTORS)
     feeds_selected = settings.collectors is None or "feeds" in settings.collectors
     annotator = None
     if feeds_selected and not args.dry_run and settings.gemini_api_key:
         annotator = GeminiAnnotator(settings)
-    logger.info("Output folder: %s", settings.output_dir.resolve())
-    summary = run_pipeline(settings, build_collectors(annotator), dry_run=args.dry_run)
+    logger.info("Output folder: %s; run deadline after %d minutes.", settings.output_dir.resolve(),
+                settings.run_deadline_minutes)
+    summary = run_pipeline(settings, build_collectors(annotator), dry_run=args.dry_run, backfill=args.backfill)
     for name, outcome in summary.collectors.items():
         logger.info("%s: %s %s%s", name, outcome.status, outcome.records or "",
                     f" ({outcome.error})" if outcome.error else "")

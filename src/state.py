@@ -277,6 +277,8 @@ class CollectorEntry(BaseModel):
         first_run (date): Day of the first run; defines which items count as backfilled.
         last_run (Optional[datetime]): Start of the latest run.
         last_success (Optional[datetime]): Start of the latest successful run.
+        last_complete (Optional[datetime]): Start of the latest successful run that
+            did not stop at the run deadline.
         consecutive_failures (int): Failed runs since the last success.
         last_error (Optional[str]): Error of the latest failed run.
         cursor (dict): Collector-specific progress, e.g. the last fetched update time.
@@ -284,6 +286,7 @@ class CollectorEntry(BaseModel):
     first_run: date
     last_run: Optional[datetime] = None
     last_success: Optional[datetime] = None
+    last_complete: Optional[datetime] = None
     consecutive_failures: int = 0
     last_error: Optional[str] = None
     cursor: dict[str, Any] = Field(default_factory=dict)
@@ -352,16 +355,20 @@ class CollectorStates:
         self._entries[name] = entry
         return entry
 
-    def record_success(self, name: str, started: datetime, cursor: Optional[Mapping[str, Any]] = None) -> None:
+    def record_success(self, name: str, started: datetime, cursor: Optional[Mapping[str, Any]] = None,
+                       complete: bool = True) -> None:
         """Records a successful run of a collector.
 
         Args:
             name: Name of the collector.
             started: Start of the run.
             cursor: New cursor; None keeps the previous one.
+            complete: False if the collector stopped at the run deadline.
         """
         changes: dict[str, Any] = {"last_run": started, "last_success": started, "consecutive_failures": 0,
                                    "last_error": None}
+        if complete:
+            changes["last_complete"] = started
         if cursor is not None:
             changes["cursor"] = dict(cursor)
         self.update(name, **changes)

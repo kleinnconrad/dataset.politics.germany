@@ -13,7 +13,8 @@ procedure is written when it appears, when its status changes and when
 another tracked field changes; the status at the previous observation is
 kept in the seen store. Records are written in chunks, so that an
 interrupted run keeps its progress, and the cursor is advanced only at the
-end of a successful run.
+end of a successful run. A run that stops at the run deadline keeps the
+previous cursor.
 """
 import html
 import logging
@@ -182,6 +183,12 @@ class ProceduresCollector(Collector):
         latest: Optional[tuple[datetime, str]] = None
         page_cursor: Optional[str] = None
         while True:
+            if ctx.past_deadline():
+                # The cursor stays at the previous run: the next run reads the remaining pages again,
+                # and the procedures written here are unchanged then.
+                self._write(ctx, pending, counters)
+                logger.warning("Procedures: stopped at the run deadline after %d documents.", counters["documents"])
+                return CollectorResult(counters=counters, complete=False)
             page_params = {**params, "cursor": page_cursor} if page_cursor else params
             body = ctx.web.get(PROCEDURES_URL, params=page_params, headers=headers, respect_robots=False).json()
             documents = body.get("documents") if isinstance(body, dict) else None

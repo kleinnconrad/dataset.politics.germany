@@ -6,6 +6,10 @@ text). The module paces the requests, tells per-day from per-minute quota
 errors, splits a batch in halves when the response is blocked or invalid,
 and cleans the validated labels. The returned labels are aligned with the
 input items; an item without usable labels gets None.
+
+A ``GeminiAnnotator`` may be called from several threads at once (see
+GEMINI_CONCURRENCY); the call budget, the pacing and the usage counters are
+shared between them.
 """
 import hashlib
 import importlib.metadata
@@ -13,6 +17,7 @@ import json
 import logging
 import os
 import re
+import threading
 import time
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
@@ -31,11 +36,14 @@ logger = logging.getLogger(__name__)
 
 BATCH_SIZE = 10
 TEMPERATURE = 0.2
-THINKING_BUDGET: Optional[int] = 1024
-REQUEST_TIMEOUT_MS = 300_000
+# 0 turns thinking off: the labels are a classification of short texts, and thinking tokens are billed as output
+THINKING_BUDGET: Optional[int] = 0
+# A batch of ten items takes 10 to 20 seconds; the timeout bounds the time a run needs after its deadline
+REQUEST_TIMEOUT_MS = 60_000
 SDK_RETRY_STATUS_CODES = [408, 500, 502, 503, 504]
-SDK_RETRY_ATTEMPTS = 4
-MIN_CALL_INTERVAL_S = 6.0
+SDK_RETRY_ATTEMPTS = 3
+# Minimum time between the starts of two requests, also with several requests at once
+MIN_CALL_INTERVAL_S = 1.0
 PER_MINUTE_QUOTA_RETRIES = 3
 DEFAULT_QUOTA_WAIT_S = 60.0
 MAX_QUOTA_WAIT_S = 120.0
@@ -383,6 +391,7 @@ class GeminiAnnotator:
         self._client = client if client is not None else create_client(settings.gemini_api_key)
         self._sleep = sleep
         self._clock = clock
+        self._lock = threading.Lock()
         self._last_call_at: Optional[float] = None
         self._config = types.GenerateContentConfig(
             system_instruction=SYSTEM_INSTRUCTION,
@@ -447,7 +456,7 @@ class GeminiAnnotator:
         return parse_response(self._generate(build_prompt(items)))
 
     def _wait_for_slot(self) -> None:
-        """Waits until MIN_CALL_INTERVAL_S has passed since the previous call."""
+        """Waits until MIN_CALL_INTERVAL_S has passed since the start of the previous call."""
         if self._last_call_at is None:
             return
         remaining = MIN_CALL_INTERVAL_S - (self._clock() - self._last_call_at)
@@ -471,12 +480,16 @@ class GeminiAnnotator:
         """
         quota_waits = 0
         while True:
-            if self.usage.calls >= self._settings.max_gemini_calls_per_run:
-                raise CallBudgetExceededError(
-                    f"MAX_GEMINI_CALLS_PER_RUN ({self._settings.max_gemini_calls_per_run}) reached"
-                )
-            self._wait_for_slot()
-            self.usage.calls += 1
+            # The lock makes the budget check, the pacing and the call count one step across threads
+            with self._lock:
+                if self.usage.calls >= self._settings.max_gemini_calls_per_run:
+                    raise CallBudgetExceededError(
+                        f"MAX_GEMINI_CALLS_PER_RUN ({self._settings.max_gemini_calls_per_run}) reached"
+                    )
+                self._wait_for_slot()
+                self.usage.calls += 1
+                call_number = self.usage.calls
+                self._last_call_at = self._clock()
             try:
                 response = self._client.models.generate_content(
                     model=self._settings.gemini_model, contents=prompt, config=self._config
@@ -498,13 +511,12 @@ class GeminiAnnotator:
                 raise TransientAnnotationError(f"Gemini server error after retries: {e}") from e
             except httpx.TransportError as e:
                 raise TransientAnnotationError(f"Network error after retries: {e!r}") from e
-            finally:
-                self._last_call_at = self._clock()
             usage = getattr(response, "usage_metadata", None)
-            self.usage.add(usage)
+            with self._lock:
+                self.usage.add(usage)
             logger.info(
                 "Gemini call %d: prompt %s tokens, output %s, thinking %s.",
-                self.usage.calls,
+                call_number,
                 getattr(usage, "prompt_token_count", None),
                 getattr(usage, "candidates_token_count", None),
                 getattr(usage, "thoughts_token_count", None),

@@ -1,17 +1,21 @@
 """Tests of the feeds collector with a fake web and a fake annotator."""
+import threading
+from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 from email.utils import format_datetime
 from typing import Any, Optional
 from xml.sax.saxutils import escape
 
+import httpx
 import pytest
 
 from annotation import AnnotationInput, CallBudgetExceededError, clean_annotation
-from collectors.base import CollectorSkipped
+from collectors.base import CollectorSkipped, RunContext
 from collectors.feeds import Candidate, FeedsCollector, interleave, looks_political, parse_feed, parse_news_sitemap
 from conftest import FIXTURES_DIR, RUN_STARTED, read_dataset
 from entities import Mandate, Politician, save_politicians
 from schema import ItemAnnotation
+from settings import Settings
 from sources import SourceHealthStore, load_config
 from state import CollectorEntry
 from test_annotation import label
@@ -246,6 +250,85 @@ def test_budget_stop_writes_items_without_annotations(fake_web, make_ctx) -> Non
     assert read_dataset(ctx.settings.output_dir, "text_annotations") == []
     assert result.counters["not_annotated"] == 4
     assert result.error is None
+
+
+def test_cap_annotates_press_releases_first_and_stores_the_rest_without_labels(fake_web, make_ctx) -> None:
+    setup_sources(fake_web)
+    ctx = make_ctx(max_annotations_per_run=2)
+    annotator = FakeAnnotator()
+
+    result = FeedsCollector(annotator, config_path=SOURCES).collect(ctx, CollectorEntry(first_run=ctx.today))
+
+    assert [item.title for item in annotator.inputs] == ["Koalition streitet über den Haushalt",
+                                                         "SPD fordert stabile Renten"]
+    news = read_dataset(ctx.settings.output_dir, "news_items")
+    annotations = read_dataset(ctx.settings.output_dir, "text_annotations")
+    assert len(news) == 3 and len(read_dataset(ctx.settings.output_dir, "press_releases")) == 1
+    assert len(annotations) == 2
+    assert result.counters["items_selected"] == 2 and result.counters["beyond_cap"] == 2
+    ministerin = next(item for item in news if item["title"].startswith("Ministerin"))
+    assert ministerin["content_basis"] == "title_only" and ministerin["jsonld_type"] is None
+    # Pages of items beyond the cap are not fetched
+    assert "https://news.example/panorama/gesetz.html" not in fake_web.requested
+
+
+def test_items_after_the_run_deadline_are_stored_without_labels(fake_web, tmp_path, monkeypatch) -> None:
+    setup_sources(fake_web)
+    now = [RUN_STARTED]
+    serve = fake_web.handler
+
+    def slow_page(request: httpx.Request) -> httpx.Response:
+        # The first article page takes longer than the run deadline
+        if request.url.path == "/politik/haushalt-1.html":
+            now[0] += timedelta(minutes=30)
+        return serve(request)
+
+    monkeypatch.setattr(fake_web, "handler", slow_page)
+    settings = replace(Settings(), output_dir=tmp_path / "data")
+    ctx = RunContext(settings, fake_web.client(), RUN_STARTED, clock=lambda: now[0])
+    annotator = FakeAnnotator()
+
+    result = FeedsCollector(annotator, config_path=SOURCES).collect(ctx, CollectorEntry(first_run=ctx.today))
+
+    assert not result.complete
+    assert [item.title for item in annotator.inputs] == ["Koalition streitet über den Haushalt"]
+    assert result.counters["annotated"] == 1 and result.counters["not_annotated"] == 3
+    assert len(read_dataset(ctx.settings.output_dir, "news_items")) == 3
+    assert len(read_dataset(ctx.settings.output_dir, "press_releases")) == 1
+    assert "https://news.example/panorama/gesetz.html" not in fake_web.requested
+
+
+class ParallelAnnotator(FakeAnnotator):
+    """Annotator double whose first two calls wait for each other, so that they must run at the same time."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._barrier = threading.Barrier(2, timeout=5)
+        self._lock = threading.Lock()
+        self._calls = 0
+
+    def annotate(self, items: list[AnnotationInput]) -> list[Optional[ItemAnnotation]]:
+        with self._lock:
+            self._calls += 1
+            call = self._calls
+        if call <= 2:
+            self._barrier.wait()
+        return super().annotate(items)
+
+
+def test_batches_are_annotated_in_parallel_and_written_in_order(fake_web, make_ctx) -> None:
+    titles = [f"Bundestag berät Gesetz {n}" for n in range(25)]
+    fake_web.add("https://party.example/presse.rss", rss([
+        (title, f"https://party.example/presse/{n}", RECENT - timedelta(minutes=n), "Text")
+        for n, title in enumerate(titles)
+    ]), content_type="application/rss+xml")
+    ctx = make_ctx(gemini_concurrency=3)
+
+    result = FeedsCollector(ParallelAnnotator(), config_path=SOURCES).collect(ctx, CollectorEntry(first_run=ctx.today))
+
+    assert result.counters["annotated"] == 25
+    assert [item["title"] for item in read_dataset(ctx.settings.output_dir, "press_releases")] == titles
+    assert len(read_dataset(ctx.settings.output_dir, "text_annotations")) == 25
 
 
 def test_dry_run_reads_sources_without_writing(fake_web, make_ctx) -> None:

@@ -7,6 +7,10 @@ politicians of the registry through their Wikidata ids. For each entity the
 collector fetches the days since the last stored day from the Wikimedia
 Pageviews API (CC0). A new entity gets a history: parties from July 2015,
 politicians for the last POLITICIAN_HISTORY_DAYS days.
+
+The collector runs once a week, because the API keeps the daily views and
+each run fetches all days since the last stored day. At the run deadline it
+stops; the remaining articles follow in the next run.
 """
 import logging
 from collections.abc import Iterator, Sequence
@@ -147,6 +151,7 @@ class PageviewsCollector(Collector):
     """Writes the new daily views of the articles of parties and politicians."""
     name = "wikipedia_pageviews"
     datasets = (DATASET,)
+    min_days_between_runs = 6
 
     def _articles(self, ctx: RunContext) -> list[Article]:
         """Resolves the articles of the parties and of the politicians of the registry."""
@@ -184,7 +189,12 @@ class PageviewsCollector(Collector):
         counters: dict[str, Any] = {"articles": 0, "records": 0, "days": 0, "failed": 0}
         articles = self._articles(ctx)
         counters["articles"] = len(articles)
-        for article in articles:
+        complete = True
+        for position, article in enumerate(articles):
+            if ctx.past_deadline():
+                counters["deferred"] = len(articles) - position
+                complete = False
+                break
             previous = seen.get(article.entity_id)
             last_day = previous.data.get("last_day") if previous else None
             start = date.fromisoformat(last_day) + timedelta(days=1) if last_day else article.history_start
@@ -221,4 +231,4 @@ class PageviewsCollector(Collector):
         counters["records"] += len(records)
         logger.info("Pageviews: %d records with %d days for %d articles.", counters["records"], counters["days"],
                     len(articles))
-        return CollectorResult(counters=counters)
+        return CollectorResult(counters=counters, complete=complete)

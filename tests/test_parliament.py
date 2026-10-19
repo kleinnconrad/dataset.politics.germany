@@ -309,6 +309,32 @@ def test_roll_call_votes_cap_defers_the_rest_to_later_runs(fake_web, make_ctx, m
     assert {r["vote_id"] for r in read_dataset(ctx.settings.output_dir, "roll_call_votes")} == {"6733", "5864"}
 
 
+def test_roll_call_votes_backfill_has_no_cap(fake_web, make_ctx, monkeypatch) -> None:
+    monkeypatch.setattr(parliament, "MAX_NEW_POLLS_PER_RUN", 1)
+    _serve_votes(fake_web)
+    ctx = make_ctx()
+    ctx.backfill = True
+
+    result = RollCallVotesCollector().collect(ctx, CollectorEntry(first_run=ctx.today))
+
+    assert result.counters["deferred"] == 0 and result.complete
+    assert result.cursor == {"period": "161", "backfill_periods": []}
+    assert {r["vote_id"] for r in read_dataset(ctx.settings.output_dir, "roll_call_votes")} == {"6733", "5864"}
+
+
+def test_roll_call_votes_stop_at_the_run_deadline(fake_web, make_ctx) -> None:
+    _serve_votes(fake_web)
+    ctx = make_ctx()
+    ctx.deadline = ctx.started
+
+    result = RollCallVotesCollector().collect(ctx, CollectorEntry(first_run=ctx.today))
+
+    assert not result.complete
+    assert result.counters["deferred"] == 3
+    assert result.cursor == {"period": "161", "backfill_periods": ["132"]}
+    assert read_dataset(ctx.settings.output_dir, "roll_call_votes") == []
+
+
 def test_roll_call_votes_finishes_the_ended_period_after_a_change(fake_web, make_ctx) -> None:
     _serve_votes(fake_web)
     ctx = make_ctx()

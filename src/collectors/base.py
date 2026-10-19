@@ -13,7 +13,7 @@ from abc import ABC, abstractmethod
 from collections import Counter
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from typing import Any, ClassVar, Optional
 
 from schema import RecordBase
@@ -43,10 +43,13 @@ class CollectorResult:
         counters (dict): Counters for the run log.
         error (Optional[str]): Set if the collector wrote its data but a part of
             the work failed (e.g. the annotation stopped); the run then exits with code 1.
+        complete (bool): False if the collector stopped at the run deadline; the
+            remaining work follows in the next run.
     """
     cursor: Optional[dict[str, Any]] = None
     counters: dict[str, Any] = field(default_factory=dict)
     error: Optional[str] = None
+    complete: bool = True
 
 
 class RunContext:
@@ -57,6 +60,8 @@ class RunContext:
         web (WebClient): The HTTP client.
         started (datetime): Start of the run (UTC).
         dry_run (bool): If True, nothing is written.
+        backfill (bool): If True, the run imports the history without the per-run caps.
+        deadline (datetime): Time after which the collectors start no new work.
         written (Counter): Number of records emitted per dataset.
     """
 
@@ -67,6 +72,7 @@ class RunContext:
         started: datetime,
         dry_run: bool = False,
         clock: Callable[[], datetime] = utc_now,
+        backfill: bool = False,
     ) -> None:
         """Initializes the context.
 
@@ -76,11 +82,14 @@ class RunContext:
             started: Start of the run (UTC).
             dry_run: If True, records are counted but not written, and no state is saved.
             clock: Returns the current UTC time; replaceable in tests.
+            backfill: If True, the collectors import the history without the per-run caps.
         """
         self.settings = settings
         self.web = web
         self.started = started
         self.dry_run = dry_run
+        self.backfill = backfill
+        self.deadline = started + timedelta(minutes=settings.run_deadline_minutes)
         self._clock = clock
         self._seen: dict[str, SeenStore] = {}
         self.written: Counter[str] = Counter()
@@ -93,6 +102,14 @@ class RunContext:
     def now(self) -> datetime:
         """Current UTC time, used as observed_at of new records."""
         return self._clock()
+
+    def past_deadline(self) -> bool:
+        """Tells whether the run deadline has passed.
+
+        Returns:
+            bool: True if the collectors should start no new work.
+        """
+        return self.now() >= self.deadline
 
     def seen(self, dataset: str) -> SeenStore:
         """Returns the seen store of a dataset, loading it on first use.
@@ -176,9 +193,13 @@ class Collector(ABC):
     Class attributes:
         name: Name used in settings, state and the run log.
         datasets: Datasets the collector writes.
+        min_days_between_runs: Days that must pass after the last complete run
+            before the collector runs again; 0 runs it in every run. Applies only
+            to collectors whose data can be fetched later without loss.
     """
     name: ClassVar[str]
     datasets: ClassVar[tuple[str, ...]]
+    min_days_between_runs: ClassVar[int] = 0
 
     @abstractmethod
     def collect(self, ctx: RunContext, entry: CollectorEntry) -> CollectorResult:

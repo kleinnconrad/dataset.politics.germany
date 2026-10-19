@@ -517,15 +517,15 @@ jurisdiction = "DE"
 feeds = ["https://www.bundestag.de/static/appdata/includes/rss/pressemitteilungen.rss", "https://www.bundestag.de/static/appdata/includes/rss/hib.rss", "https://www.bundestag.de/static/appdata/includes/rss/aktuellethemen.rss"]
 fetch_pages = true
 
-# feeds: 504 h, 504 h; robots.txt crawl-delay 30 s
+# feeds: 504 h; robots.txt crawl-delay 30 s, therefore one feed and fetch_pages = false; announcement feed RSSGenerator_Announcement.xml omitted
 [[press_source]]
 id = "bundesrat"
 name = "Bundesrat"
 homepage = "https://www.bundesrat.de/DE/homepage/homepage-node.html"
 actor_type = "bundesrat"
 jurisdiction = "DE"
-feeds = ["https://www.bundesrat.de/SiteGlobals/Functions/RSSFeed/RSSGenerator_top_plenumkompakt.xml", "https://www.bundesrat.de/SiteGlobals/Functions/RSSFeed/RSSGenerator_Announcement.xml"]
-fetch_pages = true
+feeds = ["https://www.bundesrat.de/SiteGlobals/Functions/RSSFeed/RSSGenerator_top_plenumkompakt.xml"]
+fetch_pages = false
 
 # feeds: 2882 h, 2280 h; robots.txt crawl-delay 10 s
 [[press_source]]
@@ -577,15 +577,15 @@ jurisdiction = "DE"
 feeds = ["https://bmds.bund.de/feed/rss.xml"]
 fetch_pages = true
 
-# feeds: 646 h, 2184 h, 1432 h; robots.txt crawl-delay 60 s
+# feeds: 646 h; robots.txt crawl-delay 60 s, therefore one feed and fetch_pages = false; feeds klimaschutz.rss and natur.rss omitted
 [[press_source]]
 id = "bmukn"
 name = "Bundesministerium für Umwelt, Klimaschutz, Naturschutz und nukleare Sicherheit"
 homepage = "https://www.bundesumweltministerium.de/"
 actor_type = "federal_ministry"
 jurisdiction = "DE"
-feeds = ["https://www.bundesumweltministerium.de/umwelt.rss", "https://www.bundesumweltministerium.de/klimaschutz.rss", "https://www.bundesumweltministerium.de/natur.rss"]
-fetch_pages = true
+feeds = ["https://www.bundesumweltministerium.de/umwelt.rss"]
+fetch_pages = false
 
 # feeds: 75288 h, 111504 h
 [[press_source]]
