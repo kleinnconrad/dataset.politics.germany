@@ -2,19 +2,24 @@
 Collects news articles and press releases and labels them with Gemini.
 
 For every due source of ``config/sources.toml`` the collector reads the RSS
-or Atom feeds and, for outlets, the news sitemap. New items published within
-NEWS_LOOKBACK_HOURS are processed in turns across the sources: the article
-page is fetched where robots.txt and the text-and-data-mining reservation
-permit (metadata and lead text), the item is labelled by Gemini in batches,
-and the metadata record and the annotation record are written. Texts are
-not stored. Sources that refuse automated requests are set to ``blocked``.
+or Atom feeds and, for outlets, the news sitemap. Of the new political items
+published within NEWS_LOOKBACK_HOURS, up to MAX_ANNOTATIONS_PER_RUN are
+annotated: press releases first, then news items in turns across the
+outlets. For these, the article page is fetched where robots.txt and the
+text-and-data-mining reservation permit (metadata and lead text), the item is
+labelled by Gemini in batches, and the metadata record and the annotation
+record are written. The other new items are written as metadata records from
+the feed data, without labels, so that the item counts per source stay
+complete. Texts are not stored. Sources that refuse automated requests are
+set to ``blocked``.
 """
 import calendar
 import logging
 import re
 import xml.etree.ElementTree as ElementTree
-from collections import defaultdict
-from collections.abc import Iterable, Iterator, Sequence
+from collections import defaultdict, deque
+from collections.abc import Callable, Iterable, Iterator, Sequence
+from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta, timezone
 from itertools import zip_longest
@@ -31,7 +36,7 @@ from schema import ItemAnnotation, NewsItemRecord, PressReleaseRecord, TextAnnot
 from sources import CONFIG_PATH, Outlet, PressSource, SourceConfig, SourceHealthStore, load_config
 from state import CollectorEntry, is_backfilled
 from urls import domain_id, normalize_url, path_tokens, url_id
-from web import BlockedError, FetchError, NotFoundError, RobotsDisallowedError
+from web import BlockedError, FetchError, NotFoundError, RobotsDisallowedError, host_of
 
 logger = logging.getLogger(__name__)
 
@@ -538,11 +543,21 @@ class FeedsCollector(Collector):
         health = SourceHealthStore.load(ctx.settings.state_dir)
         cutoff = ctx.started - timedelta(hours=ctx.settings.news_lookback_hours)
         counters: dict[str, Any] = defaultdict(int)
+        new_by_source: dict[str, int] = {}
         by_key: dict[str, Candidate] = {}
+        due: list[Source] = []
         for source in (*config.outlets, *config.press_sources):
-            if not health.is_due(source.id, ctx.today):
+            if health.is_due(source.id, ctx.today):
+                due.append(source)
+            else:
                 counters["sources_skipped"] += 1
-                continue
+        self._prefetch_robots(ctx, due)
+        complete = True
+        for position, source in enumerate(due):
+            if ctx.past_deadline():
+                counters["sources_not_read"] = len(due) - position
+                complete = False
+                break
             try:
                 found = self._read_source(ctx, source)
             except BlockedError as e:
@@ -555,6 +570,8 @@ class FeedsCollector(Collector):
                 counters["sources_failed"] += 1
                 continue
             new = self._new_candidates(ctx, found, cutoff)
+            logger.info("Source %s: %d items, %d new political items.", source.id, len(found), len(new))
+            new_by_source[source.id] = len(new)
             health.record_success(source.id, ctx.today, len(new))
             counters["sources_ok"] += 1
             counters["items_found"] += len(found)
@@ -565,29 +582,86 @@ class FeedsCollector(Collector):
                     if is_home_source(existing) or not is_home_source(candidate):
                         continue
                 by_key[candidate.key] = candidate
-        groups = self._groups_by_source(by_key.values(), config)
-        selected = list(interleave(groups))[: ctx.settings.max_annotations_per_run]
+        selected, beyond_cap = self._select(by_key.values(), config, ctx.settings.max_annotations_per_run)
         counters["items_new"] = len(by_key)
         counters["items_selected"] = len(selected)
+        counters["new_by_source"] = new_by_source
         if ctx.dry_run:
-            logger.info("Dry run: %d new items from %d sources.", len(selected), counters["sources_ok"])
-            return CollectorResult(counters=dict(counters))
-        error = self._process(ctx, selected, health, entry, counters)
+            logger.info("Dry run: %d new items from %d sources; %d would be annotated, %d stored without labels.",
+                        len(by_key), counters["sources_ok"], len(selected), len(beyond_cap))
+            return CollectorResult(counters=dict(counters), complete=complete)
+        error, processed = self._process(ctx, selected, beyond_cap, health, entry, counters)
         for dataset in (NEWS, PRESS):
             counters[f"seen_pruned_{dataset}"] = ctx.seen(dataset).prune(ctx.today, SEEN_RETENTION_DAYS)
         health.save()
         ctx.save_seen()
         counters["source_status"] = health.status_counts([s.id for s in (*config.outlets, *config.press_sources)])
         if self._annotator is not None:
+            counters["gemini_model"] = self._annotator.model
             counters["gemini_usage"] = vars(self._annotator.usage).copy()
-        return CollectorResult(counters=dict(counters), error=error)
+        return CollectorResult(counters=dict(counters), error=error, complete=complete and processed)
 
-    def _process(self, ctx: RunContext, selected: list[Candidate], health: SourceHealthStore,
-                 entry: CollectorEntry, counters: dict[str, Any]) -> Optional[str]:
-        """Fetches pages, annotates in batches and writes the records.
+    @staticmethod
+    def _prefetch_robots(ctx: RunContext, sources: Sequence[Source]) -> None:
+        """Loads the robots.txt of every feed host before the feeds are read.
+
+        A host with a crawl delay then waits only for the rest of the delay
+        after this request, which usually passes while the other hosts are read.
+        A failure is kept by the client and reported when the feed is read.
+        """
+        urls: dict[str, str] = {}
+        for source in sources:
+            sitemap = source.news_sitemap if isinstance(source, Outlet) else None
+            for url in (*source.feeds, *([sitemap] if sitemap else [])):
+                urls.setdefault(host_of(url), url)
+        for url in urls.values():
+            try:
+                ctx.web.allowed(url)
+            except FetchError:
+                continue
+
+    @classmethod
+    def _select(cls, candidates: Iterable[Candidate], config: SourceConfig,
+                cap: int) -> tuple[list[Candidate], list[Candidate]]:
+        """Splits the new items into the items to annotate and the items stored without labels.
+
+        Press releases come first; news items take the remaining places in
+        turns across the outlets, newest first. The items to annotate are
+        returned in turns across all sources, so that the page requests to a
+        host are spread over the run.
+
+        Args:
+            candidates: The new items.
+            config: The source configuration (order of the sources).
+            cap: Maximum number of items to annotate.
 
         Returns:
-            Optional[str]: The reason if the annotation stopped early because of a quota or API error.
+            tuple[list[Candidate], list[Candidate]]: The items to annotate in the
+            order of processing, and the items beyond the cap.
+        """
+        groups = cls._groups_by_source(candidates, config)
+        press = list(interleave([group for group in groups if group[0].is_press]))
+        news = list(interleave([group for group in groups if not group[0].is_press]))
+        chosen = press[:cap] + news[:max(cap - len(press), 0)]
+        chosen_keys = {candidate.key for candidate in chosen}
+        beyond_cap = [candidate for candidate in (*press, *news) if candidate.key not in chosen_keys]
+        return list(interleave(cls._groups_by_source(chosen, config))), beyond_cap
+
+    def _process(self, ctx: RunContext, selected: list[Candidate], beyond_cap: list[Candidate],
+                 health: SourceHealthStore, entry: CollectorEntry,
+                 counters: dict[str, Any]) -> tuple[Optional[str], bool]:
+        """Fetches pages, annotates in batches and writes the records.
+
+        Up to GEMINI_CONCURRENCY batches are annotated at the same time while
+        the pages of the next items are fetched; the results are written in
+        the order of the batches. Items that are not annotated, because they
+        are beyond the cap, because the annotation stopped or because the run
+        deadline passed, are written from the feed data without labels.
+
+        Returns:
+            tuple[Optional[str], bool]: The reason if the annotation stopped early
+            because of a quota or API error, and False if the run deadline passed
+            before all selected items were processed.
         """
         index = PoliticianIndex(load_politicians(ctx.settings.state_dir))
         excluded_sources: set[str] = set()
@@ -597,30 +671,40 @@ class FeedsCollector(Collector):
         stop_reason: Optional[str] = None
         error: Optional[str] = None
         pending: list[Prepared] = []
+        in_flight: deque[tuple[list[Prepared], Optional[Future[list[Optional[ItemAnnotation]]]]]] = deque()
         buffers: dict[str, list[Any]] = {NEWS: [], PRESS: [], ANNOTATIONS: []}
+        concurrency = ctx.settings.gemini_concurrency
 
         def flush() -> None:
             for dataset, records in buffers.items():
                 ctx.emit(dataset, records)
                 records.clear()
 
-        def annotate_pending() -> None:
+        def flush_if_full() -> None:
+            if sum(len(records) for records in buffers.values()) >= EMIT_EVERY:
+                flush()
+
+        def write_oldest() -> None:
+            """Waits for the oldest batch in flight and writes its items."""
             nonlocal stop_reason, error
-            if not pending:
-                return
-            labels: list[Optional[ItemAnnotation]] = [None] * len(pending)
-            if stop_reason is None and self._annotator is not None:
+            batch, future = in_flight.popleft()
+            labels: list[Optional[ItemAnnotation]] = [None] * len(batch)
+            if future is not None:
                 try:
-                    labels = self._annotator.annotate([p.annotation_input for p in pending])
+                    labels = future.result()
                 except TransientAnnotationError as e:
                     logger.warning("Annotation of a batch failed: %s", e)
                     counters["annotation_batches_failed"] += 1
                 except RunStopError as e:
-                    stop_reason = str(e)
-                    logger.error("Annotation stopped: %s", e)
-                    if "MAX_GEMINI_CALLS_PER_RUN" not in stop_reason:
-                        error = f"annotation stopped: {stop_reason}"
-            for prepared, label in zip(pending, labels):
+                    if stop_reason is None:
+                        stop_reason = str(e)
+                        logger.error("Annotation stopped: %s", e)
+                        if "MAX_GEMINI_CALLS_PER_RUN" not in stop_reason:
+                            error = f"annotation stopped: {stop_reason}"
+            for prepared, label in zip(batch, labels):
+                # A TDM reservation found after the batch was sent excludes the whole source
+                if prepared.candidate.source.id in excluded_sources:
+                    continue
                 dataset = prepared.record.dataset
                 buffers[dataset].append(prepared.record)
                 store = ctx.seen(dataset)
@@ -632,41 +716,99 @@ class FeedsCollector(Collector):
                 else:
                     buffers[ANNOTATIONS].append(self._annotation_record(ctx, prepared, label, index))
                     counters["annotated"] += 1
-            pending.clear()
-            if sum(len(records) for records in buffers.values()) >= EMIT_EVERY:
-                flush()
+            flush_if_full()
 
-        for candidate in selected:
-            source = candidate.source
-            if source.id in excluded_sources:
-                continue
-            store = ctx.seen(PRESS if candidate.is_press else NEWS)
-            if candidate.key in store:
-                continue
-            page: Optional[PageInfo] = None
-            if source.id not in pages_blocked:
-                try:
-                    page = self._fetch_page(ctx, candidate)
-                except TdmReservedError:
-                    health.record_failure(source.id, ctx.today, "text and data mining reserved", status="tdm_reserved")
-                    excluded_sources.add(source.id)
-                    pending[:] = [p for p in pending if p.candidate.source.id != source.id]
-                    counters["sources_tdm_reserved"] += 1
+        def write_ready() -> None:
+            """Writes the batches at the head of the queue that are finished."""
+            while in_flight and (in_flight[0][1] is None or in_flight[0][1].done()):
+                write_oldest()
+
+        def submit(executor: ThreadPoolExecutor) -> None:
+            """Sends the pending items to Gemini, keeping at most ``concurrency`` batches in flight."""
+            if not pending:
+                return
+            batch = list(pending)
+            pending.clear()
+            future = None
+            if stop_reason is None and self._annotator is not None:
+                future = executor.submit(self._annotator.annotate, [p.annotation_input for p in batch])
+            in_flight.append((batch, future))
+            while len(in_flight) > concurrency:
+                write_oldest()
+            write_ready()
+
+        leftover: list[Candidate] = []
+        processed = True
+        with ThreadPoolExecutor(max_workers=concurrency, thread_name_prefix="gemini") as executor:
+            for position, candidate in enumerate(selected):
+                write_ready()
+                if stop_reason is not None or ctx.past_deadline():
+                    leftover = selected[position:]
+                    if stop_reason is None:
+                        logger.warning("Run deadline reached; %d selected items are stored without labels.",
+                                       len(leftover))
+                        processed = False
+                    break
+                source = candidate.source
+                if source.id in excluded_sources:
                     continue
-                except BlockedError as e:
-                    logger.warning("Pages of %s are blocked (%s); continuing without pages.", source.id, e)
-                    pages_blocked.add(source.id)
-                    counters["sources_pages_blocked"] += 1
-            counters["pages_fetched" if page else "pages_missing"] += 1
-            prepared = self._prepare(ctx, candidate, page, entry.first_run)
-            canonical_keys = {(source.id, key) for key in prepared.extra_keys}
-            if any(key in store for key in prepared.extra_keys) or canonical_keys & run_canonical_keys:
-                counters["duplicates_canonical"] += 1
-                continue
-            run_canonical_keys.update(canonical_keys)
-            pending.append(prepared)
-            if len(pending) >= BATCH_SIZE:
-                annotate_pending()
-        annotate_pending()
+                store = ctx.seen(PRESS if candidate.is_press else NEWS)
+                if candidate.key in store:
+                    continue
+                page: Optional[PageInfo] = None
+                if source.id not in pages_blocked:
+                    try:
+                        page = self._fetch_page(ctx, candidate)
+                    except TdmReservedError:
+                        health.record_failure(source.id, ctx.today, "text and data mining reserved",
+                                              status="tdm_reserved")
+                        excluded_sources.add(source.id)
+                        pending[:] = [p for p in pending if p.candidate.source.id != source.id]
+                        counters["sources_tdm_reserved"] += 1
+                        continue
+                    except BlockedError as e:
+                        logger.warning("Pages of %s are blocked (%s); continuing without pages.", source.id, e)
+                        pages_blocked.add(source.id)
+                        counters["sources_pages_blocked"] += 1
+                counters["pages_fetched" if page else "pages_missing"] += 1
+                prepared = self._prepare(ctx, candidate, page, entry.first_run)
+                canonical_keys = {(source.id, key) for key in prepared.extra_keys}
+                if any(key in store for key in prepared.extra_keys) or canonical_keys & run_canonical_keys:
+                    counters["duplicates_canonical"] += 1
+                    continue
+                run_canonical_keys.update(canonical_keys)
+                pending.append(prepared)
+                if len(pending) >= BATCH_SIZE:
+                    submit(executor)
+            submit(executor)
+            while in_flight:
+                write_oldest()
+
+        counters["not_annotated"] += self._write_without_labels(ctx, leftover, excluded_sources, entry, buffers,
+                                                                counters, flush_if_full)
+        counters["beyond_cap"] = self._write_without_labels(ctx, beyond_cap, excluded_sources, entry, buffers,
+                                                            counters, flush_if_full)
         flush()
-        return error
+        return error, processed
+
+    def _write_without_labels(self, ctx: RunContext, candidates: Sequence[Candidate], excluded_sources: set[str],
+                              entry: CollectorEntry, buffers: dict[str, list[Any]], counters: dict[str, Any],
+                              flush_if_full: Callable[[], None]) -> int:
+        """Buffers the metadata records of items that are not annotated, built from the feed data only.
+
+        Returns:
+            int: Number of items buffered.
+        """
+        written = 0
+        for candidate in candidates:
+            store = ctx.seen(PRESS if candidate.is_press else NEWS)
+            if candidate.source.id in excluded_sources or candidate.key in store:
+                continue
+            prepared = self._prepare(ctx, candidate, None, entry.first_run)
+            dataset = prepared.record.dataset
+            buffers[dataset].append(prepared.record)
+            store.mark(candidate.key, candidate.key, ctx.today)
+            counters[f"written_{dataset}"] += 1
+            written += 1
+            flush_if_full()
+        return written

@@ -114,6 +114,18 @@ def test_network_errors_become_fetch_errors(fake_web) -> None:
         fake_web.client().get(ARTICLE)
 
 
+def test_unreachable_robots_txt_is_requested_once_per_run(fake_web) -> None:
+    fake_web.fail("https://news.example/robots.txt")
+    client = fake_web.client()
+
+    for url in (ARTICLE, "https://news.example/politik/artikel-2"):
+        with pytest.raises(FetchError):
+            client.get(url)
+
+    assert fake_web.requested.count("https://news.example/robots.txt") == 1
+    assert ARTICLE not in fake_web.requested
+
+
 def test_tdmrep_rules_are_matched_by_path(fake_web) -> None:
     fake_web.add("https://news.example/.well-known/tdmrep.json",
                  [{"location": "/politik/*", "tdm-reservation": 1}, {"location": "/", "tdm-reservation": 0}])

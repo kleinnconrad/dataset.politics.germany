@@ -4,7 +4,7 @@
 > [!IMPORTANT]
 > **The DIP API key expires on 31 May 2027.** Before that date, take the current key from the [DIP help page](https://dip.bundestag.de/%C3%BCber-dip/hilfe/api), replace the repository secret `DIP_API_KEY` (**Settings > Secrets and variables > Actions**) and the value in your local `.env`, and update the expiry date in `.github/workflows/pipeline.yml` (`DIP_KEY_VALID_UNTIL`) and in this note. The pipeline workflow shows a warning from 45 days before the date and fails from 14 days before, so that GitHub sends a notification.
 
-A dataset of German politics for political analysis and the prediction of elections and other political events. A pipeline in GitHub Actions runs twice a week (Tuesdays and Fridays). It collects opinion polls, roll-call votes, parliamentary procedures, Wikipedia pageviews, news articles and press releases from public APIs, feeds and websites without bot protection, labels the news and press releases with Google Gemini (`gemini-2.5-flash`), and stores everything as partitioned JSON files in this repository.
+A dataset of German politics for political analysis and the prediction of elections and other political events. A pipeline in GitHub Actions runs twice a week (Tuesdays and Fridays) for at most 30 minutes. It collects opinion polls, roll-call votes, parliamentary procedures, Wikipedia pageviews, news articles and press releases from public APIs, feeds and websites without bot protection, labels the news and press releases with Google Gemini (`gemini-2.5-flash`), and stores everything as partitioned JSON files in this repository.
 
 ## Table of Contents
 - [Dataset Overview](#dataset-overview)
@@ -32,7 +32,7 @@ No data yet. This section is updated after every pipeline run.
 | `wikipedia_pageviews` | Daily views of the German Wikipedia articles of parties (since July 2015) and members of parliament | Wikimedia | event |
 | `news_items` | Metadata of political news articles of German outlets | RSS feeds, news sitemaps, article pages | event |
 | `press_releases` | Metadata of press releases of the federal government, ministries, parliaments, parliamentary groups, parties and courts | RSS feeds | event |
-| `text_annotations` | Gemini labels of news articles and press releases: topic, event types, parties and politicians with role and tone, frame, conflicts, polls, upcoming events | Gemini | event |
+| `text_annotations` | Gemini labels of up to 400 news articles and press releases per run (press releases first): topic, event types, parties and politicians with role and tone, frame, conflicts, polls, upcoming events | Gemini | event |
 | `roll_call_votes` | Roll-call votes of the Bundestag with counts, cohesion and defectors per parliamentary group, and the printed papers (Drucksachen) they refer to | abgeordnetenwatch.de | event |
 | `mp_votes` | The vote of each member in each roll-call vote | abgeordnetenwatch.de | event |
 | `parliamentary_procedures` | Procedures of the Bundestag and Bundesrat (bills, motions, interpellations), recorded when they appear or change | Bundestag DIP | change |
@@ -46,11 +46,13 @@ No data yet. This section is updated after every pipeline run.
 
 **No full texts.** News articles and press releases are stored as titles, URLs, metadata and derived variables. The lead text that Gemini reads is not stored.
 
+**Annotated sample.** Every new political item of a run is stored in `news_items` or `press_releases`. Up to 400 of them are annotated: all press releases, then news items in turns across the outlets, newest first. The other items are stored from the feed data without labels, so that the item counts per outlet stay complete and the annotated sample can be weighted against them.
+
 ## Sources and Fetch Rules
 
 - **APIs:** DAWUM (polls), abgeordnetenwatch.de API v2 (politicians, roll-call votes; at most 30 requests per minute), Bundestag DIP API (procedures; API key), Wikimedia Pageviews API, MediaWiki and Wikidata APIs (article titles). These documented APIs are used under their API terms.
 - **Websites:** the news outlets and press-release sources in [config/sources.toml](config/sources.toml), read through RSS/Atom feeds, news sitemaps and, where permitted, the article pages.
-- **robots.txt:** every website request is checked against the robots.txt of its host for the user agent `GermanPoliticsDataset`, with the longest-match rule of RFC 9309. A crawl delay is honored; a host that requires more than 120 seconds is not fetched.
+- **robots.txt:** every website request is checked against the robots.txt of its host for the user agent `GermanPoliticsDataset`, with the longest-match rule of RFC 9309. A crawl delay is honored; a host that requires more than 120 seconds is not fetched. A host whose robots.txt cannot be fetched is not requested again in the same run.
 - **Bot protection:** a source that answers with HTTP 401/403, a challenge page or a CAPTCHA is set to `blocked` and is not fetched again until it is reset by hand. The pipeline does not use a headless browser.
 - **Text and data mining reservations:** a source whose host or pages declare a machine-readable reservation (TDMRep header, `/.well-known/tdmrep.json` or meta tag) is set to `tdm_reserved` and is not used. For outlets whose robots.txt states a reservation under § 44b UrhG in plain text, article pages are not fetched (`fetch_pages = false`); their feed items are used with title and teaser only.
 - **Pacing:** at most one request per second per host (abgeordnetenwatch: one per 2.1 seconds), retries for server errors and rate limits.
@@ -71,20 +73,25 @@ sequenceDiagram
     participant Store as storage.py / state.py
 
     Action->>Run: Pipeline run (Tuesdays and Fridays, 02:07 Europe/Berlin)
-    Run->>AW: Members of the Bundestag and the state parliaments (politician registry)
-    Run->>AW: New roll-call votes and the individual votes
-    Run->>DIP: Procedures updated since the previous run
-    Run->>DAWUM: Poll database, if it changed
-    Run->>Wiki: Daily views since the previous run
+    Run->>AW: Members of the Bundestag and the state parliaments (politician registry, once a week)
     Run->>Web: Feeds and news sitemaps of all due sources
-    loop New items, in turns across the sources
+    loop Up to 400 new items (press releases first), in turns across the sources
         Run->>Web: Article page (metadata, lead text), where permitted
-        Run->>Gemini: Batch of 10 items
+        Run->>Gemini: Batches of 10 items, up to 4 at the same time
         Gemini-->>Run: Labels per item
         Run->>Store: Items and annotations (every 100 items)
     end
+    Run->>Store: Further new items without labels
+    Run->>AW: New roll-call votes and the individual votes
+    Run->>DIP: Procedures updated since the previous run
+    Run->>DAWUM: Poll database, if it changed
+    Run->>Wiki: Daily views since the last stored day (once a week)
     Action->>Action: Update the README overview, commit data/
 ```
+
+The feeds run right after the politician registry, because news items leave the feeds after a few days; the data of the later collectors can also be fetched by a later run. `politicians` and `wikipedia_pageviews` run once a week, six days or more after their last complete run; pageviews are fetched for all days since the last stored day, so no day is lost.
+
+**Run deadline.** The collectors start no new work 25 minutes after the start of the run (`RUN_DEADLINE_MINUTES`), so that the workflow commits the data before its timeout of 30 minutes. A collector that stops at the deadline has the status `partial` and continues in the next run; a collector that has not started by then is skipped. Items of the feeds that are not annotated by the deadline are stored without labels.
 
 Each collector runs in isolation: a failure is logged in `data/state/collectors.json` and the run log, the other collectors continue, and the data already written is kept. The run then ends with exit code 1, so that the workflow fails visibly.
 
@@ -111,15 +118,19 @@ polls = duckdb.sql("select * from read_json('data/polls/**/*.json', hive_partiti
 
 | Workflow | Schedule | Purpose |
 |---|---|---|
-| `pipeline.yml` | Tuesdays and Fridays, 02:07 Europe/Berlin | Runs all collectors, updates the overview and commits `data/` and `README.md` |
+| `pipeline.yml` | Tuesdays and Fridays, 02:07 Europe/Berlin | Runs the due collectors (timeout 30 minutes), updates the overview and commits `data/` and `README.md` |
+| `notify.yml` | After each `normal` or `backfill` run of `pipeline.yml` | Posts a summary of the run (status and records per collector, annotated items, Gemini tokens and estimated cost) as a commit comment that mentions the repository owner |
 | `ci.yml` | Pull requests, pushes to `main` | Lint, tests and commit message checks |
+
+**Notification email.** GitHub sends an email for the mention in the comment of `notify.yml` if email notifications for participating and @mentions are enabled (the default, under **Settings > Notifications** of the GitHub account). The summary is built by `scripts/run_summary.py` from the last line of `data/state/run_log.jsonl`; the cost estimate uses the list prices in that script. `notify.yml` runs only once it is on the default branch.
 
 **Manual runs.** Both workflows can be started by hand: open the **Actions** tab, select **German Politics Pipeline** (or **CI**), click **Run workflow**, and choose the branch and the `mode`. The button appears once the workflow file is on the default branch. The modes of `pipeline.yml`:
 - `normal`: same as the scheduled run; commits the data.
+- `backfill`: imports the history of all collectors except the feeds, without the per-run caps and the weekly interval, and commits it (timeout 90 minutes, deadline 85 minutes). Run it once before the first `normal` run (see [Setup](#setup)).
 - `shadow`: runs on a copy of the state in a temporary folder and uploads the output as an artifact; nothing is committed. Uses the same API keys and quotas.
-- `dry-run`: runs all collectors without writing any data; the feeds collector reads the feeds and sitemaps only (no article pages, no Gemini calls). The run log in the workflow output lists the counts.
+- `dry-run`: runs the collectors without writing any data; the feeds collector reads the feeds and sitemaps only (no article pages, no Gemini calls). The workflow log lists the new items per source and the counts.
 
-For a first test, start with `dry-run` (checks access to the sources), then `shadow` (checks the API keys and the full run without committing), then `normal`.
+The input `collectors` restricts a manual run to a comma-separated list of collectors, e.g. `feeds`; selected collectors run even if they are not due. For a first test, start with `dry-run` and `collectors` set to `feeds` (checks access to the sources and the number of new items per source), then `backfill`, then `shadow` (checks the API keys and a regular run without committing), then `normal`.
 
 ## Configuration
 
@@ -128,11 +139,13 @@ For a first test, start with `dry-run` (checks access to the sources), then `sha
 | `GEMINI_API_KEY` | none | Gemini API key (required for news and press releases) |
 | `DIP_API_KEY` | none | Bundestag DIP API key (required for the procedures) |
 | `GEMINI_MODEL` | `gemini-2.5-flash` | Model for the annotation; stored in every annotation record |
-| `MAX_GEMINI_CALLS_PER_RUN` | 250 | Gemini requests per run, including retries |
-| `MAX_ANNOTATIONS_PER_RUN` | 2500 | News articles and press releases processed per run |
+| `MAX_GEMINI_CALLS_PER_RUN` | 50 | Gemini requests per run, including retries |
+| `MAX_ANNOTATIONS_PER_RUN` | 400 | News articles and press releases annotated per run; further new items are stored without labels |
+| `GEMINI_CONCURRENCY` | 4 | Gemini requests sent at the same time; 1 for the free tier of the Gemini API |
 | `NEWS_LOOKBACK_HOURS` | 96 | Age limit of new feed and sitemap items |
 | `NEWS_FETCH_PAGES` | on | Fetch article pages for metadata and lead text |
-| `COLLECTORS` | all | Comma-separated list of collectors to run |
+| `RUN_DEADLINE_MINUTES` | 25 | Minutes after the start after which the collectors start no new work (85 in `backfill` runs) |
+| `COLLECTORS` | all due | Comma-separated list of collectors to run; listed collectors run even if they are not due |
 
 Fixed thresholds, such as the source status rules, are constants in the modules that use them.
 
@@ -140,13 +153,14 @@ Fixed thresholds, such as the source status rules, are constants in the modules 
 
 ```bash
 uv sync
-uv run python src/main.py --dry-run                              # read the feeds only
+uv run python src/main.py --dry-run --collectors feeds          # read the feeds only
+uv run python src/main.py --backfill                             # import the history (no feeds)
 uv run python src/main.py --collectors polls,wikipedia_pageviews # selected collectors
 uv run python src/main.py --max-annotations 20                   # a short full run
 uv run python src/generate_dataset_overview.py                   # README overview
 ```
 
-Secrets are read from a `.env` file in the repository root (`GEMINI_API_KEY=...`, `DIP_API_KEY=...`); the file is listed in `.gitignore`. Local runs write to `~/Downloads/german_politics_dataset/` unless `--output-dir` is given; in GitHub Actions they write to `data/`. The collectors are `politicians`, `roll_call_votes`, `parliamentary_procedures`, `polls`, `wikipedia_pageviews` and `feeds`.
+Secrets are read from a `.env` file in the repository root (`GEMINI_API_KEY=...`, `DIP_API_KEY=...`); the file is listed in `.gitignore`. Local runs write to `~/Downloads/german_politics_dataset/` unless `--output-dir` is given; in GitHub Actions they write to `data/`. The collectors, in the order of a run, are `politicians`, `feeds`, `roll_call_votes`, `parliamentary_procedures`, `polls` and `wikipedia_pageviews`.
 
 ## Continuous Integration
 
@@ -171,7 +185,7 @@ uv run pytest
 
 1. Add the repository secrets `GEMINI_API_KEY` and `DIP_API_KEY` under **Settings > Secrets and variables > Actions**. The current public DIP key is listed on the [DIP help page](https://dip.bundestag.de/%C3%BCber-dip/hilfe/api); it is replaced from time to time.
 2. Allow workflows to push to the repository under **Settings > Actions > General > Workflow permissions** (read and write permissions).
-3. The first run imports the history: all polls since 2017, the pageviews of the party articles since July 2015 and of the members of parliament for one year, and all procedures of the current electoral period. The roll-call votes of the current and the previous electoral period (about 250) are imported over the first three runs, at most 120 per run, to stay within the rate limit of abgeordnetenwatch. The first run takes longer than later runs.
+3. Start `pipeline.yml` once by hand in the mode `backfill` before the first scheduled run. It imports the history: all polls since 2017, the pageviews of the party articles since July 2015 and of the members of parliament for one year, all procedures of the current electoral period, and the roll-call votes of the current and the previous electoral period (about 250, at the rate limit of abgeordnetenwatch). It takes about 40 minutes. The regular runs then fetch only the changes; without the backfill, they import the history over several runs, at most 120 roll-call votes per run and within the run deadline.
 
 ## License
 

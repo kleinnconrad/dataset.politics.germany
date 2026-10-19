@@ -12,13 +12,16 @@ the host disallows crawlers; the documented API is used under its own terms.
 the 16 state parliaments, rebuilds the politician registry
 (``state/politicians.json``) and writes a record for each politician who is
 new or whose name, party, sex, year of birth, Wikidata id or mandates changed.
+It runs once a week.
 
 ``RollCallVotesCollector`` reads the roll-call votes (polls) of the Bundestag
 and writes one record per vote, with the counts by parliamentary group, and
 one record per member and vote. A vote does not change once it is held, so
 each vote is read once. The first run imports the current and the previous
-electoral period; at most ``MAX_NEW_POLLS_PER_RUN`` votes are read per run,
-and the rest follow in later runs.
+electoral period; at most ``MAX_NEW_POLLS_PER_RUN`` votes are read per run
+(no limit in a backfill run), and the rest follow in later runs. The
+collector also stops at the run deadline; the remaining votes follow in the
+next run.
 """
 import html
 import logging
@@ -46,7 +49,8 @@ PAGE_SIZE = 1000
 # Politician ids per request of the politicians list, so that the URL stays short
 POLITICIAN_IDS_PER_REQUEST = 200
 BUNDESTAG_ID = 5
-# New roll-call votes read per run. Each needs one request, so that the first runs stay within the rate limit.
+# New roll-call votes read per run except in backfill runs. Each needs one request at the abgeordnetenwatch
+# interval, so that a regular run stays short.
 MAX_NEW_POLLS_PER_RUN = 120
 # Roll-call votes after which the records are written, so that an interrupted run keeps its progress
 POLLS_PER_WRITE = 20
@@ -286,9 +290,13 @@ def politician_fields(politician_id: str, politician: Politician, mandates: list
 
 
 class PoliticiansCollector(Collector):
-    """Keeps the registry of politicians with a current mandate and writes new and changed entries."""
+    """Keeps the registry of politicians with a current mandate and writes new and changed entries.
+
+    Runs once a week: mandates change rarely, and a change is recorded with the next run.
+    """
     name = "politicians"
     datasets = (POLITICIANS_DATASET,)
+    min_days_between_runs = 6
 
     def collect(self, ctx: RunContext, entry: CollectorEntry) -> CollectorResult:
         """Reads the current mandates of the Bundestag and the state parliaments and their politicians.
@@ -610,13 +618,18 @@ class RollCallVotesCollector(Collector):
             polls_by_period[period_id] = polls
             new = sorted((poll for poll in polls if str(poll["id"]) not in seen),
                          key=lambda poll: (str(poll.get("field_poll_date") or ""), int(poll["id"])), reverse=True)
-            budget = MAX_NEW_POLLS_PER_RUN - len(queue)
-            queue.extend((period_id, poll) for poll in new[:max(budget, 0)])
-            counters["deferred"] += max(len(new) - max(budget, 0), 0)
+            budget = len(new) if ctx.backfill else max(MAX_NEW_POLLS_PER_RUN - len(queue), 0)
+            queue.extend((period_id, poll) for poll in new[:budget])
+            counters["deferred"] += len(new) - min(budget, len(new))
 
         politicians_by_period: dict[str, dict[str, str]] = {}
         batch: list[tuple[dict[str, Any], list[MemberVote], dict[str, Any]]] = []
-        for period_id, poll in queue:
+        complete = True
+        for position, (period_id, poll) in enumerate(queue):
+            if ctx.past_deadline():
+                counters["deferred"] += len(queue) - position
+                complete = False
+                break
             if period_id not in politicians_by_period:
                 politicians_by_period[period_id] = self._politicians_by_mandate(ctx, period_id)
             raw_votes = fetch_list(ctx, "votes", {"poll": poll["id"]})
@@ -640,7 +653,7 @@ class RollCallVotesCollector(Collector):
         logger.info("Roll-call votes: %d new, %d member votes, %d deferred to later runs.",
                     counters["new"], counters["member_votes"], counters["deferred"])
         return CollectorResult(cursor={"period": current_id, "backfill_periods": remaining},
-                               counters=dict(counters))
+                               counters=dict(counters), complete=complete)
 
     @staticmethod
     def _politicians_by_mandate(ctx: RunContext, period_id: str) -> dict[str, str]:

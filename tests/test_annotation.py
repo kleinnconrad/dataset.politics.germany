@@ -1,5 +1,6 @@
 """Tests of the Gemini annotation with a fake client."""
 import json
+from concurrent.futures import ThreadPoolExecutor
 from types import SimpleNamespace
 from typing import Any, Callable
 
@@ -106,6 +107,23 @@ def test_call_budget_stops_the_annotation() -> None:
     ann.annotate(items(1))
     with pytest.raises(CallBudgetExceededError):
         ann.annotate(items(1))
+
+
+def test_call_budget_holds_across_threads() -> None:
+    ann, client = annotator(lambda prompt: response([label(1)]), max_gemini_calls_per_run=3)
+
+    def call(_: int) -> bool:
+        try:
+            ann.annotate(items(1))
+        except CallBudgetExceededError:
+            return False
+        return True
+
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        results = list(pool.map(call, range(8)))
+
+    assert sum(results) == 3
+    assert len(client.prompts) == 3 and ann.usage.calls == 3
 
 
 def test_annotate_rejects_oversized_batches() -> None:

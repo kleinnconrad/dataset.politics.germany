@@ -9,13 +9,19 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'normal: collect and commit the data; shadow: collect into a temporary folder and upload it as an artifact; dry-run: run all collectors without writing data, feeds without pages and Gemini'
+        description: 'normal: collect and commit the data; backfill: import the history of all collectors except the feeds and commit it; shadow: collect into a temporary folder and upload it as an artifact; dry-run: run the collectors without writing data, feeds without pages and Gemini'
         type: choice
         options:
           - normal
+          - backfill
           - shadow
           - dry-run
         default: normal
+      collectors:
+        description: 'Comma-separated collectors to run, e.g. feeds; empty runs all due collectors'
+        type: string
+        required: false
+        default: ''
 
 # Data-writing workflows share this group, so that they never push at the same time
 concurrency:
@@ -30,11 +36,14 @@ env:
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    # The pipeline starts no new work after RUN_DEADLINE_MINUTES, so that the data is committed before the timeout
+    timeout-minutes: ${{ inputs.mode == 'backfill' && 90 || 30 }}
     permissions:
       contents: write
     env:
       MODE: ${{ inputs.mode || 'normal' }}
+      COLLECTORS: ${{ inputs.collectors }}
+      RUN_DEADLINE_MINUTES: ${{ inputs.mode == 'backfill' && '85' || '25' }}
 
     steps:
     - name: Checkout Repository
@@ -53,7 +62,7 @@ jobs:
 
     # Shadow and dry runs work on a copy of the state, so that they select the same items as a normal run
     - name: Prepare Output Folder
-      if: env.MODE != 'normal'
+      if: env.MODE == 'shadow' || env.MODE == 'dry-run'
       run: |
         mkdir -p "$RUNNER_TEMP/$MODE"
         if [ -d data/state ]; then
@@ -67,6 +76,7 @@ jobs:
       run: |
         case "$MODE" in
           normal) uv run python src/main.py ;;
+          backfill) uv run python src/main.py --backfill ;;
           shadow) uv run python src/main.py --output-dir "$RUNNER_TEMP/shadow" ;;
           dry-run) uv run python src/main.py --dry-run --output-dir "$RUNNER_TEMP/dry-run" ;;
           *) echo "Unknown mode: $MODE"; exit 1 ;;
@@ -74,11 +84,11 @@ jobs:
 
     # The next two steps also run after a failed pipeline step, so that the collected data is kept
     - name: Update Dataset Overview
-      if: ${{ !cancelled() && env.MODE == 'normal' }}
+      if: ${{ !cancelled() && (env.MODE == 'normal' || env.MODE == 'backfill') }}
       run: uv run python src/generate_dataset_overview.py
 
     - name: Commit and Push Data
-      if: ${{ !cancelled() && env.MODE == 'normal' }}
+      if: ${{ !cancelled() && (env.MODE == 'normal' || env.MODE == 'backfill') }}
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
@@ -98,7 +108,7 @@ jobs:
         exit 1
 
     - name: Upload Run Output
-      if: ${{ !cancelled() && env.MODE != 'normal' }}
+      if: ${{ !cancelled() && (env.MODE == 'shadow' || env.MODE == 'dry-run') }}
       uses: actions/upload-artifact@v7
       with:
         name: pipeline-${{ env.MODE }}-${{ github.run_id }}

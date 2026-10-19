@@ -31,6 +31,8 @@ from settings import USER_AGENT
 logger = logging.getLogger(__name__)
 
 DEFAULT_TIMEOUT_S = 20.0
+# Timeout of robots.txt and tdmrep.json requests; a host that does not answer them in time is skipped for the run
+RULES_TIMEOUT_S = 10.0
 DEFAULT_MIN_INTERVAL_S = 1.0
 # Crawl delays of robots.txt are honored up to this limit. A host that requires a longer delay is not
 # fetched at all, so that its delay is respected without stalling the run.
@@ -271,6 +273,7 @@ class WebClient:
         )
         self._last_request_at: dict[str, float] = {}
         self._robots: dict[str, Optional[RobotsRules]] = {}
+        self._robots_errors: dict[str, FetchError] = {}
         self._crawl_delays: dict[str, float] = {}
         self._tdm_rules: dict[str, list[tuple[re.Pattern[str], bool]]] = {}
 
@@ -301,12 +304,25 @@ class WebClient:
             if remaining > 0:
                 self.sleep(remaining)
 
-    def _send(self, url: str, params: Optional[Mapping[str, Any]], headers: Optional[Mapping[str, str]]) -> httpx.Response:
-        """Sends one GET request after waiting for the host interval."""
+    def _send(self, url: str, params: Optional[Mapping[str, Any]], headers: Optional[Mapping[str, str]],
+              timeout_s: Optional[float] = None) -> httpx.Response:
+        """Sends one GET request after waiting for the host interval.
+
+        Args:
+            url: The URL.
+            params: Query parameters.
+            headers: Additional request headers.
+            timeout_s: Timeout of this request; None uses ``timeout_s`` of the client.
+
+        Returns:
+            httpx.Response: The response.
+        """
         self._wait_for_host(url)
         self.request_count += 1
         try:
-            return self._client.get(url, params=params, headers=headers)
+            if timeout_s is None:
+                return self._client.get(url, params=params, headers=headers)
+            return self._client.get(url, params=params, headers=headers, timeout=timeout_s)
         finally:
             self._last_request_at[host_of(url)] = self.clock()
 
@@ -327,7 +343,7 @@ class WebClient:
         """
         url = f"{host}/robots.txt"
         try:
-            response = self._send(url, None, None)
+            response = self._send(url, None, None, timeout_s=RULES_TIMEOUT_S)
         except httpx.TransportError as e:
             raise FetchError(url, f"robots.txt unreachable ({e.__class__.__name__})") from e
         if response.status_code >= 500:
@@ -352,11 +368,19 @@ class WebClient:
             bool: True if allowed; False also if the host's crawl delay exceeds MAX_CRAWL_DELAY_S.
 
         Raises:
-            FetchError: If the robots.txt of the host cannot be fetched.
+            FetchError: If the robots.txt of the host cannot be fetched; the failure
+                is kept for the rest of the run, so that the host is not requested again.
         """
         host = host_of(url)
+        if host in self._robots_errors:
+            error = self._robots_errors[host]
+            raise FetchError(error.url, error.reason, error.status)
         if host not in self._robots:
-            self._robots[host] = self._load_robots(host)
+            try:
+                self._robots[host] = self._load_robots(host)
+            except FetchError as e:
+                self._robots_errors[host] = e
+                raise
         if self._crawl_delays.get(host, 0.0) > MAX_CRAWL_DELAY_S:
             return False
         robots = self._robots[host]
@@ -375,7 +399,7 @@ class WebClient:
         """
         url = f"{host}/.well-known/tdmrep.json"
         try:
-            response = self._send(url, None, None)
+            response = self._send(url, None, None, timeout_s=RULES_TIMEOUT_S)
         except httpx.TransportError:
             return []
         if response.status_code != 200:
