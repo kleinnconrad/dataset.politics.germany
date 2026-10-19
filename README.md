@@ -21,7 +21,114 @@ A dataset of German politics for political analysis and the prediction of electi
 
 ## Dataset Overview
 <!-- DATASET_OVERVIEW_START -->
-No data yet. This section is updated after every pipeline run.
+**Last updated:** 2026-10-19 18:38 UTC
+
+| Dataset | Records | Items | Files | Observed | Content |
+|---|---|---|---|---|---|
+| `polls` | 0 | 0 | 0 | none | One published opinion poll (Sonntagsfrage). |
+| `wikipedia_pageviews` | 0 | 0 | 0 | none | Daily views of the German Wikipedia article of a party or politician. |
+| `news_items` | 0 | 0 | 0 | none | Metadata of one news article. The text is not stored. |
+| `press_releases` | 0 | 0 | 0 | none | Metadata of one press release. The text is not stored. |
+| `text_annotations` | 0 | 0 | 0 | none | Gemini labels of one news article or press release. |
+| `roll_call_votes` | 0 | 0 | 0 | none | One roll-call vote (namentliche Abstimmung) in the Bundestag. |
+| `mp_votes` | 0 | 0 | 0 | none | The vote of one member in one roll-call vote. |
+| `parliamentary_procedures` | 0 | 0 | 0 | none | One parliamentary procedure (Vorgang) in the DIP, recorded when it appears or changes. |
+| `politicians` | 0 | 0 | 0 | none | A politician with a current mandate, recorded when the entry appears or changes. |
+
+**Runs**
+
+- No run yet.
+
+**Sources**
+
+- **News outlets:** 40 configured (40 active)
+- **Press-release sources:** 26 configured (26 active)
+
+<details>
+<summary>News outlets: items per source</summary>
+
+| Source | Type | Status | Items | Last 30 days | Annotated | With lead text | Latest publication |
+|---|---|---|---|---|---|---|---|
+| Augsburger Allgemeine | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Berliner Zeitung | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Bild | tabloid | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| BR24 | public broadcaster regional | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| buten un binnen | public broadcaster regional | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Der Spiegel | weekly magazine | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Der Tagesspiegel | national daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Deutschlandfunk | public broadcaster national | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Die Welt | national daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Focus Online | weekly magazine | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Freie Presse | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Hamburger Abendblatt | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Handelsblatt | business | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| hessenschau.de | public broadcaster regional | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Lausitzer Rundschau | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| MDR | public broadcaster regional | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| n-tv.de | online only | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| NDR | public broadcaster regional | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Neue Osnabrücker Zeitung | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Nordkurier | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Nürnberger Nachrichten | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| rbb24 | public broadcaster regional | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Rheinische Post | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Saarbrücker Zeitung | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| shz.de | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Stuttgarter Zeitung | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| SWR Aktuell | public broadcaster regional | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Süddeutsche Zeitung | national daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Südkurier | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| t-online | online only | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| tagesschau.de | public broadcaster national | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| taz | national daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Thüringer Allgemeine | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Trierischer Volksfreund | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Volksstimme | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| WAZ | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| WDR | public broadcaster regional | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Weser-Kurier | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Wiesbadener Kurier | regional daily | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| ZDFheute | public broadcaster national | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+
+</details>
+
+<details>
+<summary>Press-release sources: items per source</summary>
+
+| Source | Type | Status | Items | Last 30 days | Annotated | With lead text | Latest publication |
+|---|---|---|---|---|---|---|---|
+| AfD | party | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| AfD-Fraktion im Bundestag | parliamentary group | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Bayerische Staatsregierung | state government | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Bundesministerium der Justiz und für Verbraucherschutz | federal ministry | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Bundesministerium der Verteidigung | federal ministry | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Bundesministerium des Innern | federal ministry | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Bundesministerium für Bildung, Familie, Senioren, Frauen und Jugend | federal ministry | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Bundesministerium für Digitales und Staatsmodernisierung | federal ministry | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Bundesministerium für Gesundheit | federal ministry | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Bundesministerium für Umwelt, Klimaschutz, Naturschutz und nukleare Sicherheit | federal ministry | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Bundesministerium für wirtschaftliche Zusammenarbeit und Entwicklung | federal ministry | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Bundesministerium für Wohnen, Stadtentwicklung und Bauwesen | federal ministry | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Bundesrat | bundesrat | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Bundesregierung | federal government | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Bündnis 90/Die Grünen Bundestagsfraktion | parliamentary group | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Bündnis Sahra Wagenknecht | party | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| CDU | party | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| CSU | party | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Deutscher Bundestag | bundestag | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Die Linke | party | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| FDP | party | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Fraktion Die Linke im Bundestag | parliamentary group | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Niedersächsische Landesregierung | state government | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| Saarländische Landesregierung | state government | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| SPD | party | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+| SPD-Bundestagsfraktion | parliamentary group | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
+
+</details>
+
+**Annotations**
+
+- No news articles or press releases yet.
 <!-- DATASET_OVERVIEW_END -->
 
 ## Datasets
