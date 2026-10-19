@@ -1,0 +1,33 @@
+# Sources of the feeds collector tests.
+
+[[outlet]]
+id = "news_example"
+name = "News Example"
+homepage = "https://news.example/"
+outlet_type = "national_daily"
+owner_group = "Example Group"
+paywall_model = "mixed"
+feeds = ["https://news.example/politik/index.rss"]
+news_sitemap = "https://news.example/sitemap-news.xml"
+fetch_pages = true
+
+[[outlet]]
+id = "regional_example"
+name = "Regional Example"
+homepage = "https://regional.example/"
+outlet_type = "public_broadcaster_regional"
+owner_group = "public"
+home_state = "DE-SN"
+paywall_model = "free"
+feeds = ["https://regional.example/nachrichten/rss"]
+fetch_pages = false
+
+[[press_source]]
+id = "spd_example"
+name = "SPD"
+homepage = "https://party.example/"
+actor_type = "party"
+party = "SPD"
+jurisdiction = "DE"
+feeds = ["https://party.example/presse.rss"]
+fetch_pages = false

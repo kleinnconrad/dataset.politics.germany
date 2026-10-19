@@ -1,0 +1,746 @@
+{
+ "Database": {
+  "License": {
+   "Name": "ODC Open Database License",
+   "Shortcut": "ODC-ODbL",
+   "Link": "https://opendatacommons.org/licenses/odbl/1-0/"
+  },
+  "Publisher": "dawum.de",
+  "Author": "Dipl.-Jur. Philipp Guttmann",
+  "Last_Update": "2026-10-17T16:08:32+02:00"
+ },
+ "Parliaments": {
+  "0": {
+   "Shortcut": "Bundestag",
+   "Name": "Bundestag",
+   "Election": "Bundestagswahl"
+  },
+  "10": {
+   "Shortcut": "Nordrhein-Westfalen (NRW)",
+   "Name": "Landtag von Nordrhein-Westfalen",
+   "Election": "Landtagswahl in Nordrhein-Westfalen (NRW)"
+  },
+  "1": {
+   "Shortcut": "Baden-Württemberg",
+   "Name": "Landtag von Baden-Württemberg",
+   "Election": "Landtagswahl in Baden-Württemberg"
+  },
+  "4": {
+   "Shortcut": "Brandenburg",
+   "Name": "Brandenburgischer Landtag",
+   "Election": "Landtagswahl in Brandenburg"
+  },
+  "3": {
+   "Shortcut": "Berlin",
+   "Name": "Berliner Abgeordnetenhaus",
+   "Election": "Abgeordnetenhauswahl in Berlin"
+  },
+  "6": {
+   "Shortcut": "Hamburg",
+   "Name": "Hamburgische Bürgerschaft",
+   "Election": "Bürgerschaftswahl in Hamburg"
+  },
+  "8": {
+   "Shortcut": "Mecklenburg-Vorpommern",
+   "Name": "Landtag von Mecklenburg-Vorpommern",
+   "Election": "Landtagswahl in Mecklenburg-Vorpommern"
+  },
+  "2": {
+   "Shortcut": "Bayern",
+   "Name": "Bayerischer Landtag",
+   "Election": "Landtagswahl in Bayern"
+  },
+  "9": {
+   "Shortcut": "Niedersachsen",
+   "Name": "Niedersächsischer Landtag",
+   "Election": "Landtagswahl in Niedersachsen"
+  },
+  "14": {
+   "Shortcut": "Sachsen-Anhalt",
+   "Name": "Landtag von Sachsen-Anhalt",
+   "Election": "Landtagswahl in Sachsen-Anhalt"
+  },
+  "11": {
+   "Shortcut": "Rheinland-Pfalz",
+   "Name": "Landtag von Rheinland-Pfalz",
+   "Election": "Landtagswahl in Rheinland-Pfalz"
+  },
+  "5": {
+   "Shortcut": "Bremen",
+   "Name": "Bremische Bürgerschaft",
+   "Election": "Bürgerschaftswahl in Bremen"
+  },
+  "15": {
+   "Shortcut": "Schleswig-Holstein",
+   "Name": "Landtag von Schleswig-Holstein",
+   "Election": "Landtagswahl in Schleswig-Holstein"
+  },
+  "16": {
+   "Shortcut": "Thüringen",
+   "Name": "Thüringischer Landtag",
+   "Election": "Landtagswahl in Thüringen"
+  },
+  "13": {
+   "Shortcut": "Sachsen",
+   "Name": "Sächsischer Landtag",
+   "Election": "Landtagswahl in Sachsen"
+  },
+  "7": {
+   "Shortcut": "Hessen",
+   "Name": "Hessischer Landtag",
+   "Election": "Landtagswahl in Hessen"
+  },
+  "12": {
+   "Shortcut": "Saarland",
+   "Name": "Saarländischer Landtag",
+   "Election": "Landtagswahl im Saarland"
+  },
+  "17": {
+   "Shortcut": "Europäisches Parlament",
+   "Name": "Europäisches Parlament",
+   "Election": "Europawahl"
+  }
+ },
+ "Institutes": {
+  "5": {
+   "Name": "INSA"
+  },
+  "1": {
+   "Name": "Infratest dimap"
+  },
+  "2": {
+   "Name": "Forsa"
+  },
+  "22": {
+   "Name": "pollytix"
+  },
+  "17": {
+   "Name": "Ipsos"
+  },
+  "6": {
+   "Name": "Forschungsgruppe Wahlen"
+  },
+  "7": {
+   "Name": "Trend Research Hamburg"
+  },
+  "3": {
+   "Name": "Verian (Emnid)"
+  },
+  "9": {
+   "Name": "Allensbach"
+  },
+  "16": {
+   "Name": "Civey"
+  },
+  "13": {
+   "Name": "YouGov"
+  },
+  "4": {
+   "Name": "GMS"
+  },
+  "24": {
+   "Name": "Institut Wahlkreisprognose"
+  },
+  "25": {
+   "Name": "IFM Berlin"
+  },
+  "21": {
+   "Name": "Policy Matters"
+  },
+  "18": {
+   "Name": "Universität Hamburg"
+  },
+  "15": {
+   "Name": "Mentefactum"
+  },
+  "20": {
+   "Name": "IM Field"
+  },
+  "12": {
+   "Name": "uniQma"
+  },
+  "23": {
+   "Name": "Conoscope"
+  },
+  "14": {
+   "Name": "dimap"
+  },
+  "11": {
+   "Name": "GESS Phone & Field"
+  }
+ },
+ "Taskers": {
+  "3": {
+   "Name": "BILD am Sonntag"
+  },
+  "4": {
+   "Name": "BILD"
+  },
+  "133": {
+   "Name": "SWR / Stuttgarter Zeitung / Südwest Presse"
+  },
+  "63": {
+   "Name": "RTL / n-tv"
+  },
+  "112": {
+   "Name": "Märkische Allgemeine Zeitung (MAZ) / Märkische Oderzeitung (MOZ) / Lausitzer Rundschau (LR)"
+  },
+  "132": {
+   "Name": "The Goodforces"
+  },
+  "14": {
+   "Name": "DER SPIEGEL"
+  },
+  "5": {
+   "Name": "ZDF-Politbarometer"
+  },
+  "10": {
+   "Name": "ARD-Tagesthemen"
+  },
+  "41": {
+   "Name": "Radio Hamburg"
+  },
+  "64": {
+   "Name": "FOCUS"
+  },
+  "6": {
+   "Name": "Frankfurter Allgemeine Zeitung"
+  },
+  "131": {
+   "Name": "Kölner Stadt-Anzeiger / Kölnische Rundschau"
+  },
+  "130": {
+   "Name": "Volt Berlin"
+  },
+  "17": {
+   "Name": "Der Tagesspiegel"
+  },
+  "113": {
+   "Name": "Campact"
+  },
+  "43": {
+   "Name": "YouGov"
+  },
+  "7": {
+   "Name": "GMS"
+  },
+  "60": {
+   "Name": "Augsburger Allgemeine"
+  },
+  "11": {
+   "Name": "ARD"
+  },
+  "57": {
+   "Name": "Nordkurier"
+  },
+  "67": {
+   "Name": "pollytix"
+  },
+  "129": {
+   "Name": "WELT"
+  },
+  "39": {
+   "Name": "NDR"
+  },
+  "117": {
+   "Name": "RBB Abendschau / RBB 88.8"
+  },
+  "123": {
+   "Name": "NIUS"
+  },
+  "38": {
+   "Name": "Ostsee-Zeitung"
+  },
+  "114": {
+   "Name": "t-online"
+  },
+  "22": {
+   "Name": "SWR"
+  },
+  "127": {
+   "Name": "INSA"
+  },
+  "13": {
+   "Name": "Ipsos"
+  },
+  "128": {
+   "Name": "MDR / WDR / Mitteldeutsche Zeitung / Volksstimme"
+  },
+  "80": {
+   "Name": "FUNKE Medien Thüringen"
+  },
+  "28": {
+   "Name": "WDR-Westpol"
+  },
+  "70": {
+   "Name": "RBB Brandenburg aktuell / Antenne Brandenburg"
+  },
+  "124": {
+   "Name": "MDR / Mitteldeutsche Zeitung / Volksstimme"
+  },
+  "100": {
+   "Name": "NRW-Tageszeitungen"
+  },
+  "91": {
+   "Name": "BILD / B.Z."
+  },
+  "126": {
+   "Name": "Allensbach"
+  },
+  "48": {
+   "Name": "Weser-Kurier"
+  },
+  "12": {
+   "Name": "SAT.1 Bayern"
+  },
+  "98": {
+   "Name": "Drei Quellen-Mediengruppe"
+  },
+  "35": {
+   "Name": "Hessischer Rundfunk"
+  },
+  "25": {
+   "Name": "SWR / Stuttgarter Zeitung"
+  },
+  "53": {
+   "Name": "Bayerischer Rundfunk"
+  },
+  "125": {
+   "Name": "Sächsische Zeitung / Leipziger Volkszeitung"
+  },
+  "103": {
+   "Name": "CSU"
+  },
+  "40": {
+   "Name": "Saarländischer Rundfunk"
+  },
+  "56": {
+   "Name": "Schwäbische Zeitung"
+  },
+  "46": {
+   "Name": "SWR Zur Sache Rheinland-Pfalz"
+  },
+  "108": {
+   "Name": "Süddeutsche Zeitung"
+  },
+  "62": {
+   "Name": "Sächsische Zeitung"
+  },
+  "97": {
+   "Name": "Institut Wahlkreisprognose"
+  },
+  "37": {
+   "Name": "Radio Bremen"
+  },
+  "122": {
+   "Name": "Seven.One"
+  },
+  "120": {
+   "Name": "Radio Hamburg / Die ZEIT"
+  },
+  "121": {
+   "Name": "Osthessen|News"
+  },
+  "82": {
+   "Name": "Hamburger Abendblatt"
+  },
+  "119": {
+   "Name": "ARD-Politikmagazin Kontraste"
+  },
+  "2": {
+   "Name": "Stern / RTL"
+  },
+  "111": {
+   "Name": "Sächsische Zeitung / Freie Presse / Leipziger Volkszeitung"
+  },
+  "118": {
+   "Name": "General-Anzeiger Bonn"
+  },
+  "69": {
+   "Name": "B.Z."
+  },
+  "30": {
+   "Name": "MDR"
+  },
+  "116": {
+   "Name": "CDU Brandenburg"
+  },
+  "115": {
+   "Name": "Euronews"
+  },
+  "1": {
+   "Name": "ARD-Morgenmagazin"
+  },
+  "16": {
+   "Name": "RBB / Berliner Morgenpost"
+  },
+  "73": {
+   "Name": "Spiegel Online / Augsburger Allgemeine"
+  },
+  "66": {
+   "Name": "FAZ / Hitradio FFH"
+  },
+  "110": {
+   "Name": "SAT.1 Bayern / Antenne Bayern"
+  },
+  "109": {
+   "Name": "Die Linke Brandenburg"
+  },
+  "107": {
+   "Name": "Bürger in Wut"
+  },
+  "106": {
+   "Name": "Radio Bremen / Nordsee-Zeitung"
+  },
+  "105": {
+   "Name": "FUNKE NRW Redaktionsgesellschaft"
+  },
+  "104": {
+   "Name": "Forsa"
+  },
+  "101": {
+   "Name": "Niedersächsische Tageszeitungen"
+  },
+  "86": {
+   "Name": "Spiegel Online / Der Tagesspiegel"
+  },
+  "15": {
+   "Name": "Berliner Zeitung"
+  },
+  "26": {
+   "Name": "SAT.1 NRW"
+  },
+  "83": {
+   "Name": "SPD Brandenburg"
+  },
+  "65": {
+   "Name": "DIE ZEIT"
+  },
+  "102": {
+   "Name": "Verlag Nürnberger Presse"
+  },
+  "27": {
+   "Name": "Märkische Allgemeine"
+  },
+  "18": {
+   "Name": "Cicero"
+  },
+  "95": {
+   "Name": "NDR / Ostsee-Zeitung / Schweriner Volkszeitung"
+  },
+  "54": {
+   "Name": "Leipziger Volkszeitung"
+  },
+  "99": {
+   "Name": "Der Hauptstadtbrief"
+  },
+  "96": {
+   "Name": "FDP Bayern"
+  },
+  "34": {
+   "Name": "BR-Politikmagazin Kontrovers"
+  },
+  "94": {
+   "Name": "Märkische Oderzeitung (MOZ)"
+  },
+  "93": {
+   "Name": "WDR"
+  },
+  "90": {
+   "Name": "Körber-Stiftung"
+  },
+  "36": {
+   "Name": "SPD Niedersachsen"
+  },
+  "42": {
+   "Name": "Kölner Stadt-Anzeiger / Express"
+  },
+  "45": {
+   "Name": "RBB Brandenburg aktuell"
+  },
+  "31": {
+   "Name": "Universität Hamburg"
+  },
+  "47": {
+   "Name": "RedaktionsNetzwerk Deutschland (RND)"
+  },
+  "89": {
+   "Name": "Rheinische Post"
+  },
+  "88": {
+   "Name": "NDR / Ostsee-Zeitung"
+  },
+  "87": {
+   "Name": "Hamburg Zwei"
+  },
+  "85": {
+   "Name": "DIE ZEIT / Körber-Stiftung"
+  },
+  "84": {
+   "Name": "CDU Sachsen"
+  },
+  "81": {
+   "Name": "Rheinische Post / Bonner General-Anzeiger / Zeitungsverlag Aachen"
+  },
+  "76": {
+   "Name": "Spiegel Online / Hessische Niedersächsische Allgemeine"
+  },
+  "79": {
+   "Name": "renewEU"
+  },
+  "78": {
+   "Name": "Hessische Niedersächsische Allgemeine"
+  },
+  "77": {
+   "Name": "CDU Bremen"
+  },
+  "75": {
+   "Name": "Thüringer Allgemeine"
+  },
+  "74": {
+   "Name": "SPD Bremen"
+  },
+  "72": {
+   "Name": "Schweriner Volkszeitung"
+  },
+  "71": {
+   "Name": "Landeszentrale für politische Bildung Sachsen-Anhalt"
+  },
+  "68": {
+   "Name": "BILD / WELT"
+  },
+  "59": {
+   "Name": "Spiegel Online / Hannoversche Allgemeine Zeitung"
+  },
+  "58": {
+   "Name": "CDU Niedersachsen"
+  },
+  "19": {
+   "Name": "Rheinpfalz"
+  },
+  "44": {
+   "Name": "Spiegel Online / RP Online"
+  },
+  "21": {
+   "Name": "Stern / RTL / Kölner Stadt-Anzeiger"
+  },
+  "29": {
+   "Name": "Wochenmagazin Forum"
+  }
+ },
+ "Methods": {
+  "4": {
+   "Name": "Telefon & Online"
+  },
+  "3": {
+   "Name": "Online"
+  },
+  "1": {
+   "Name": "Telefonisch"
+  },
+  "2": {
+   "Name": "Persönlich"
+  },
+  "5": {
+   "Name": "Persönlich & Online"
+  },
+  "0": {
+   "Name": "Unbekannt"
+  }
+ },
+ "Parties": {
+  "7": {
+   "Shortcut": "AfD",
+   "Name": "Alternative für Deutschland"
+  },
+  "11": {
+   "Shortcut": "Bayernpartei",
+   "Name": "Bayernpartei e.V."
+  },
+  "14": {
+   "Shortcut": "BVB/FW",
+   "Name": "Brandenburger Vereinigte Bürgerbewegungen/Freie Wähler"
+  },
+  "4": {
+   "Shortcut": "Grüne",
+   "Name": "Bündnis 90/Die Grünen"
+  },
+  "23": {
+   "Shortcut": "BSW",
+   "Name": "Bündnis Sahra Wagenknecht"
+  },
+  "21": {
+   "Shortcut": "bunt.saar",
+   "Name": "bunt.saar – sozial-ökologische liste"
+  },
+  "22": {
+   "Shortcut": "BfTh",
+   "Name": "Bürger für Thüringen"
+  },
+  "16": {
+   "Shortcut": "BIW",
+   "Name": "Bürger in Wut"
+  },
+  "1": {
+   "Shortcut": "CDU/CSU",
+   "Name": "Christlich Demokratische Union / Christlich-Soziale Union"
+  },
+  "101": {
+   "Shortcut": "CDU",
+   "Name": "Christlich Demokratische Union"
+  },
+  "102": {
+   "Shortcut": "CSU",
+   "Name": "Christlich-Soziale Union"
+  },
+  "5": {
+   "Shortcut": "Linke",
+   "Name": "Die Linke"
+  },
+  "17": {
+   "Shortcut": "Familie",
+   "Name": "Familienpartei Deutschlands"
+  },
+  "3": {
+   "Shortcut": "FDP",
+   "Name": "Freie Demokratische Partei"
+  },
+  "8": {
+   "Shortcut": "Freie Wähler",
+   "Name": "Freie Wähler"
+  },
+  "9": {
+   "Shortcut": "NPD",
+   "Name": "Nationaldemokratische Partei Deutschlands"
+  },
+  "12": {
+   "Shortcut": "ÖDP",
+   "Name": "Ökologisch-Demokratische Partei"
+  },
+  "13": {
+   "Shortcut": "Die PARTEI",
+   "Name": "Partei für Arbeit, Rechtsstaat, Tierschutz, Elitenförderung und basisdemokratische Initiative"
+  },
+  "15": {
+   "Shortcut": "Tierschutzpartei",
+   "Name": "Partei Mensch Umwelt Tierschutz"
+  },
+  "6": {
+   "Shortcut": "Piraten",
+   "Name": "Piratenpartei"
+  },
+  "24": {
+   "Shortcut": "Plus Brandenburg",
+   "Name": "Plus Brandenburg (Listenvereinigung aus Piratenpartei, ÖDP und Volt)"
+  },
+  "2": {
+   "Shortcut": "SPD",
+   "Name": "Sozialdemokratische Partei Deutschlands"
+  },
+  "10": {
+   "Shortcut": "SSW",
+   "Name": "Südschleswigscher Wählerverband"
+  },
+  "18": {
+   "Shortcut": "Volt",
+   "Name": "Volt Deutschland"
+  },
+  "25": {
+   "Shortcut": "WerteUnion",
+   "Name": "WerteUnion"
+  },
+  "0": {
+   "Shortcut": "Sonstige",
+   "Name": "sonstige Parteien"
+  }
+ },
+ "Surveys": {
+  "365": {
+   "Date": "2017-01-18",
+   "Survey_Period": {
+    "Date_Start": "2017-01-09",
+    "Date_End": "2017-01-13"
+   },
+   "Surveyed_Persons": "2503",
+   "Parliament_ID": "0",
+   "Institute_ID": "2",
+   "Tasker_ID": "2",
+   "Method_ID": "0",
+   "Results": {
+    "1": 38,
+    "2": 21,
+    "7": 11,
+    "4": 9,
+    "5": 9,
+    "0": 6,
+    "3": 6
+   }
+  },
+  "4352": {
+   "Date": "2026-10-17",
+   "Survey_Period": {
+    "Date_Start": "2026-10-12",
+    "Date_End": "2026-10-16"
+   },
+   "Surveyed_Persons": "1206",
+   "Parliament_ID": "0",
+   "Institute_ID": "5",
+   "Tasker_ID": "3",
+   "Method_ID": "4",
+   "Results": {
+    "7": 29,
+    "1": 18,
+    "4": 14,
+    "2": 13,
+    "5": 11,
+    "0": 7,
+    "3": 4,
+    "23": 4
+   }
+  },
+  "4189": {
+   "Date": "2026-05-21",
+   "Survey_Period": {
+    "Date_Start": "2026-05-13",
+    "Date_End": "2026-05-20"
+   },
+   "Surveyed_Persons": "1000",
+   "Parliament_ID": "13",
+   "Institute_ID": "5",
+   "Tasker_ID": "123",
+   "Method_ID": "3",
+   "Results": {
+    "7": 42,
+    "101": 21,
+    "0": 9,
+    "5": 9,
+    "23": 7,
+    "2": 6,
+    "4": 6
+   }
+  },
+  "3480": {
+   "Date": "2024-06-08",
+   "Survey_Period": {
+    "Date_Start": "2024-06-06",
+    "Date_End": "2024-06-07"
+   },
+   "Surveyed_Persons": "1000",
+   "Parliament_ID": "17",
+   "Institute_ID": "24",
+   "Tasker_ID": "97",
+   "Method_ID": "3",
+   "Results": {
+    "1": 30,
+    "7": 15.5,
+    "4": 13.5,
+    "2": 12.5,
+    "0": 11.5,
+    "23": 7.5,
+    "3": 4.5,
+    "5": 2.5,
+    "8": 2.5
+   }
+  }
+ }
+}

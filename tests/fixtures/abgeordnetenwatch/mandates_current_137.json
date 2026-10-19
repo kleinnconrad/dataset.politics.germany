@@ -1,0 +1,145 @@
+{
+ "meta": {
+  "abgeordnetenwatch_api": {
+   "version": "2.9.0",
+   "changelog": "https://www.abgeordnetenwatch.de/api/version-changelog/aktuell",
+   "licence": "CC0 1.0",
+   "licence_link": "https://creativecommons.org/publicdomain/zero/1.0/deed.de",
+   "documentation": "https://www.abgeordnetenwatch.de/api/entitaeten/candidacy-mandate"
+  },
+  "status": "ok",
+  "status_message": "",
+  "result": {
+   "count": 2,
+   "total": 2,
+   "range_start": 0,
+   "range_end": 1000
+  }
+ },
+ "data": [
+  {
+   "id": 71931,
+   "entity_type": "candidacy_mandate",
+   "label": "Nadine Backes (Saarland 2022 - 2027)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/71931",
+   "id_external_administration": null,
+   "id_external_administration_description": null,
+   "type": "mandate",
+   "parliament_period": {
+    "id": 137,
+    "entity_type": "parliament_period",
+    "label": "Saarland 2022 - 2027",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/137",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/saarland"
+   },
+   "politician": {
+    "id": 185726,
+    "entity_type": "politician",
+    "label": "Nadine Backes",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/185726",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/nadine-backes"
+   },
+   "start_date": "2026-10-01",
+   "end_date": null,
+   "info": "Nadine Backes ist am 01.10.2026 für Jonas Reiter in den Saarländischen Landtag nachgerückt.",
+   "electoral_data": {
+    "id": 72806,
+    "entity_type": "electoral_data",
+    "label": "Nadine Backes (Saarland 2022 - 2027)",
+    "electoral_list": {
+     "id": 494,
+     "entity_type": "electoral_list",
+     "label": "Landesliste (Saarland 2022 - 2027)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/electoral-lists/494"
+    },
+    "list_position": 11,
+    "constituency": {
+     "id": 11703,
+     "entity_type": "constituency",
+     "label": "3 - Neunkirchen (Saarland 2022 - 2027)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/constituencies/11703"
+    },
+    "constituency_result": null,
+    "constituency_result_count": null,
+    "mandate_won": "moved_up"
+   },
+   "fraction_membership": [
+    {
+     "id": 14087,
+     "entity_type": "fraction_membership",
+     "label": "CDU seit 01.10.2026",
+     "fraction": {
+      "id": 340,
+      "entity_type": "fraction",
+      "label": "CDU (Saarland 2022 - 2027)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/340"
+     },
+     "valid_from": "2026-10-01",
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 55906,
+   "entity_type": "candidacy_mandate",
+   "label": "Carsten Becker (Saarland 2022 - 2027)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/55906",
+   "id_external_administration": null,
+   "id_external_administration_description": null,
+   "type": "mandate",
+   "parliament_period": {
+    "id": 137,
+    "entity_type": "parliament_period",
+    "label": "Saarland 2022 - 2027",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/137",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/saarland"
+   },
+   "politician": {
+    "id": 177567,
+    "entity_type": "politician",
+    "label": "Carsten Becker",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/177567",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/carsten-becker"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 56830,
+    "entity_type": "electoral_data",
+    "label": "Carsten Becker (Saarland 2022 - 2027)",
+    "electoral_list": {
+     "id": 496,
+     "entity_type": "electoral_list",
+     "label": "Wahlkreisliste Saarlouis (Saarland 2022 - 2027)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/electoral-lists/496"
+    },
+    "list_position": 1,
+    "constituency": {
+     "id": 11704,
+     "entity_type": "constituency",
+     "label": "2 - Saarlouis (Saarland 2022 - 2027)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/constituencies/11704"
+    },
+    "constituency_result": null,
+    "constituency_result_count": null,
+    "mandate_won": null
+   },
+   "fraction_membership": [
+    {
+     "id": 10330,
+     "entity_type": "fraction_membership",
+     "label": "AfD",
+     "fraction": {
+      "id": 342,
+      "entity_type": "fraction",
+      "label": "AfD (Saarland 2022 - 2027)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/342"
+     },
+     "valid_from": null,
+     "valid_until": null
+    }
+   ]
+  }
+ ]
+}

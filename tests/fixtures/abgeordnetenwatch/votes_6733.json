@@ -1,0 +1,329 @@
+{
+ "meta": {
+  "abgeordnetenwatch_api": {
+   "version": "2.9.0",
+   "changelog": "https://www.abgeordnetenwatch.de/api/version-changelog/aktuell",
+   "licence": "CC0 1.0",
+   "licence_link": "https://creativecommons.org/publicdomain/zero/1.0/deed.de",
+   "documentation": "https://www.abgeordnetenwatch.de/api/entitaeten/vote"
+  },
+  "status": "ok",
+  "status_message": "",
+  "result": {
+   "count": 11,
+   "total": 11,
+   "range_start": 0,
+   "range_end": 1000
+  }
+ },
+ "data": [
+  {
+   "id": 683054,
+   "entity_type": "vote",
+   "label": "Vanessa-Kim Zobel - Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/683054",
+   "mandate": {
+    "id": 69000,
+    "entity_type": "candidacy_mandate",
+    "label": "Vanessa-Kim Zobel (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/69000"
+   },
+   "poll": {
+    "id": 6733,
+    "entity_type": "node",
+    "label": "Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/6733",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/21/abstimmungen/aenderung-des-brennstoffemissionshandelsgesetzes-co2-preis"
+   },
+   "vote": "yes",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 421,
+    "entity_type": "fraction",
+    "label": "CDU/CSU (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/421"
+   }
+  },
+  {
+   "id": 683052,
+   "entity_type": "vote",
+   "label": "Nicolas Zippelius - Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/683052",
+   "mandate": {
+    "id": 68998,
+    "entity_type": "candidacy_mandate",
+    "label": "Nicolas Zippelius (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/68998"
+   },
+   "poll": {
+    "id": 6733,
+    "entity_type": "node",
+    "label": "Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/6733",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/21/abstimmungen/aenderung-des-brennstoffemissionshandelsgesetzes-co2-preis"
+   },
+   "vote": "yes",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 421,
+    "entity_type": "fraction",
+    "label": "CDU/CSU (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/421"
+   }
+  },
+  {
+   "id": 683042,
+   "entity_type": "vote",
+   "label": "Mareike Lotte Wulf - Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/683042",
+   "mandate": {
+    "id": 68988,
+    "entity_type": "candidacy_mandate",
+    "label": "Mareike Lotte Wulf (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/68988"
+   },
+   "poll": {
+    "id": 6733,
+    "entity_type": "node",
+    "label": "Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/6733",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/21/abstimmungen/aenderung-des-brennstoffemissionshandelsgesetzes-co2-preis"
+   },
+   "vote": "no_show",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 421,
+    "entity_type": "fraction",
+    "label": "CDU/CSU (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/421"
+   }
+  },
+  {
+   "id": 683056,
+   "entity_type": "vote",
+   "label": "Katrin Zschau - Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/683056",
+   "mandate": {
+    "id": 70826,
+    "entity_type": "candidacy_mandate",
+    "label": "Katrin Zschau (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/70826"
+   },
+   "poll": {
+    "id": 6733,
+    "entity_type": "node",
+    "label": "Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/6733",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/21/abstimmungen/aenderung-des-brennstoffemissionshandelsgesetzes-co2-preis"
+   },
+   "vote": "yes",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 425,
+    "entity_type": "fraction",
+    "label": "SPD (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/425"
+   }
+  },
+  {
+   "id": 683055,
+   "entity_type": "vote",
+   "label": "Armand Zorn - Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/683055",
+   "mandate": {
+    "id": 69002,
+    "entity_type": "candidacy_mandate",
+    "label": "Armand Zorn (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/69002"
+   },
+   "poll": {
+    "id": 6733,
+    "entity_type": "node",
+    "label": "Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/6733",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/21/abstimmungen/aenderung-des-brennstoffemissionshandelsgesetzes-co2-preis"
+   },
+   "vote": "yes",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 425,
+    "entity_type": "fraction",
+    "label": "SPD (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/425"
+   }
+  },
+  {
+   "id": 683053,
+   "entity_type": "vote",
+   "label": "Jörg Zirwes - Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/683053",
+   "mandate": {
+    "id": 68999,
+    "entity_type": "candidacy_mandate",
+    "label": "Jörg Zirwes (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/68999"
+   },
+   "poll": {
+    "id": 6733,
+    "entity_type": "node",
+    "label": "Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/6733",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/21/abstimmungen/aenderung-des-brennstoffemissionshandelsgesetzes-co2-preis"
+   },
+   "vote": "no",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 419,
+    "entity_type": "fraction",
+    "label": "AfD (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/419"
+   }
+  },
+  {
+   "id": 683051,
+   "entity_type": "vote",
+   "label": "Diana Zimmer - Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/683051",
+   "mandate": {
+    "id": 68997,
+    "entity_type": "candidacy_mandate",
+    "label": "Diana Zimmer (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/68997"
+   },
+   "poll": {
+    "id": 6733,
+    "entity_type": "node",
+    "label": "Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/6733",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/21/abstimmungen/aenderung-des-brennstoffemissionshandelsgesetzes-co2-preis"
+   },
+   "vote": "no",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 419,
+    "entity_type": "fraction",
+    "label": "AfD (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/419"
+   }
+  },
+  {
+   "id": 683037,
+   "entity_type": "vote",
+   "label": "Tina Winklmann - Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/683037",
+   "mandate": {
+    "id": 68983,
+    "entity_type": "candidacy_mandate",
+    "label": "Tina Winklmann (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/68983"
+   },
+   "poll": {
+    "id": 6733,
+    "entity_type": "node",
+    "label": "Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/6733",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/21/abstimmungen/aenderung-des-brennstoffemissionshandelsgesetzes-co2-preis"
+   },
+   "vote": "no",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 420,
+    "entity_type": "fraction",
+    "label": "BÜNDNIS 90/­DIE GRÜNEN (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/420"
+   }
+  },
+  {
+   "id": 683039,
+   "entity_type": "vote",
+   "label": "Janine Wissler - Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/683039",
+   "mandate": {
+    "id": 68986,
+    "entity_type": "candidacy_mandate",
+    "label": "Janine Wissler (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/68986"
+   },
+   "poll": {
+    "id": 6733,
+    "entity_type": "node",
+    "label": "Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/6733",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/21/abstimmungen/aenderung-des-brennstoffemissionshandelsgesetzes-co2-preis"
+   },
+   "vote": "abstain",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 422,
+    "entity_type": "fraction",
+    "label": "Die Linke (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/422"
+   }
+  },
+  {
+   "id": 683015,
+   "entity_type": "vote",
+   "label": "Sascha Wagner - Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/683015",
+   "mandate": {
+    "id": 68961,
+    "entity_type": "candidacy_mandate",
+    "label": "Sascha Wagner (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/68961"
+   },
+   "poll": {
+    "id": 6733,
+    "entity_type": "node",
+    "label": "Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/6733",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/21/abstimmungen/aenderung-des-brennstoffemissionshandelsgesetzes-co2-preis"
+   },
+   "vote": "abstain",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 422,
+    "entity_type": "fraction",
+    "label": "Die Linke (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/422"
+   }
+  },
+  {
+   "id": 682943,
+   "entity_type": "vote",
+   "label": "Stefan Seidler - Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/682943",
+   "mandate": {
+    "id": 68893,
+    "entity_type": "candidacy_mandate",
+    "label": "Stefan Seidler (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/68893"
+   },
+   "poll": {
+    "id": 6733,
+    "entity_type": "node",
+    "label": "Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/6733",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/21/abstimmungen/aenderung-des-brennstoffemissionshandelsgesetzes-co2-preis"
+   },
+   "vote": "no",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 424,
+    "entity_type": "fraction",
+    "label": "fraktionslos (Bundestag 2025 - 2029)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/424"
+   }
+  }
+ ]
+}

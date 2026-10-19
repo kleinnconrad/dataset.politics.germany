@@ -1,0 +1,178 @@
+{
+ "numFound": 5,
+ "cursor": "AoJwkO-JoqEDLlZvcmdhbmctMzM4OTUx",
+ "documents": [
+  {
+   "id": "321949",
+   "abstract": "Stärkung von Reallaboren als wichtigem Instrument der Innovationsförderung und des regulatorischen Lernens: Begriffsdefinitionen von Reallaboren, Experimentierklauseln und regulatorischem Lernen, Schaffung eines Reallabore-Innovationsportals des Bundes als zentraler Stelle für Beratung, Information, Vernetzung und Wissenstransfer im Rahmen eines höchstens vierjährigen Pilotbetriebs, Regelungen zur",
+   "beratungsstand": "Verkündet",
+   "vorgangstyp": "Gesetzgebung",
+   "gesta": "E003",
+   "sachgebiet": [
+    "Wirtschaft",
+    "Wissenschaft, Forschung und Technologie"
+   ],
+   "typ": "Vorgang",
+   "wahlperiode": 21,
+   "zustimmungsbeduerftigkeit": [
+    "Nein, laut Gesetzentwurf (Drs 21/218)",
+    "Ja, laut Bundestag (Drs 21/6698)",
+    "Ja, laut Verkündung (BGBl I)"
+   ],
+   "initiative": [
+    "Fraktion der CDU/CSU",
+    "Fraktion der SPD"
+   ],
+   "aktualisiert": "2026-10-09T15:46:49+02:00",
+   "vorgang_verlinkung": [
+    {
+     "verweisung": "Entschließungsantrag der Fraktion B90/GR",
+     "titel": "Entschließungsantrag zum Gesetz zur Verbesserung der Rahmenbedingungen für die Erprobung von Innovationen in Reallaboren und zur Förderung des regulatorischen Lernens",
+     "id": "336560",
+     "wahlperiode": 21
+    }
+   ],
+   "verkuendung": [
+    {
+     "jahrgang": "2026",
+     "heftnummer": "289",
+     "ausfertigungsdatum": "2026-10-06",
+     "verkuendungsdatum": "2026-10-09",
+     "einleitungstext": "Gesetz",
+     "pdf_url": "https://www.recht.bund.de/eli/bund/BGBl_1/2026/289",
+     "verkuendungsblatt_bezeichnung": "Bundesgesetzblatt Teil I",
+     "verkuendungsblatt_kuerzel": "BGBl I",
+     "fundstelle": "BGBl I 2026, 289"
+    }
+   ],
+   "inkrafttreten": [
+    {
+     "datum": "2026-10-10"
+    }
+   ],
+   "deskriptor": [
+    {
+     "fundstelle": false,
+     "name": "Arztpraxis",
+     "typ": "Sachbegriffe"
+    },
+    {
+     "fundstelle": false,
+     "name": "Bericht der Bundesregierung",
+     "typ": "Sachbegriffe"
+    },
+    {
+     "fundstelle": false,
+     "name": "Bundesbehörde",
+     "typ": "Sachbegriffe"
+    },
+    {
+     "fundstelle": true,
+     "name": "Bundeserprobungsgesetz",
+     "typ": "Rechtsmaterialien"
+    },
+    {
+     "fundstelle": false,
+     "name": "Datenaustausch",
+     "typ": "Sachbegriffe"
+    }
+   ],
+   "titel": "Gesetz zur Stärkung des Innovations- und Wirtschaftsstandorts Deutschland durch Erprobungsfreiräume",
+   "datum": "2026-09-25"
+  },
+  {
+   "id": "321636",
+   "abstract": "Ergänzung bisheriger Möglichkeiten für Jäger zum Einsatz von Nachtzieltechnik bei der Jagd um Vorrichtungen, die das Ziel beleuchten (z.B. Zielscheinwerfer) oder markieren (Laser oder Zielpunktprojektoren) sowie um Nachtsicht- und Nachtzielgeräte mit Montagevorrichtung für Schusswaffen;<br />\r\nÄnderung § 40 Waffengesetz",
+   "beratungsstand": "Dem Bundestag zugeleitet - Noch nicht beraten",
+   "vorgangstyp": "Gesetzgebung",
+   "gesta": "B001",
+   "sachgebiet": [
+    "Innere Sicherheit",
+    "Landwirtschaft und Ernährung"
+   ],
+   "typ": "Vorgang",
+   "wahlperiode": 21,
+   "zustimmungsbeduerftigkeit": [
+    "Ohne Angabe, laut Gesetzesantrag (203/25)",
+    "Nein, laut Bundesrat (Drs 203/25(B))"
+   ],
+   "initiative": [
+    "Hessen"
+   ],
+   "aktualisiert": "2025-07-16T17:25:13+02:00",
+   "deskriptor": [
+    {
+     "fundstelle": false,
+     "name": "Jagd",
+     "typ": "Sachbegriffe"
+    },
+    {
+     "fundstelle": false,
+     "name": "Jäger",
+     "typ": "Sachbegriffe"
+    },
+    {
+     "fundstelle": false,
+     "name": "Schusswaffe",
+     "typ": "Sachbegriffe"
+    },
+    {
+     "fundstelle": true,
+     "name": "Waffengesetz",
+     "typ": "Rechtsmaterialien"
+    },
+    {
+     "fundstelle": true,
+     "name": "Waffenrecht",
+     "typ": "Sachbegriffe"
+    }
+   ],
+   "titel": "... Gesetz zur Änderung des Waffengesetzes - Aufnahme von Nachtzieltechnik",
+   "datum": "2025-07-16"
+  },
+  {
+   "id": "339895",
+   "beratungsstand": "Beantwortet",
+   "vorgangstyp": "Kleine Anfrage",
+   "sachgebiet": [
+    "Verteidigung",
+    "Wissenschaft, Forschung und Technologie"
+   ],
+   "typ": "Vorgang",
+   "wahlperiode": 21,
+   "initiative": [
+    "Fraktion der AfD"
+   ],
+   "aktualisiert": "2026-10-16T12:09:50+02:00",
+   "deskriptor": [
+    {
+     "fundstelle": false,
+     "name": "Außerirdisches Leben",
+     "typ": "Freier Deskriptor"
+    },
+    {
+     "fundstelle": false,
+     "name": "Datenerhebung",
+     "typ": "Sachbegriffe"
+    },
+    {
+     "fundstelle": false,
+     "name": "Luftraum",
+     "typ": "Sachbegriffe"
+    },
+    {
+     "fundstelle": false,
+     "name": "Ufo",
+     "typ": "Freier Deskriptor"
+    },
+    {
+     "fundstelle": true,
+     "name": "Weltraum",
+     "typ": "Sachbegriffe"
+    }
+   ],
+   "titel": "Unidentifizierte Luftraumphänomene (UAP) als Gegenstand der Luft- und Weltraumsicherheit sowie staatlicher Informations- und Koordinationsstrukturen",
+   "datum": "2026-10-16"
+  }
+ ]
+}

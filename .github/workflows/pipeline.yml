@@ -1,0 +1,122 @@
+name: German Politics Pipeline
+run-name: German politics pipeline (${{ inputs.mode || 'normal' }})
+
+on:
+  schedule:
+    # Tuesdays and Fridays 02:07 Berlin time; GitHub delays schedules at the full hour
+    - cron: '7 2 * * 2,5'
+      timezone: 'Europe/Berlin'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'normal: collect and commit the data; shadow: collect into a temporary folder and upload it as an artifact; dry-run: run all collectors without writing data, feeds without pages and Gemini'
+        type: choice
+        options:
+          - normal
+          - shadow
+          - dry-run
+        default: normal
+
+# Data-writing workflows share this group, so that they never push at the same time
+concurrency:
+  group: data-writes
+  cancel-in-progress: false
+
+env:
+  # Last day of validity of the DIP API key in the DIP_API_KEY secret. Update it when the key is rotated,
+  # together with the note at the top of README.md.
+  DIP_KEY_VALID_UNTIL: '2027-05-31'
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    permissions:
+      contents: write
+    env:
+      MODE: ${{ inputs.mode || 'normal' }}
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v7
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v7
+
+    - name: Set up Python
+      uses: actions/setup-python@v7
+      with:
+        python-version: '3.11'
+
+    - name: Install Dependencies
+      run: uv sync --frozen
+
+    # Shadow and dry runs work on a copy of the state, so that they select the same items as a normal run
+    - name: Prepare Output Folder
+      if: env.MODE != 'normal'
+      run: |
+        mkdir -p "$RUNNER_TEMP/$MODE"
+        if [ -d data/state ]; then
+          cp -r data/state "$RUNNER_TEMP/$MODE/"
+        fi
+
+    - name: Execute Pipeline
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        DIP_API_KEY: ${{ secrets.DIP_API_KEY }}
+      run: |
+        case "$MODE" in
+          normal) uv run python src/main.py ;;
+          shadow) uv run python src/main.py --output-dir "$RUNNER_TEMP/shadow" ;;
+          dry-run) uv run python src/main.py --dry-run --output-dir "$RUNNER_TEMP/dry-run" ;;
+          *) echo "Unknown mode: $MODE"; exit 1 ;;
+        esac
+
+    # The next two steps also run after a failed pipeline step, so that the collected data is kept
+    - name: Update Dataset Overview
+      if: ${{ !cancelled() && env.MODE == 'normal' }}
+      run: uv run python src/generate_dataset_overview.py
+
+    - name: Commit and Push Data
+      if: ${{ !cancelled() && env.MODE == 'normal' }}
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add data/ README.md
+        if git diff --staged --quiet; then
+          echo "No changes to commit."
+          exit 0
+        fi
+        git commit -m "chore: add political data"
+        for attempt in 1 2 3; do
+          if git pull --rebase && git push; then
+            exit 0
+          fi
+          echo "Push attempt $attempt failed; retrying."
+          sleep $((attempt * 15))
+        done
+        exit 1
+
+    - name: Upload Run Output
+      if: ${{ !cancelled() && env.MODE != 'normal' }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: pipeline-${{ env.MODE }}-${{ github.run_id }}
+        path: ${{ runner.temp }}/${{ env.MODE }}
+        retention-days: 14
+
+    # Reminder to rotate the DIP API key: a warning from 45 days before the expiry date, and a failed run
+    # (after the data is committed) from 14 days before, so that GitHub sends a failure notification
+    - name: Check DIP API Key Expiry
+      if: ${{ !cancelled() }}
+      run: |
+        days_left=$(( ( $(date -u -d "$DIP_KEY_VALID_UNTIL" +%s) - $(date -u +%s) ) / 86400 ))
+        message="The DIP API key expires on $DIP_KEY_VALID_UNTIL ($days_left days left). Rotate the DIP_API_KEY secret and update DIP_KEY_VALID_UNTIL in pipeline.yml and the note in README.md."
+        if [ "$days_left" -le 14 ]; then
+          echo "::error title=DIP API key::$message"
+          exit 1
+        elif [ "$days_left" -le 45 ]; then
+          echo "::warning title=DIP API key::$message"
+        else
+          echo "DIP API key valid until $DIP_KEY_VALID_UNTIL ($days_left days left)."
+        fi

@@ -1,0 +1,104 @@
+"""
+Entry point of a pipeline run.
+
+Usage:
+    uv run python src/main.py [--dry-run] [--collectors NAME,...] [--max-annotations N] [--output-dir PATH]
+"""
+import argparse
+import logging
+import sys
+from dataclasses import replace
+from pathlib import Path
+from typing import Optional
+
+from dotenv import load_dotenv
+
+from annotation import GeminiAnnotator
+from pipeline import COLLECTOR_ORDER, build_collectors, run_pipeline
+from settings import Settings
+
+logger = logging.getLogger(__name__)
+
+
+def _positive_int(value: str) -> int:
+    """Parses a command-line value as an integer of at least 1."""
+    number = int(value)
+    if number < 1:
+        raise argparse.ArgumentTypeError(f"must be at least 1, got {number}")
+    return number
+
+
+def _collector_list(value: str) -> tuple[str, ...]:
+    """Parses a comma-separated list of collector names."""
+    names = tuple(name.strip() for name in value.split(",") if name.strip())
+    unknown = sorted(set(names) - set(COLLECTOR_ORDER))
+    if unknown:
+        raise argparse.ArgumentTypeError(f"unknown collectors: {', '.join(unknown)}; known: {', '.join(COLLECTOR_ORDER)}")
+    return names
+
+
+def parse_args(argv: Optional[list[str]]) -> argparse.Namespace:
+    """Parses the command-line arguments.
+
+    Args:
+        argv: Arguments without the program name; None reads ``sys.argv``.
+
+    Returns:
+        argparse.Namespace: The parsed arguments.
+    """
+    parser = argparse.ArgumentParser(description="Runs the German politics dataset pipeline.")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="read the sources without fetching pages, calling Gemini or writing data")
+    parser.add_argument("--collectors", type=_collector_list,
+                        help=f"comma-separated collectors to run (default: all of {', '.join(COLLECTOR_ORDER)})")
+    parser.add_argument("--max-annotations", type=_positive_int,
+                        help="maximum number of news articles and press releases in this run "
+                             "(overrides MAX_ANNOTATIONS_PER_RUN)")
+    parser.add_argument("--output-dir", type=Path,
+                        help="folder for datasets and state (default: data/ in GitHub Actions, "
+                             "~/Downloads/german_politics_dataset locally)")
+    return parser.parse_args(argv)
+
+
+def main(argv: Optional[list[str]] = None) -> int:
+    """Runs the pipeline once.
+
+    Args:
+        argv: Arguments without the program name; None reads ``sys.argv``.
+
+    Returns:
+        int: 0 if all selected collectors succeeded, 1 otherwise.
+    """
+    args = parse_args(argv)
+    load_dotenv()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(name)s - %(message)s")
+    # One line per HTTP request would bury the pipeline log; failures are logged by the collectors
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    try:
+        settings = Settings.from_env()
+    except ValueError as e:
+        logger.error("Invalid settings: %s", e)
+        return 1
+    if args.output_dir is not None:
+        settings = replace(settings, output_dir=args.output_dir)
+    if args.collectors is not None:
+        settings = replace(settings, collectors=args.collectors)
+    if args.max_annotations is not None:
+        settings = replace(settings, max_annotations_per_run=args.max_annotations)
+    feeds_selected = settings.collectors is None or "feeds" in settings.collectors
+    annotator = None
+    if feeds_selected and not args.dry_run and settings.gemini_api_key:
+        annotator = GeminiAnnotator(settings)
+    logger.info("Output folder: %s", settings.output_dir.resolve())
+    summary = run_pipeline(settings, build_collectors(annotator), dry_run=args.dry_run)
+    for name, outcome in summary.collectors.items():
+        logger.info("%s: %s %s%s", name, outcome.status, outcome.records or "",
+                    f" ({outcome.error})" if outcome.error else "")
+    if summary.failed:
+        logger.error("Collectors with errors: %s", ", ".join(summary.failed))
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

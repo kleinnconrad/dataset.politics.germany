@@ -1,0 +1,1154 @@
+{
+ "meta": {
+  "abgeordnetenwatch_api": {
+   "version": "2.9.0",
+   "changelog": "https://www.abgeordnetenwatch.de/api/version-changelog/aktuell",
+   "licence": "CC0 1.0",
+   "licence_link": "https://creativecommons.org/publicdomain/zero/1.0/deed.de",
+   "documentation": "https://www.abgeordnetenwatch.de/api/entitaeten/candidacy-mandate"
+  },
+  "status": "ok",
+  "status_message": "",
+  "result": {
+   "count": 19,
+   "total": 19,
+   "range_start": 0,
+   "range_end": 1000
+  }
+ },
+ "data": [
+  {
+   "id": 53952,
+   "entity_type": "candidacy_mandate",
+   "label": "Nicolas Zippelius (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53952",
+   "id_external_administration": "2586",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 175876,
+    "entity_type": "politician",
+    "label": "Nicolas Zippelius",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/175876",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/nicolas-zippelius"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 54876,
+    "entity_type": "electoral_data",
+    "label": "Nicolas Zippelius (Bundestag 2021 - 2025)",
+    "electoral_list": null,
+    "list_position": null,
+    "constituency": {
+     "id": 11012,
+     "entity_type": "constituency",
+     "label": "272 - Karlsruhe-Land (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/constituencies/11012"
+    },
+    "constituency_result": 30,
+    "constituency_result_count": null,
+    "mandate_won": "constituency"
+   },
+   "fraction_membership": [
+    {
+     "id": 9799,
+     "entity_type": "fraction_membership",
+     "label": "CDU/CSU",
+     "fraction": {
+      "id": 320,
+      "entity_type": "fraction",
+      "label": "CDU/CSU (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/320"
+     },
+     "valid_from": null,
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 53853,
+   "entity_type": "candidacy_mandate",
+   "label": "Paul Ziemiak (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53853",
+   "id_external_administration": "2285",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 145878,
+    "entity_type": "politician",
+    "label": "Paul Ziemiak",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/145878",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/paul-ziemiak"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 54777,
+    "entity_type": "electoral_data",
+    "label": "Paul Ziemiak (Bundestag 2021 - 2025)",
+    "electoral_list": {
+     "id": 419,
+     "entity_type": "electoral_list",
+     "label": "Landesliste Nordrhein-Westfalen (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/electoral-lists/419"
+    },
+    "list_position": 6,
+    "constituency": {
+     "id": 10890,
+     "entity_type": "constituency",
+     "label": "150 - Märkischer Kreis II (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/constituencies/10890"
+    },
+    "constituency_result": 33,
+    "constituency_result_count": null,
+    "mandate_won": "constituency"
+   },
+   "fraction_membership": [
+    {
+     "id": 9700,
+     "entity_type": "fraction_membership",
+     "label": "CDU/CSU",
+     "fraction": {
+      "id": 320,
+      "entity_type": "fraction",
+      "label": "CDU/CSU (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/320"
+     },
+     "valid_from": null,
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 53930,
+   "entity_type": "candidacy_mandate",
+   "label": "Emmi Zeulner (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53930",
+   "id_external_administration": "1984",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 78904,
+    "entity_type": "politician",
+    "label": "Emmi Zeulner",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/78904",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/emmi-zeulner"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 54854,
+    "entity_type": "electoral_data",
+    "label": "Emmi Zeulner (Bundestag 2021 - 2025)",
+    "electoral_list": {
+     "id": 411,
+     "entity_type": "electoral_list",
+     "label": "Landesliste Bayern (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/electoral-lists/411"
+    },
+    "list_position": 10,
+    "constituency": {
+     "id": 10980,
+     "entity_type": "constituency",
+     "label": "240 - Kulmbach (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/constituencies/10980"
+    },
+    "constituency_result": 47,
+    "constituency_result_count": null,
+    "mandate_won": "constituency"
+   },
+   "fraction_membership": [
+    {
+     "id": 9777,
+     "entity_type": "fraction_membership",
+     "label": "CDU/CSU",
+     "fraction": {
+      "id": 320,
+      "entity_type": "fraction",
+      "label": "CDU/CSU (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/320"
+     },
+     "valid_from": null,
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 53802,
+   "entity_type": "candidacy_mandate",
+   "label": "Elisabeth Winkelmeier-Becker (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53802",
+   "id_external_administration": "1519",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 78916,
+    "entity_type": "politician",
+    "label": "Elisabeth Winkelmeier-Becker",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/78916",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/elisabeth-winkelmeier-becker"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 54726,
+    "entity_type": "electoral_data",
+    "label": "Elisabeth Winkelmeier-Becker (Bundestag 2021 - 2025)",
+    "electoral_list": {
+     "id": 419,
+     "entity_type": "electoral_list",
+     "label": "Landesliste Nordrhein-Westfalen (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/electoral-lists/419"
+    },
+    "list_position": 5,
+    "constituency": {
+     "id": 10837,
+     "entity_type": "constituency",
+     "label": "97 - Rhein-Sieg-Kreis I (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/constituencies/10837"
+    },
+    "constituency_result": 32,
+    "constituency_result_count": null,
+    "mandate_won": "constituency"
+   },
+   "fraction_membership": [
+    {
+     "id": 9649,
+     "entity_type": "fraction_membership",
+     "label": "CDU/CSU",
+     "fraction": {
+      "id": 320,
+      "entity_type": "fraction",
+      "label": "CDU/CSU (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/320"
+     },
+     "valid_from": null,
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 53725,
+   "entity_type": "candidacy_mandate",
+   "label": "Katrin Zschau (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53725",
+   "id_external_administration": "2588",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 175453,
+    "entity_type": "politician",
+    "label": "Katrin Zschau",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/175453",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/katrin-zschau"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 54649,
+    "entity_type": "electoral_data",
+    "label": "Katrin Zschau (Bundestag 2021 - 2025)",
+    "electoral_list": {
+     "id": 417,
+     "entity_type": "electoral_list",
+     "label": "Landesliste Mecklenburg Vorpommern (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/electoral-lists/417"
+    },
+    "list_position": 4,
+    "constituency": null,
+    "constituency_result": null,
+    "constituency_result_count": null,
+    "mandate_won": "constituency"
+   },
+   "fraction_membership": [
+    {
+     "id": 9572,
+     "entity_type": "fraction_membership",
+     "label": "SPD",
+     "fraction": {
+      "id": 319,
+      "entity_type": "fraction",
+      "label": "SPD (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/319"
+     },
+     "valid_from": null,
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 53885,
+   "entity_type": "candidacy_mandate",
+   "label": "Armand Zorn (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53885",
+   "id_external_administration": "2587",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 175403,
+    "entity_type": "politician",
+    "label": "Armand Zorn",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/175403",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/armand-zorn"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 54809,
+    "entity_type": "electoral_data",
+    "label": "Armand Zorn (Bundestag 2021 - 2025)",
+    "electoral_list": {
+     "id": 416,
+     "entity_type": "electoral_list",
+     "label": "Landesliste Hessen (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/electoral-lists/416"
+    },
+    "list_position": 23,
+    "constituency": {
+     "id": 10922,
+     "entity_type": "constituency",
+     "label": "182 - Frankfurt am Main I (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/constituencies/10922"
+    },
+    "constituency_result": 29,
+    "constituency_result_count": null,
+    "mandate_won": "constituency"
+   },
+   "fraction_membership": [
+    {
+     "id": 9732,
+     "entity_type": "fraction_membership",
+     "label": "SPD",
+     "fraction": {
+      "id": 319,
+      "entity_type": "fraction",
+      "label": "SPD (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/319"
+     },
+     "valid_from": null,
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 53654,
+   "entity_type": "candidacy_mandate",
+   "label": "Tina Winklmann (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53654",
+   "id_external_administration": "2578",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 146013,
+    "entity_type": "politician",
+    "label": "Tina Winklmann",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/146013",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/tina-winklmann"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 54578,
+    "entity_type": "electoral_data",
+    "label": "Tina Winklmann (Bundestag 2021 - 2025)",
+    "electoral_list": {
+     "id": 411,
+     "entity_type": "electoral_list",
+     "label": "Landesliste Bayern (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/electoral-lists/411"
+    },
+    "list_position": 17,
+    "constituency": {
+     "id": 10974,
+     "entity_type": "constituency",
+     "label": "234 - Schwandorf (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/constituencies/10974"
+    },
+    "constituency_result": 4.6,
+    "constituency_result_count": 7933,
+    "mandate_won": "list"
+   },
+   "fraction_membership": [
+    {
+     "id": 9501,
+     "entity_type": "fraction_membership",
+     "label": "BÜNDNIS 90/­DIE GRÜNEN",
+     "fraction": {
+      "id": 321,
+      "entity_type": "fraction",
+      "label": "BÜNDNIS 90/­DIE GRÜNEN (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/321"
+     },
+     "valid_from": null,
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 53477,
+   "entity_type": "candidacy_mandate",
+   "label": "Stefan Wenzel (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53477",
+   "id_external_administration": "2574",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 136302,
+    "entity_type": "politician",
+    "label": "Stefan Wenzel",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/136302",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/stefan-wenzel"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 54401,
+    "entity_type": "electoral_data",
+    "label": "Stefan Wenzel (Bundestag 2021 - 2025)",
+    "electoral_list": {
+     "id": 418,
+     "entity_type": "electoral_list",
+     "label": "Landesliste Niedersachsen (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/electoral-lists/418"
+    },
+    "list_position": 10,
+    "constituency": null,
+    "constituency_result": null,
+    "constituency_result_count": 15388,
+    "mandate_won": "list"
+   },
+   "fraction_membership": [
+    {
+     "id": 9324,
+     "entity_type": "fraction_membership",
+     "label": "BÜNDNIS 90/­DIE GRÜNEN",
+     "fraction": {
+      "id": 321,
+      "entity_type": "fraction",
+      "label": "BÜNDNIS 90/­DIE GRÜNEN (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/321"
+     },
+     "valid_from": null,
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 53428,
+   "entity_type": "candidacy_mandate",
+   "label": "Anne-Monika Spallek (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53428",
+   "id_external_administration": "2544",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 175532,
+    "entity_type": "politician",
+    "label": "Anne-Monika Spallek",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/175532",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/anne-monika-spallek"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 54352,
+    "entity_type": "electoral_data",
+    "label": "Anne-Monika Spallek (Bundestag 2021 - 2025)",
+    "electoral_list": {
+     "id": 419,
+     "entity_type": "electoral_list",
+     "label": "Landesliste Nordrhein-Westfalen (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/electoral-lists/419"
+    },
+    "list_position": 21,
+    "constituency": {
+     "id": 10867,
+     "entity_type": "constituency",
+     "label": "127 - Coesfeld - Steinfurt II (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/constituencies/10867"
+    },
+    "constituency_result": 16.9,
+    "constituency_result_count": null,
+    "mandate_won": "list"
+   },
+   "fraction_membership": [
+    {
+     "id": 9275,
+     "entity_type": "fraction_membership",
+     "label": "BÜNDNIS 90/­DIE GRÜNEN",
+     "fraction": {
+      "id": 321,
+      "entity_type": "fraction",
+      "label": "BÜNDNIS 90/­DIE GRÜNEN (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/321"
+     },
+     "valid_from": null,
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 60126,
+   "entity_type": "candidacy_mandate",
+   "label": "Katharina Willkomm (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/60126",
+   "id_external_administration": "2144",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 146323,
+    "entity_type": "politician",
+    "label": "Katharina Willkomm",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/146323",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/katharina-willkomm"
+   },
+   "start_date": "2023-08-07",
+   "end_date": null,
+   "info": "Katharina Willkomm ist am 07.08.2023 für Alexander Graf Lambsdorff in den Deutschen Bundestag nachgerückt.",
+   "electoral_data": {
+    "id": 61050,
+    "entity_type": "electoral_data",
+    "label": "Katharina Willkomm (Bundestag 2021 - 2025)",
+    "electoral_list": null,
+    "list_position": null,
+    "constituency": {
+     "id": 10827,
+     "entity_type": "constituency",
+     "label": "87 - Aachen I (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/constituencies/10827"
+    },
+    "constituency_result": 7.9,
+    "constituency_result_count": null,
+    "mandate_won": "moved_up"
+   },
+   "fraction_membership": [
+    {
+     "id": 10982,
+     "entity_type": "fraction_membership",
+     "label": "FDP seit 07.08.2023",
+     "fraction": {
+      "id": 322,
+      "entity_type": "fraction",
+      "label": "FDP (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/322"
+     },
+     "valid_from": "2023-08-07",
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 53584,
+   "entity_type": "candidacy_mandate",
+   "label": "Sandra Weeser (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53584",
+   "id_external_administration": "2276",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 110218,
+    "entity_type": "politician",
+    "label": "Sandra Weeser",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/110218",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/sandra-weeser"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 54508,
+    "entity_type": "electoral_data",
+    "label": "Sandra Weeser (Bundestag 2021 - 2025)",
+    "electoral_list": {
+     "id": 420,
+     "entity_type": "electoral_list",
+     "label": "Landesliste Rheinland-Pfalz (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/electoral-lists/420"
+    },
+    "list_position": 4,
+    "constituency": {
+     "id": 10937,
+     "entity_type": "constituency",
+     "label": "197 - Neuwied (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/constituencies/10937"
+    },
+    "constituency_result": 8.9,
+    "constituency_result_count": null,
+    "mandate_won": "list"
+   },
+   "fraction_membership": [
+    {
+     "id": 9431,
+     "entity_type": "fraction_membership",
+     "label": "FDP",
+     "fraction": {
+      "id": 322,
+      "entity_type": "fraction",
+      "label": "FDP (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/322"
+     },
+     "valid_from": null,
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 53633,
+   "entity_type": "candidacy_mandate",
+   "label": "Ulrich Lechte (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53633",
+   "id_external_administration": "2159",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 142264,
+    "entity_type": "politician",
+    "label": "Ulrich Lechte",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/142264",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/ulrich-lechte"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 54557,
+    "entity_type": "electoral_data",
+    "label": "Ulrich Lechte (Bundestag 2021 - 2025)",
+    "electoral_list": {
+     "id": 411,
+     "entity_type": "electoral_list",
+     "label": "Landesliste Bayern (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/electoral-lists/411"
+    },
+    "list_position": 8,
+    "constituency": {
+     "id": 10973,
+     "entity_type": "constituency",
+     "label": "233 - Regensburg (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/constituencies/10973"
+    },
+    "constituency_result": 7,
+    "constituency_result_count": 13754,
+    "mandate_won": "list"
+   },
+   "fraction_membership": [
+    {
+     "id": 9480,
+     "entity_type": "fraction_membership",
+     "label": "FDP",
+     "fraction": {
+      "id": 322,
+      "entity_type": "fraction",
+      "label": "FDP (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/322"
+     },
+     "valid_from": null,
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 53460,
+   "entity_type": "candidacy_mandate",
+   "label": "Matthias Seestern-Pauly (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53460",
+   "id_external_administration": "2243",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 120356,
+    "entity_type": "politician",
+    "label": "Matthias Seestern-Pauly",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/120356",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/matthias-seestern-pauly"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 54384,
+    "entity_type": "electoral_data",
+    "label": "Matthias Seestern-Pauly (Bundestag 2021 - 2025)",
+    "electoral_list": {
+     "id": 418,
+     "entity_type": "electoral_list",
+     "label": "Landesliste Niedersachsen (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/electoral-lists/418"
+    },
+    "list_position": 7,
+    "constituency": null,
+    "constituency_result": null,
+    "constituency_result_count": null,
+    "mandate_won": "list"
+   },
+   "fraction_membership": [
+    {
+     "id": 9307,
+     "entity_type": "fraction_membership",
+     "label": "FDP",
+     "fraction": {
+      "id": 322,
+      "entity_type": "fraction",
+      "label": "FDP (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/322"
+     },
+     "valid_from": null,
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 53776,
+   "entity_type": "candidacy_mandate",
+   "label": "Kay-Uwe Ziegler (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53776",
+   "id_external_administration": "2585",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 145732,
+    "entity_type": "politician",
+    "label": "Kay-Uwe Ziegler",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/145732",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/kay-uwe-ziegler"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 54700,
+    "entity_type": "electoral_data",
+    "label": "Kay-Uwe Ziegler (Bundestag 2021 - 2025)",
+    "electoral_list": null,
+    "list_position": null,
+    "constituency": {
+     "id": 10811,
+     "entity_type": "constituency",
+     "label": "71 - Anhalt (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/constituencies/10811"
+    },
+    "constituency_result": 24,
+    "constituency_result_count": null,
+    "mandate_won": "constituency"
+   },
+   "fraction_membership": [
+    {
+     "id": 9623,
+     "entity_type": "fraction_membership",
+     "label": "AfD",
+     "fraction": {
+      "id": 323,
+      "entity_type": "fraction",
+      "label": "AfD (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/323"
+     },
+     "valid_from": null,
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 53462,
+   "entity_type": "candidacy_mandate",
+   "label": "Joachim Wundrak (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53462",
+   "id_external_administration": "2584",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 175931,
+    "entity_type": "politician",
+    "label": "Joachim Wundrak",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/175931",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/joachim-wundrak"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 54386,
+    "entity_type": "electoral_data",
+    "label": "Joachim Wundrak (Bundestag 2021 - 2025)",
+    "electoral_list": {
+     "id": 418,
+     "entity_type": "electoral_list",
+     "label": "Landesliste Niedersachsen (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/electoral-lists/418"
+    },
+    "list_position": 1,
+    "constituency": null,
+    "constituency_result": null,
+    "constituency_result_count": 10227,
+    "mandate_won": "list"
+   },
+   "fraction_membership": [
+    {
+     "id": 9309,
+     "entity_type": "fraction_membership",
+     "label": "AfD",
+     "fraction": {
+      "id": 323,
+      "entity_type": "fraction",
+      "label": "AfD (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/323"
+     },
+     "valid_from": null,
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 53436,
+   "entity_type": "candidacy_mandate",
+   "label": "Sahra Wagenknecht (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53436",
+   "id_external_administration": "1610",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 78934,
+    "entity_type": "politician",
+    "label": "Sahra Wagenknecht",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/78934",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/sahra-wagenknecht"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 54360,
+    "entity_type": "electoral_data",
+    "label": "Sahra Wagenknecht (Bundestag 2021 - 2025)",
+    "electoral_list": {
+     "id": 419,
+     "entity_type": "electoral_list",
+     "label": "Landesliste Nordrhein-Westfalen (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/electoral-lists/419"
+    },
+    "list_position": 1,
+    "constituency": null,
+    "constituency_result": null,
+    "constituency_result_count": null,
+    "mandate_won": "list"
+   },
+   "fraction_membership": [
+    {
+     "id": 11551,
+     "entity_type": "fraction_membership",
+     "label": "BSW (Gruppe) seit 02.02.2024",
+     "fraction": {
+      "id": 387,
+      "entity_type": "fraction",
+      "label": "BSW (Gruppe) (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/387"
+     },
+     "valid_from": "2024-02-02",
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 54114,
+   "entity_type": "candidacy_mandate",
+   "label": "Janine Wissler (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/54114",
+   "id_external_administration": "2580",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 135302,
+    "entity_type": "politician",
+    "label": "Janine Wissler",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/135302",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/janine-wissler"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 55038,
+    "entity_type": "electoral_data",
+    "label": "Janine Wissler (Bundestag 2021 - 2025)",
+    "electoral_list": {
+     "id": 416,
+     "entity_type": "electoral_list",
+     "label": "Landesliste Hessen (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/electoral-lists/416"
+    },
+    "list_position": 1,
+    "constituency": {
+     "id": 10922,
+     "entity_type": "constituency",
+     "label": "182 - Frankfurt am Main I (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/constituencies/10922"
+    },
+    "constituency_result": 8.8,
+    "constituency_result_count": null,
+    "mandate_won": "list"
+   },
+   "fraction_membership": [
+    {
+     "id": 11541,
+     "entity_type": "fraction_membership",
+     "label": "Die Linke. (Gruppe) seit 02.02.2024",
+     "fraction": {
+      "id": 386,
+      "entity_type": "fraction",
+      "label": "Die Linke. (Gruppe) (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/386"
+     },
+     "valid_from": "2024-02-02",
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 53714,
+   "entity_type": "candidacy_mandate",
+   "label": "Dirk Spaniel (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53714",
+   "id_external_administration": "2250",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 145835,
+    "entity_type": "politician",
+    "label": "Dirk Spaniel",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/145835",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/dirk-spaniel"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 54638,
+    "entity_type": "electoral_data",
+    "label": "Dirk Spaniel (Bundestag 2021 - 2025)",
+    "electoral_list": {
+     "id": 410,
+     "entity_type": "electoral_list",
+     "label": "Landesliste Baden-Württemberg (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/electoral-lists/410"
+    },
+    "list_position": 3,
+    "constituency": {
+     "id": 10998,
+     "entity_type": "constituency",
+     "label": "258 - Stuttgart I (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/constituencies/10998"
+    },
+    "constituency_result": 4,
+    "constituency_result_count": null,
+    "mandate_won": "list"
+   },
+   "fraction_membership": [
+    {
+     "id": 12021,
+     "entity_type": "fraction_membership",
+     "label": "fraktionslos seit 16.10.2024",
+     "fraction": {
+      "id": 325,
+      "entity_type": "fraction",
+      "label": "fraktionslos (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/325"
+     },
+     "valid_from": "2024-10-16",
+     "valid_until": null
+    }
+   ]
+  },
+  {
+   "id": 54098,
+   "entity_type": "candidacy_mandate",
+   "label": "Stefan Seidler (Bundestag 2021 - 2025)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/54098",
+   "id_external_administration": "2538",
+   "id_external_administration_description": "mdbID aus der info-xml-Datei der Bundestagsverwaltung",
+   "type": "mandate",
+   "parliament_period": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "politician": {
+    "id": 176316,
+    "entity_type": "politician",
+    "label": "Stefan Seidler",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/176316",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/profile/stefan-seidler"
+   },
+   "start_date": null,
+   "end_date": null,
+   "info": null,
+   "electoral_data": {
+    "id": 55022,
+    "entity_type": "electoral_data",
+    "label": "Stefan Seidler (Bundestag 2021 - 2025)",
+    "electoral_list": {
+     "id": 424,
+     "entity_type": "electoral_list",
+     "label": "Landesliste Schleswig-Holstein (Bundestag 2021 - 2025)",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/electoral-lists/424"
+    },
+    "list_position": 1,
+    "constituency": null,
+    "constituency_result": null,
+    "constituency_result_count": null,
+    "mandate_won": "list"
+   },
+   "fraction_membership": [
+    {
+     "id": 9945,
+     "entity_type": "fraction_membership",
+     "label": "fraktionslos",
+     "fraction": {
+      "id": 325,
+      "entity_type": "fraction",
+      "label": "fraktionslos (Bundestag 2021 - 2025)",
+      "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/325"
+     },
+     "valid_from": null,
+     "valid_until": null
+    }
+   ]
+  }
+ ]
+}

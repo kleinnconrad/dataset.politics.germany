@@ -1,0 +1,769 @@
+# Curated sources of the pipeline. Verified on 2026-10-19 (robots.txt, TDM reservation, bot protection, feed content).
+
+# feeds: 107 h, 13056 h, 18483 h; news sitemap: none; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false
+[[outlet]]
+id = "tagesschau"
+name = "tagesschau.de"
+homepage = "https://www.tagesschau.de/"
+outlet_type = "public_broadcaster_national"
+owner_group = "public"
+paywall_model = "free"
+feeds = ["https://www.tagesschau.de/inland/innenpolitik/index~rss2.xml", "https://www.tagesschau.de/inland/index~rss2.xml", "https://www.tagesschau.de/ausland/index~rss2.xml"]
+fetch_pages = false
+
+# feeds: 90 h; news sitemap: none; robots.txt crawl-delay 5 s; news ticker feed nachrichten-100.rss omitted: all items carry the feed generation time as pubDate
+[[outlet]]
+id = "deutschlandfunk"
+name = "Deutschlandfunk"
+homepage = "https://www.deutschlandfunk.de/"
+outlet_type = "public_broadcaster_national"
+owner_group = "public"
+paywall_model = "free"
+feeds = ["https://www.deutschlandfunk.de/politikportal-100.rss"]
+fetch_pages = true
+
+# feeds: 7844 h, 61248 h; news sitemap: none
+[[outlet]]
+id = "zdfheute"
+name = "ZDFheute"
+homepage = "https://www.zdfheute.de/"
+outlet_type = "public_broadcaster_national"
+owner_group = "public"
+paywall_model = "free"
+feeds = ["https://www.zdfheute.de/rss/zdf/nachrichten/politik", "https://www.zdfheute.de/rss/zdf/nachrichten"]
+fetch_pages = true
+
+# feeds: none; news sitemap: 47 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false; no RSS feed, news sitemap only
+[[outlet]]
+id = "br24"
+name = "BR24"
+homepage = "https://www.br.de/nachrichten/"
+outlet_type = "public_broadcaster_regional"
+owner_group = "public"
+home_state = "DE-BY"
+paywall_model = "free"
+feeds = []
+news_sitemap = "https://www.br.de/nachrichten/newsSitemap"
+fetch_pages = false
+
+# feeds: 2852 h, 116760 h, 5183 h; news sitemap: 7 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false; covers HH, NI, SH, MV; Hamburg feed https://www.ndr.de/nachrichten/hamburg/index~rdf.xml omitted (3-feed limit)
+[[outlet]]
+id = "ndr"
+name = "NDR"
+homepage = "https://www.ndr.de/nachrichten/"
+outlet_type = "public_broadcaster_regional"
+owner_group = "public"
+home_state = "DE-HH"
+paywall_model = "free"
+feeds = ["https://www.ndr.de/nachrichten/niedersachsen/index~rss2.xml", "https://www.ndr.de/nachrichten/schleswig-holstein/index~rdf.xml", "https://www.ndr.de/nachrichten/mecklenburg-vorpommern/index~rdf.xml"]
+news_sitemap = "https://www.ndr.de/news-102~news.xml"
+fetch_pages = false
+
+# feeds: 4361 h, 4361 h; news sitemap: 59 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false
+[[outlet]]
+id = "wdr"
+name = "WDR"
+homepage = "https://www1.wdr.de/nachrichten/index.html"
+outlet_type = "public_broadcaster_regional"
+owner_group = "public"
+home_state = "DE-NW"
+paywall_model = "free"
+feeds = ["https://www1.wdr.de/politik/politik-in-nrw/uebersicht-landespolitik-100.feed", "https://www1.wdr.de/uebersicht-100.feed"]
+news_sitemap = "https://www1.wdr.de/nachrichten/news-sitemap-100.news"
+fetch_pages = false
+
+# feeds: 3483 h, 11233 h, 55565 h; news sitemap: 48 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false; covers SN, ST, TH
+[[outlet]]
+id = "mdr"
+name = "MDR"
+homepage = "https://www.mdr.de/nachrichten/index.html"
+outlet_type = "public_broadcaster_regional"
+owner_group = "public"
+home_state = "DE-SN"
+paywall_model = "free"
+feeds = ["https://www.mdr.de/nachrichten/sachsen/index~rss2.xml", "https://www.mdr.de/nachrichten/sachsen-anhalt/index~rss2.xml", "https://www.mdr.de/nachrichten/thueringen/index~rss2.xml"]
+news_sitemap = "https://www.mdr.de/sitemap/mdr-news-ueberblick-102~news.xml"
+fetch_pages = false
+
+# feeds: 35092 h, 64656 h, 35092 h; news sitemap: none; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false; covers BW, RP
+[[outlet]]
+id = "swr"
+name = "SWR Aktuell"
+homepage = "https://www.swr.de/swraktuell/"
+outlet_type = "public_broadcaster_regional"
+owner_group = "public"
+home_state = "DE-BW"
+paywall_model = "free"
+feeds = ["https://www.swr.de/~atom/swraktuell/baden-wuerttemberg/index.xml", "https://www.swr.de/~atom/swraktuell/rheinland-pfalz/index.xml", "https://www.swr.de/~atom/swraktuell/index.xml"]
+fetch_pages = false
+
+# feeds: 8013 h, 3482 h; news sitemap: none; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false; covers BE, BB
+[[outlet]]
+id = "rbb24"
+name = "rbb24"
+homepage = "https://www.rbb24.de/"
+outlet_type = "public_broadcaster_regional"
+owner_group = "public"
+home_state = "DE-BE"
+paywall_model = "free"
+feeds = ["https://www.rbb24.de/politik/index.xml/feed=rss.xml", "https://www.rbb24.de/aktuell/index.xml/feed=rss.xml"]
+fetch_pages = false
+
+# feeds: 388 h, 99794 h; news sitemap: 98603 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false
+[[outlet]]
+id = "hessenschau"
+name = "hessenschau.de"
+homepage = "https://www.hessenschau.de/"
+outlet_type = "public_broadcaster_regional"
+owner_group = "public"
+home_state = "DE-HE"
+paywall_model = "free"
+feeds = ["https://www.hessenschau.de/politik/index.rss", "https://www.hessenschau.de/index.rss"]
+news_sitemap = "https://www.hessenschau.de/newssitemap.nc.xml"
+fetch_pages = false
+
+# feeds: 23 h, 43 h; news sitemap: none; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false
+[[outlet]]
+id = "butenunbinnen"
+name = "buten un binnen"
+homepage = "https://www.butenunbinnen.de/"
+outlet_type = "public_broadcaster_regional"
+owner_group = "public"
+home_state = "DE-HB"
+paywall_model = "free"
+feeds = ["https://www.butenunbinnen.de/feed/rss/nachrichten/neuste-nachrichten100.xml", "https://www.butenunbinnen.de/feed/rss/neuste-inhalte100.xml"]
+fetch_pages = false
+
+# feeds: 2 h, 4 h, 29 h; news sitemap: none; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false
+[[outlet]]
+id = "sueddeutsche"
+name = "Süddeutsche Zeitung"
+homepage = "https://www.sueddeutsche.de/"
+outlet_type = "national_daily"
+owner_group = "Südwestdeutsche Medienholding"
+paywall_model = "mixed"
+feeds = ["https://rss.sueddeutsche.de/rss/Politik", "https://rss.sueddeutsche.de/rss/Topthemen", "https://rss.sueddeutsche.de/rss/Bayern"]
+fetch_pages = false
+
+# feeds: 25 h, 5 h, 3 h; news sitemap: 54 h
+[[outlet]]
+id = "welt"
+name = "Die Welt"
+homepage = "https://www.welt.de/"
+outlet_type = "national_daily"
+owner_group = "Axel Springer"
+paywall_model = "mixed"
+feeds = ["https://www.welt.de/feeds/section/politik/deutschland.rss", "https://www.welt.de/feeds/section/politik.rss", "https://www.welt.de/feeds/latest.rss"]
+news_sitemap = "https://www.welt.de/sitemaps/newssitemap/newssitemap.xml"
+fetch_pages = true
+
+# feeds: 114 h, 28 h; news sitemap: 56 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false
+[[outlet]]
+id = "taz"
+name = "taz"
+homepage = "https://taz.de/"
+outlet_type = "national_daily"
+owner_group = "taz Verlagsgenossenschaft"
+paywall_model = "free"
+feeds = ["https://taz.de/Politik/Deutschland/!p4616;rss/", "https://taz.de/!p4608;rss/"]
+news_sitemap = "https://taz.de/sitemap-google-news.xml"
+fetch_pages = false
+
+# feeds: 5 h, 2 h; news sitemap: 47 h
+[[outlet]]
+id = "handelsblatt"
+name = "Handelsblatt"
+homepage = "https://www.handelsblatt.com/"
+outlet_type = "business"
+owner_group = "Dieter von Holtzbrinck Medien"
+paywall_model = "mixed"
+feeds = ["https://feeds.cms.handelsblatt.com/politik", "https://feeds.cms.handelsblatt.com/schlagzeilen"]
+news_sitemap = "https://www.handelsblatt.com/sitemapExternal/news.xml"
+fetch_pages = true
+
+# feeds: 265 h, 789 h; news sitemap: 48 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false
+[[outlet]]
+id = "tagesspiegel"
+name = "Der Tagesspiegel"
+homepage = "https://www.tagesspiegel.de/"
+outlet_type = "national_daily"
+owner_group = "Dieter von Holtzbrinck Medien"
+paywall_model = "mixed"
+feeds = ["https://www.tagesspiegel.de/contentexport/feed/politik", "https://www.tagesspiegel.de/contentexport/feed/home"]
+news_sitemap = "https://www.tagesspiegel.de/news.xml"
+fetch_pages = false
+
+# feeds: 65 h, 54 h, 5 h; news sitemap: 48 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false
+[[outlet]]
+id = "spiegel"
+name = "Der Spiegel"
+homepage = "https://www.spiegel.de/"
+outlet_type = "weekly_magazine"
+owner_group = "Spiegel-Verlag"
+paywall_model = "mixed"
+feeds = ["https://www.spiegel.de/politik/deutschland/index.rss", "https://www.spiegel.de/politik/index.rss", "https://www.spiegel.de/schlagzeilen/index.rss"]
+news_sitemap = "https://www.spiegel.de/sitemaps/news-de.xml"
+fetch_pages = false
+
+# feeds: 289 h; news sitemap: none
+[[outlet]]
+id = "focus"
+name = "Focus Online"
+homepage = "https://www.focus.de/"
+outlet_type = "weekly_magazine"
+owner_group = "Hubert Burda Media"
+paywall_model = "free"
+feeds = ["https://www.focus.de/politik/rss"]
+fetch_pages = true
+
+# feeds: 92 h, 52 h, 16752 h; news sitemap: none; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false
+[[outlet]]
+id = "t_online"
+name = "t-online"
+homepage = "https://www.t-online.de/"
+outlet_type = "online_only"
+owner_group = "Ströer"
+paywall_model = "free"
+feeds = ["https://www.t-online.de/nachrichten/deutschland/feed.rss", "https://www.t-online.de/nachrichten/feed.rss", "https://www.t-online.de/feed.rss"]
+fetch_pages = false
+
+# feeds: 24 h, 20 h; news sitemap: 78 h
+[[outlet]]
+id = "n_tv"
+name = "n-tv.de"
+homepage = "https://www.n-tv.de/"
+outlet_type = "online_only"
+owner_group = "Gruner + Jahr/RTL"
+paywall_model = "free"
+feeds = ["https://www.n-tv.de/politik/rss", "https://www.n-tv.de/rss"]
+news_sitemap = "https://www.n-tv.de/news.xml"
+fetch_pages = true
+
+# feeds: 77 h, 2 h; news sitemap: 48 h
+[[outlet]]
+id = "bild"
+name = "Bild"
+homepage = "https://www.bild.de/"
+outlet_type = "tabloid"
+owner_group = "Axel Springer"
+paywall_model = "mixed"
+feeds = ["https://www.bild.de/feed/politik.xml", "https://www.bild.de/feed/alles.xml"]
+news_sitemap = "https://www.bild.de/sitemap-news.xml"
+fetch_pages = true
+
+# feeds: 8814 h; news sitemap: 48 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false
+[[outlet]]
+id = "suedkurier"
+name = "Südkurier"
+homepage = "https://www.suedkurier.de/"
+outlet_type = "regional_daily"
+owner_group = "Mediengruppe Pressedruck"
+home_state = "DE-BW"
+paywall_model = "mixed"
+feeds = ["https://www.suedkurier.de/rss"]
+news_sitemap = "https://www.suedkurier.de/news.xml"
+fetch_pages = false
+
+# feeds: none; news sitemap: 30 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false; no RSS feed, news sitemap only
+[[outlet]]
+id = "stuttgarter_zeitung"
+name = "Stuttgarter Zeitung"
+homepage = "https://www.stuttgarter-zeitung.de/"
+outlet_type = "regional_daily"
+owner_group = "Südwestdeutsche Medienholding"
+home_state = "DE-BW"
+paywall_model = "mixed"
+feeds = []
+news_sitemap = "https://www.stuttgarter-zeitung.de/sitemap-news.xml"
+fetch_pages = false
+
+# feeds: 128 h, 4831 h; news sitemap: none; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false
+[[outlet]]
+id = "nn"
+name = "Nürnberger Nachrichten"
+homepage = "https://www.nn.de/"
+outlet_type = "regional_daily"
+owner_group = "Verlag Nürnberger Presse"
+home_state = "DE-BY"
+paywall_model = "mixed"
+feeds = ["https://www.nn.de/politik?isRss=true", "https://www.nn.de/?isRss=true"]
+fetch_pages = false
+
+# feeds: 9917 h, 9922 h; news sitemap: 29 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false
+[[outlet]]
+id = "augsburger_allgemeine"
+name = "Augsburger Allgemeine"
+homepage = "https://www.augsburger-allgemeine.de/"
+outlet_type = "regional_daily"
+owner_group = "Mediengruppe Pressedruck"
+home_state = "DE-BY"
+paywall_model = "mixed"
+feeds = ["https://www.augsburger-allgemeine.de/politik/rss", "https://www.augsburger-allgemeine.de/rss"]
+news_sitemap = "https://www.augsburger-allgemeine.de/news.xml"
+fetch_pages = false
+
+# feeds: 67 h; news sitemap: 46 h; robots.txt crawl-delay 10 s
+[[outlet]]
+id = "berliner_zeitung"
+name = "Berliner Zeitung"
+homepage = "https://www.berliner-zeitung.de/"
+outlet_type = "regional_daily"
+owner_group = "Berliner Verlag"
+home_state = "DE-BE"
+paywall_model = "mixed"
+feeds = ["https://www.berliner-zeitung.de/feed.xml"]
+news_sitemap = "https://www.berliner-zeitung.de/news-sitemap.xml"
+fetch_pages = true
+
+# feeds: none; news sitemap: 30 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false; no RSS feed, news sitemap only
+[[outlet]]
+id = "lr_online"
+name = "Lausitzer Rundschau"
+homepage = "https://www.lr-online.de/"
+outlet_type = "regional_daily"
+owner_group = "Südwestdeutsche Medienholding"
+home_state = "DE-BB"
+paywall_model = "mixed"
+feeds = []
+news_sitemap = "https://www.lr-online.de/sitemap-news.xml"
+fetch_pages = false
+
+# feeds: 251 h, 10 h; news sitemap: 60 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false
+[[outlet]]
+id = "weser_kurier"
+name = "Weser-Kurier"
+homepage = "https://www.weser-kurier.de/"
+outlet_type = "regional_daily"
+owner_group = "Bremer Tageszeitungen"
+home_state = "DE-HB"
+paywall_model = "mixed"
+feeds = ["https://www.weser-kurier.de/bremen/politik/?view=rss", "https://www.weser-kurier.de/bremen/?view=rss"]
+news_sitemap = "https://www.weser-kurier.de/sitemap-news.xml"
+fetch_pages = false
+
+# feeds: 262 h, 58 h, 120 h; news sitemap: 1255 h
+[[outlet]]
+id = "abendblatt"
+name = "Hamburger Abendblatt"
+homepage = "https://www.abendblatt.de/"
+outlet_type = "regional_daily"
+owner_group = "Funke"
+home_state = "DE-HH"
+paywall_model = "mixed"
+feeds = ["https://www.abendblatt.de/hamburg/politik/rss", "https://www.abendblatt.de/hamburg/rss", "https://www.abendblatt.de/politik/rss"]
+news_sitemap = "https://www.abendblatt.de/sitemaps/news.xml"
+fetch_pages = true
+
+# feeds: none; news sitemap: 49 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false; no RSS feed, news sitemap only
+[[outlet]]
+id = "wiesbadener_kurier"
+name = "Wiesbadener Kurier"
+homepage = "https://www.wiesbadener-kurier.de/"
+outlet_type = "regional_daily"
+owner_group = "VRM"
+home_state = "DE-HE"
+paywall_model = "mixed"
+feeds = []
+news_sitemap = "https://www.wiesbadener-kurier.de/sitemaps/news-sitemap.xml"
+fetch_pages = false
+
+# feeds: none; news sitemap: 48 h; no RSS feed, news sitemap only
+[[outlet]]
+id = "nordkurier"
+name = "Nordkurier"
+homepage = "https://www.nordkurier.de/"
+outlet_type = "regional_daily"
+owner_group = "Schwäbisch Media"
+home_state = "DE-MV"
+paywall_model = "mixed"
+feeds = []
+news_sitemap = "https://www.nordkurier.de/sitemaps/nord/google-news-sitemap-1.xml"
+fetch_pages = true
+
+# feeds: 22 h, 95 h; news sitemap: 48 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false
+[[outlet]]
+id = "noz"
+name = "Neue Osnabrücker Zeitung"
+homepage = "https://www.noz.de/"
+outlet_type = "regional_daily"
+owner_group = "NOZ/mh:n Medien"
+home_state = "DE-NI"
+paywall_model = "mixed"
+feeds = ["https://www.noz.de/deutschland-welt/politik/rss", "https://www.noz.de/rss"]
+news_sitemap = "https://www.noz.de/sitemap/googleNewsList.xml"
+fetch_pages = false
+
+# feeds: 164 h, 6 h; news sitemap: 48 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false
+[[outlet]]
+id = "rp_online"
+name = "Rheinische Post"
+homepage = "https://rp-online.de/"
+outlet_type = "regional_daily"
+owner_group = "Rheinische Post Mediengruppe"
+home_state = "DE-NW"
+paywall_model = "mixed"
+feeds = ["https://rp-online.de/nrw/landespolitik/feed.rss", "https://rp-online.de/politik/feed.rss"]
+news_sitemap = "https://rp-online.de/sitemap-news.xml"
+fetch_pages = false
+
+# feeds: 116 h, 420 h; news sitemap: 118 h
+[[outlet]]
+id = "waz"
+name = "WAZ"
+homepage = "https://www.waz.de/"
+outlet_type = "regional_daily"
+owner_group = "Funke"
+home_state = "DE-NW"
+paywall_model = "mixed"
+feeds = ["https://www.waz.de/politik/rss", "https://www.waz.de/rhein-und-ruhr/rss"]
+news_sitemap = "https://www.waz.de/sitemaps/news.xml"
+fetch_pages = true
+
+# feeds: 70 h, 1 h; news sitemap: 29 h
+[[outlet]]
+id = "volksfreund"
+name = "Trierischer Volksfreund"
+homepage = "https://www.volksfreund.de/"
+outlet_type = "regional_daily"
+owner_group = "Rheinische Post Mediengruppe"
+home_state = "DE-RP"
+paywall_model = "mixed"
+feeds = ["https://www.volksfreund.de/nachrichten/politik/feed.rss", "https://www.volksfreund.de/feed.rss"]
+news_sitemap = "https://www.volksfreund.de/sitemap-news.xml"
+fetch_pages = true
+
+# feeds: 4 h, 1 h; news sitemap: 48 h
+[[outlet]]
+id = "saarbruecker_zeitung"
+name = "Saarbrücker Zeitung"
+homepage = "https://www.saarbruecker-zeitung.de/"
+outlet_type = "regional_daily"
+owner_group = "Rheinische Post Mediengruppe"
+home_state = "DE-SL"
+paywall_model = "mixed"
+feeds = ["https://www.saarbruecker-zeitung.de/saarland/feed.rss", "https://www.saarbruecker-zeitung.de/feed.rss"]
+news_sitemap = "https://www.saarbruecker-zeitung.de/sitemap-news.xml"
+fetch_pages = true
+
+# feeds: 1937 h, 95 h; news sitemap: 46 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false
+[[outlet]]
+id = "freiepresse"
+name = "Freie Presse"
+homepage = "https://www.freiepresse.de/"
+outlet_type = "regional_daily"
+owner_group = "Medien Union"
+home_state = "DE-SN"
+paywall_model = "mixed"
+feeds = ["https://www.freiepresse.de/nachrichten/sachsen/feed.atom", "https://www.freiepresse.de/feed.atom"]
+news_sitemap = "https://www.freiepresse.de/sitemaps/articles_news.xml"
+fetch_pages = false
+
+# feeds: none; news sitemap: 106 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false; no RSS feed, news sitemap only
+[[outlet]]
+id = "volksstimme"
+name = "Volksstimme"
+homepage = "https://www.volksstimme.de/"
+outlet_type = "regional_daily"
+owner_group = "Bauer Media Group"
+home_state = "DE-ST"
+paywall_model = "mixed"
+feeds = []
+news_sitemap = "https://www.volksstimme.de/sitemaps/newssitemap-1.xml"
+fetch_pages = false
+
+# feeds: 37 h, 173 h; news sitemap: 48 h; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false
+[[outlet]]
+id = "shz"
+name = "shz.de"
+homepage = "https://www.shz.de/"
+outlet_type = "regional_daily"
+owner_group = "NOZ/mh:n Medien"
+home_state = "DE-SH"
+paywall_model = "mixed"
+feeds = ["https://www.shz.de/deutschland-welt/politik/rss", "https://www.shz.de/rss"]
+news_sitemap = "https://www.shz.de/sitemap/googleNewsList.xml"
+fetch_pages = false
+
+# feeds: 102 h, 62151 h; news sitemap: 148 h
+[[outlet]]
+id = "thueringer_allgemeine"
+name = "Thüringer Allgemeine"
+homepage = "https://www.thueringer-allgemeine.de/"
+outlet_type = "regional_daily"
+owner_group = "Funke"
+home_state = "DE-TH"
+paywall_model = "mixed"
+feeds = ["https://www.thueringer-allgemeine.de/politik/rss", "https://www.thueringer-allgemeine.de/rss"]
+news_sitemap = "https://www.thueringer-allgemeine.de/sitemaps/news.xml"
+fetch_pages = true
+
+# feeds: 357 h, 120 h, 259 h
+[[press_source]]
+id = "bundesregierung"
+name = "Bundesregierung"
+homepage = "https://www.bundesregierung.de/breg-de"
+actor_type = "federal_government"
+jurisdiction = "DE"
+feeds = ["https://www.bundesregierung.de/service/rss/breg-de/1151244/feed.xml", "https://www.bundesregierung.de/service/rss/breg-de/1151242/feed.xml", "https://www.bundesregierung.de/service/rss/breg-de/1151246/feed.xml"]
+fetch_pages = true
+
+# feeds: 241 h, 4 h, 5 h
+[[press_source]]
+id = "bundestag"
+name = "Deutscher Bundestag"
+homepage = "https://www.bundestag.de/"
+actor_type = "bundestag"
+jurisdiction = "DE"
+feeds = ["https://www.bundestag.de/static/appdata/includes/rss/pressemitteilungen.rss", "https://www.bundestag.de/static/appdata/includes/rss/hib.rss", "https://www.bundestag.de/static/appdata/includes/rss/aktuellethemen.rss"]
+fetch_pages = true
+
+# feeds: 504 h, 504 h; robots.txt crawl-delay 30 s
+[[press_source]]
+id = "bundesrat"
+name = "Bundesrat"
+homepage = "https://www.bundesrat.de/DE/homepage/homepage-node.html"
+actor_type = "bundesrat"
+jurisdiction = "DE"
+feeds = ["https://www.bundesrat.de/SiteGlobals/Functions/RSSFeed/RSSGenerator_top_plenumkompakt.xml", "https://www.bundesrat.de/SiteGlobals/Functions/RSSFeed/RSSGenerator_Announcement.xml"]
+fetch_pages = true
+
+# feeds: 2882 h, 2280 h; robots.txt crawl-delay 10 s
+[[press_source]]
+id = "bmi"
+name = "Bundesministerium des Innern"
+homepage = "https://www.bmi.bund.de/DE/startseite/startseite-node.html"
+actor_type = "federal_ministry"
+jurisdiction = "DE"
+feeds = ["https://www.bmi.bund.de/DE/service/rss-newsfeed/function/rssnewsfeed-pressemitteilungen.xml", "https://www.bmi.bund.de/DE/service/rss-newsfeed/function/rssnewsfeed-kurzmeldungen.xml"]
+fetch_pages = true
+
+# feeds: 46 h
+[[press_source]]
+id = "bmvg"
+name = "Bundesministerium der Verteidigung"
+homepage = "https://www.bmvg.de/de"
+actor_type = "federal_ministry"
+jurisdiction = "DE"
+feeds = ["https://www.bmvg.de/service/rss/de/17680/feed"]
+fetch_pages = true
+
+# feeds: 9315 h, 25294 h
+[[press_source]]
+id = "bmjv"
+name = "Bundesministerium der Justiz und für Verbraucherschutz"
+homepage = "https://www.bmjv.de/DE/Startseite/Startseite_node.html"
+actor_type = "federal_ministry"
+jurisdiction = "DE"
+feeds = ["https://www.bmjv.de/SiteGlobals/Functions/RSSNewsfeed/DE/RSSNewsfeed/RSSNewsfeedPressemitteilungen.xml?nn=149890", "https://www.bmjv.de/SiteGlobals/Functions/RSSNewsfeed/DE/RSSNewsfeed/RSSNewsfeedGesetzgebungsverfahren.xml?nn=149890"]
+fetch_pages = true
+
+# feeds: 2188 h, 603 h
+[[press_source]]
+id = "bmbfsfj"
+name = "Bundesministerium für Bildung, Familie, Senioren, Frauen und Jugend"
+homepage = "https://www.bmbfsfj.bund.de/"
+actor_type = "federal_ministry"
+jurisdiction = "DE"
+feeds = ["https://www.bmbfsfj.bund.de/service/rss/bmbfsfj/111102/feed.rss", "https://www.bmbfsfj.bund.de/service/rss/bmbfsfj/108854/feed.rss"]
+fetch_pages = true
+
+# feeds: 185 h
+[[press_source]]
+id = "bmds"
+name = "Bundesministerium für Digitales und Staatsmodernisierung"
+homepage = "https://bmds.bund.de/"
+actor_type = "federal_ministry"
+jurisdiction = "DE"
+feeds = ["https://bmds.bund.de/feed/rss.xml"]
+fetch_pages = true
+
+# feeds: 646 h, 2184 h, 1432 h; robots.txt crawl-delay 60 s
+[[press_source]]
+id = "bmukn"
+name = "Bundesministerium für Umwelt, Klimaschutz, Naturschutz und nukleare Sicherheit"
+homepage = "https://www.bundesumweltministerium.de/"
+actor_type = "federal_ministry"
+jurisdiction = "DE"
+feeds = ["https://www.bundesumweltministerium.de/umwelt.rss", "https://www.bundesumweltministerium.de/klimaschutz.rss", "https://www.bundesumweltministerium.de/natur.rss"]
+fetch_pages = true
+
+# feeds: 75288 h, 111504 h
+[[press_source]]
+id = "bmg"
+name = "Bundesministerium für Gesundheit"
+homepage = "https://www.bundesgesundheitsministerium.de/"
+actor_type = "federal_ministry"
+jurisdiction = "DE"
+feeds = ["https://www.bundesgesundheitsministerium.de/pressemitteilungen.xml", "https://www.bundesgesundheitsministerium.de/meldungen.xml"]
+fetch_pages = true
+
+# feeds: 662 h
+[[press_source]]
+id = "bmz"
+name = "Bundesministerium für wirtschaftliche Zusammenarbeit und Entwicklung"
+homepage = "https://www.bmz.de/de"
+actor_type = "federal_ministry"
+jurisdiction = "DE"
+feeds = ["https://www.bmz.de/de/feed.rss"]
+fetch_pages = true
+
+# feeds: 4388 h
+[[press_source]]
+id = "bmwsb"
+name = "Bundesministerium für Wohnen, Stadtentwicklung und Bauwesen"
+homepage = "https://www.bmwsb.bund.de/DE/home/home_node.html"
+actor_type = "federal_ministry"
+jurisdiction = "DE"
+feeds = ["https://www.bmwsb.bund.de/DE/tools-services/rssfeed/_functions/rssnewsfeed.xml"]
+fetch_pages = true
+
+# feeds: 99 h
+[[press_source]]
+id = "afd_fraktion"
+name = "AfD-Fraktion im Bundestag"
+homepage = "https://afdbundestag.de/"
+actor_type = "parliamentary_group"
+party = "AFD"
+jurisdiction = "DE"
+feeds = ["https://afdbundestag.de/pressemitteilungen/feed/"]
+fetch_pages = true
+
+# feeds: 48 h; robots.txt crawl-delay 10 s
+[[press_source]]
+id = "spd_fraktion"
+name = "SPD-Bundestagsfraktion"
+homepage = "https://www.spdfraktion.de/"
+actor_type = "parliamentary_group"
+party = "SPD"
+jurisdiction = "DE"
+feeds = ["https://www.spdfraktion.de/presse/pressemitteilungen/feed"]
+fetch_pages = true
+
+# feeds: 17950 h; press statement feed has only 3 items; policy texts feed listed
+[[press_source]]
+id = "gruene_fraktion"
+name = "Bündnis 90/Die Grünen Bundestagsfraktion"
+homepage = "https://www.gruene-bundestag.de/"
+actor_type = "parliamentary_group"
+party = "GRUENE"
+jurisdiction = "DE"
+feeds = ["https://www.gruene-bundestag.de/fachtexte-rss-feed.xml"]
+fetch_pages = true
+
+# feeds: 116 h; robots.txt crawl-delay 10 s
+[[press_source]]
+id = "linke_fraktion"
+name = "Fraktion Die Linke im Bundestag"
+homepage = "https://www.dielinkebt.de/start/"
+actor_type = "parliamentary_group"
+party = "LINKE"
+jurisdiction = "DE"
+feeds = ["https://www.dielinkebt.de/presse/pressemitteilungen/feed.rss"]
+fetch_pages = true
+
+# feeds: 595 h
+[[press_source]]
+id = "cdu"
+name = "CDU"
+homepage = "https://www.cdu.de/"
+actor_type = "party"
+party = "CDU"
+jurisdiction = "DE"
+feeds = ["https://www.cdu.de/feed/"]
+fetch_pages = true
+
+# feeds: 7919 h; newest item 653 h old at check time
+[[press_source]]
+id = "csu"
+name = "CSU"
+homepage = "https://www.csu.de/"
+actor_type = "party"
+party = "CSU"
+jurisdiction = "DE"
+feeds = ["https://www.csu.de/rss/"]
+fetch_pages = true
+
+# feeds: 8092 h
+[[press_source]]
+id = "spd"
+name = "SPD"
+homepage = "https://www.spd.de/"
+actor_type = "party"
+party = "SPD"
+jurisdiction = "DE"
+feeds = ["https://www.spd.de/aktuelles/feed.rss"]
+fetch_pages = true
+
+# feeds: 29181 h
+[[press_source]]
+id = "afd"
+name = "AfD"
+homepage = "https://www.afd.de/"
+actor_type = "party"
+party = "AFD"
+jurisdiction = "DE"
+feeds = ["https://www.afd.de/pressemitteilungen/feed/"]
+fetch_pages = true
+
+# feeds: 1424 h
+[[press_source]]
+id = "linke"
+name = "Die Linke"
+homepage = "https://www.die-linke.de/start/"
+actor_type = "party"
+party = "LINKE"
+jurisdiction = "DE"
+feeds = ["https://www.die-linke.de/start/presse/feed.rss"]
+fetch_pages = true
+
+# feeds: 1269 h
+[[press_source]]
+id = "fdp"
+name = "FDP"
+homepage = "https://www.fdp.de/"
+actor_type = "party"
+party = "FDP"
+jurisdiction = "DE"
+feeds = ["https://www.fdp.de/rss.xml"]
+fetch_pages = true
+
+# feeds: 1015 h
+[[press_source]]
+id = "bsw"
+name = "Bündnis Sahra Wagenknecht"
+homepage = "https://bsw-vg.de/"
+actor_type = "party"
+party = "BSW"
+jurisdiction = "DE"
+feeds = ["https://bsw-vg.de/feed/"]
+fetch_pages = true
+
+# feeds: 110 h, 311 h
+[[press_source]]
+id = "state_by"
+name = "Bayerische Staatsregierung"
+homepage = "https://www.bayern.de/"
+actor_type = "state_government"
+jurisdiction = "DE-BY"
+feeds = ["https://www.bayern.de/rss/pm_alle.php", "https://www.bayern.de/rss/pm.php"]
+fetch_pages = true
+
+# feeds: 374 h
+[[press_source]]
+id = "state_ni"
+name = "Niedersächsische Landesregierung"
+homepage = "https://www.niedersachsen.de/startseite/"
+actor_type = "state_government"
+jurisdiction = "DE-NI"
+feeds = ["https://www.niedersachsen.de/rss.php"]
+fetch_pages = true
+
+# feeds: 241 h; robots.txt crawl-delay 30 s
+[[press_source]]
+id = "state_sl"
+name = "Saarländische Landesregierung"
+homepage = "https://www.saarland.de/DE/home"
+actor_type = "state_government"
+jurisdiction = "DE-SL"
+feeds = ["https://www.saarland.de/DE/presse-informationen/informationen/rss-feed/_feeds/pressemitteilungen_feed.xml"]
+fetch_pages = true

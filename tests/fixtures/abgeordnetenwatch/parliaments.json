@@ -1,0 +1,66 @@
+{
+ "meta": {
+  "abgeordnetenwatch_api": {
+   "version": "2.9.0",
+   "changelog": "https://www.abgeordnetenwatch.de/api/version-changelog/aktuell",
+   "licence": "CC0 1.0",
+   "licence_link": "https://creativecommons.org/publicdomain/zero/1.0/deed.de",
+   "documentation": "https://www.abgeordnetenwatch.de/api/entitaeten/parliament"
+  },
+  "status": "ok",
+  "status_message": "",
+  "result": {
+   "count": 3,
+   "total": 3,
+   "range_start": 0,
+   "range_end": 100
+  }
+ },
+ "data": [
+  {
+   "id": 14,
+   "entity_type": "parliament",
+   "label": "Saarland",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliaments/14",
+   "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/saarland",
+   "label_external_long": "Landtag Saarland",
+   "current_project": {
+    "id": 137,
+    "entity_type": "parliament_period",
+    "label": "Saarland 2022 - 2027",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/137",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/saarland"
+   }
+  },
+  {
+   "id": 5,
+   "entity_type": "parliament",
+   "label": "Bundestag",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliaments/5",
+   "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag",
+   "label_external_long": "Bundestag",
+   "current_project": {
+    "id": 161,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2025 - 2029",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/161",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag"
+   }
+  },
+  {
+   "id": 1,
+   "entity_type": "parliament",
+   "label": "EU-Parlament",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliaments/1",
+   "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/eu",
+   "label_external_long": "EU-Parlament",
+   "current_project": {
+    "id": 155,
+    "entity_type": "parliament_period",
+    "label": "EU-Parlament 2024 - 2029",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/155",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/eu"
+   }
+  }
+ ]
+}

@@ -1,0 +1,131 @@
+{
+ "meta": {
+  "abgeordnetenwatch_api": {
+   "version": "2.9.0",
+   "changelog": "https://www.abgeordnetenwatch.de/api/version-changelog/aktuell",
+   "licence": "CC0 1.0",
+   "licence_link": "https://creativecommons.org/publicdomain/zero/1.0/deed.de",
+   "documentation": "https://www.abgeordnetenwatch.de/api/entitaeten/poll"
+  },
+  "status": "ok",
+  "status_message": "",
+  "result": {
+   "count": 2,
+   "total": 2,
+   "range_start": 0,
+   "range_end": 1000
+  }
+ },
+ "data": [
+  {
+   "id": 6733,
+   "entity_type": "node",
+   "label": "Änderung des Brennstoffemissionshandelsgesetzes (CO₂-Preis)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/6733",
+   "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/21/abstimmungen/aenderung-des-brennstoffemissionshandelsgesetzes-co2-preis",
+   "field_accepted": true,
+   "field_committees": [
+    {
+     "id": 6102,
+     "entity_type": "node",
+     "label": "Ausschuss für Umwelt, Klimaschutz, Naturschutz und nukleare Sicherheit",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/committees/6102",
+     "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/21/ausschuesse/ausschuss-fuer-umwelt-klimaschutz-naturschutz-und-nukleare-sicherheit"
+    }
+   ],
+   "field_intro": "<p><span>Der Bundestag hat über die </span><a class=\"link-read-more\" href=\"https://dserver.bundestag.de/btd/21/078/2107869.pdf\" target=\"_blank\"><span>Novellierung des Brenstoffemissionshandelsgesetzes</span></a><span> beraten und der </span><a class=\"link-read-more\" href=\"https://dserver.bundestag.de/btd/21/086/2108626.pdf\" target=\"_blank\"><span>Beschlussempfehlung (PDF)</span></a><span>&nbsp;des &nbsp;</span><a class=\"link-read-more link-committees\" href=\"https://www.abgeordnetenwatch.de/bundestag/21/ausschuesse/ausschuss-fuer-umwelt-klimaschutz-naturschutz-und-nukleare-sicherheit\" target=\"_blank\"><span>Ausschusses für Umwelt, Klimaschutz, Naturschutz und nukleare Sicherheit</span></a> <strong>zugestimmt</strong>. Zentraler Punkt ist, dass der <span><strong>CO₂</strong></span><strong>-Preis für Benzin, Diesel, Heizöl und Erdgas im Jahr 2027 nicht erhöht wird.</strong> <span>Dieser soll 2027 weiterhin zwischen 55 und 65 Euro pro Tonne CO₂ liegen und damit auf dem Niveau von 2026 bleiben.</span></p><p><span>Grund dafür ist, dass der neue europäische Emissionshandel für Gebäude und Verkehr (ETS2) erst 2028 starten soll. Für das Übergangsjahr 2027 soll deshalb der bisherige nationale CO₂-Preis weiter gelten. Damit sollen stärkere Preisschwankungen vermieden und Unternehmen sowie Verbraucher:innen mehr Planungssicherheit gegeben werden.</span></p><p><span>Der Umweltausschuss hat den Gesetzentwurf vor der Abstimmung noch geändert. Unter anderem sollen 2027 mehr CO₂-Zertifikate angeboten und bestimmte zusätzliche Preise für Zertifikate gesenkt werden. Dadurch soll der CO₂-Preis möglichst genau auf dem Niveau von 2026 bleiben. Für den Klima- und Transformationsfonds werden dadurch Mindereinnahmen von rund <strong>400 Millionen Euro</strong> erwartet.</span></p><p><span>Namentlich abgestimmt wurde über die </span><a class=\"link-read-more\" href=\"https://dserver.bundestag.de/btd/21/086/2108626.pdf\" target=\"_blank\"><span>Beschlussempfehlung (PDF)</span></a><span> des </span><a class=\"link-read-more link-committees\" href=\"https://www.abgeordnetenwatch.de/bundestag/21/ausschuesse/ausschuss-fuer-umwelt-klimaschutz-naturschutz-und-nukleare-sicherheit\" target=\"_blank\"><span>Ausschusses für Umwelt, Klimaschutz, Naturschutz und nukleare Sicherheit</span></a><span>. Diese wurde mit 303 Ja-Stimmen zu 210 Nein-Stimmen bei 52 Enthaltungen der </span><a class=\"link-committees\" href=\"https://www.abgeordnetenwatch.de/bundestag/abgeordnete?politician_search_keys=&amp;fraction=422&amp;constituency=All&amp;electoral_list=All&amp;list_position%5Bmin%5D=&amp;list_position%5Bmax%5D=&amp;candidacy_mandate_status_with_context=current_last\" target=\"_blank\"><span>Linksfraktion</span></a><span> <strong>angenommen</strong>. Damit wurde die weitere Planung der Bahnstrecke beschlossen.</span></p>",
+   "field_legislature": {
+    "id": 161,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2025 - 2029",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/161",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag"
+   },
+   "field_poll_date": "2026-10-16",
+   "field_related_links": [
+    {
+     "uri": "entity:node/4907",
+     "title": "Namentliche Abstimmungen: ABC der wichtigsten Begriffe"
+    }
+   ],
+   "field_topics": [
+    {
+     "id": 20,
+     "entity_type": "taxonomy_term",
+     "label": "Energie",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/topics/20",
+     "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/themen-dip21/energie"
+    },
+    {
+     "id": 22,
+     "entity_type": "taxonomy_term",
+     "label": "Öffentliche Finanzen, Steuern und Abgaben",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/topics/22",
+     "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/themen-dip21/oeffentliche-finanzen-steuern-und-abgaben"
+    },
+    {
+     "id": 9,
+     "entity_type": "taxonomy_term",
+     "label": "Umwelt",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/topics/9",
+     "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/themen-dip21/umwelt"
+    }
+   ]
+  },
+  {
+   "id": 6731,
+   "entity_type": "node",
+   "label": "Verlängerung des Bundeswehreinsatzes im Südsudan (UNMISS)",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/6731",
+   "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/21/abstimmungen/verlaengerung-des-bundeswehreinsatzes-im-suedsudan-unmiss-0",
+   "field_accepted": true,
+   "field_committees": [
+    {
+     "id": 6082,
+     "entity_type": "node",
+     "label": "Auswärtiger Ausschuss",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/committees/6082",
+     "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/21/ausschuesse/auswaertiger-ausschuss"
+    },
+    {
+     "id": 6089,
+     "entity_type": "node",
+     "label": "Haushaltsausschuss",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/committees/6089",
+     "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/21/ausschuesse/haushaltsausschuss"
+    }
+   ],
+   "field_intro": "<p>Der Bundestag hat einen <a class=\"link-read-more\" href=\"https://dserver.bundestag.de/btd/21/082/2108293.pdf\" target=\"_blank\">Antrag (PDF)</a> der Bundesregierung angenommen, der die Fortsetzung der Bundeswehrbeteiligung an der von den Vereinten Nationen geführten Mission im Südsudan (UNMISS) vorsieht. Das <a class=\"link-poll\" href=\"https://www.abgeordnetenwatch.de/bundestag/21/abstimmungen/verlaengerung-des-bundeswehreinsatzes-im-suedsudan-unmiss\" target=\"_blank\">bisherige Mandat</a> läuft Ende Oktober 2026 aus und soll um ein weiteres Jahr bis Ende Oktober 2027 verlängert werden. Wie bisher sollen bis zu 50 Soldat:innen eingesetzt werden können. Sie sollen unter anderem Führungs-, Beratungs-, Beobachtungs- und Unterstützungsaufgaben übernehmen sowie bei der technischen Ausrüstung und Ausbildung von Streitkräften anderer beteiligter Staaten helfen.</p><p>Ziel der UN-Mission ist es laut Bundesregierung, die Zivilbevölkerung zu schützen, die Menschenrechtslage zu beobachten, humanitäre Hilfe abzusichern sowie die Umsetzung des Friedensabkommens und den Friedensprozess zu unterstützen. Die einsatzbedingten Zusatzausgaben werden für den Zeitraum der Verlängerung auf rund 900.000 Euro geschätzt.</p><p>Der <a class=\"link-committees\" href=\"https://www.abgeordnetenwatch.de/bundestag/21/ausschuesse/auswaertiger-ausschuss\" target=\"_blank\">Auswärtige Ausschuss</a> hat eine <a class=\"link-read-more\" href=\"https://dserver.bundestag.de/btd/21/086/2108613.pdf\" target=\"_blank\">Beschlussempfehlung (PDF)</a> zu dem Antrag vorgelegt, über die namentlich abgestimmt wurde. Darin wird die Annahme des Antrags empfohlen. Außerdem hat der <a class=\"link-committees\" href=\"https://www.abgeordnetenwatch.de/bundestag/21/ausschuesse/haushaltsausschuss\" target=\"_blank\">Haushaltsausschuss</a> einen <a class=\"link-read-more\" href=\"https://dserver.bundestag.de/btd/21/086/2108615.pdf\" target=\"_blank\">Bericht (PDF)</a> zur Vereinbarkeit des Einsatzes mit der Haushaltslage des Bundes eingebracht.</p><p>Namentlich abgestimmt wurde über die Beschlussempfehlung. Diese wurde mit 496 Ja-Stimmen zu 73 Nein-Stimmen bei vier Enthaltungen aus der <a class=\"link-committees\" href=\"https://www.abgeordnetenwatch.de/bundestag/abgeordnete?politician_search_keys=&amp;fraction=419&amp;constituency=All&amp;electoral_list=All&amp;list_position%5Bmin%5D=&amp;list_position%5Bmax%5D=&amp;candidacy_mandate_status_with_context=current_last\" target=\"_blank\">AfD-Fraktion</a> <strong>angenommen</strong>.</p>",
+   "field_legislature": {
+    "id": 161,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2025 - 2029",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/161",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag"
+   },
+   "field_poll_date": "2026-10-15",
+   "field_related_links": [
+    {
+     "uri": "entity:node/4907",
+     "title": "Namentliche Abstimmungen: ABC der wichtigsten Begriffe"
+    }
+   ],
+   "field_topics": [
+    {
+     "id": 21,
+     "entity_type": "taxonomy_term",
+     "label": "Außenpolitik und internationale Beziehungen",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/topics/21",
+     "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/themen-dip21/aussenpolitik-und-internationale-beziehungen"
+    },
+    {
+     "id": 13,
+     "entity_type": "taxonomy_term",
+     "label": "Verteidigung",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/topics/13",
+     "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/themen-dip21/verteidigung"
+    }
+   ]
+  }
+ ]
+}

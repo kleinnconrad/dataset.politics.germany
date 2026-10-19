@@ -1,0 +1,581 @@
+{
+ "meta": {
+  "abgeordnetenwatch_api": {
+   "version": "2.9.0",
+   "changelog": "https://www.abgeordnetenwatch.de/api/version-changelog/aktuell",
+   "licence": "CC0 1.0",
+   "licence_link": "https://creativecommons.org/publicdomain/zero/1.0/deed.de",
+   "documentation": "https://www.abgeordnetenwatch.de/api/entitaeten/vote"
+  },
+  "status": "ok",
+  "status_message": "",
+  "result": {
+   "count": 20,
+   "total": 20,
+   "range_start": 0,
+   "range_end": 1000
+  }
+ },
+ "data": [
+  {
+   "id": 594292,
+   "entity_type": "vote",
+   "label": "Nicolas Zippelius - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594292",
+   "mandate": {
+    "id": 53952,
+    "entity_type": "candidacy_mandate",
+    "label": "Nicolas Zippelius (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53952"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "yes",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 320,
+    "entity_type": "fraction",
+    "label": "CDU/CSU (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/320"
+   }
+  },
+  {
+   "id": 594291,
+   "entity_type": "vote",
+   "label": "Paul Ziemiak - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594291",
+   "mandate": {
+    "id": 53853,
+    "entity_type": "candidacy_mandate",
+    "label": "Paul Ziemiak (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53853"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "yes",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 320,
+    "entity_type": "fraction",
+    "label": "CDU/CSU (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/320"
+   }
+  },
+  {
+   "id": 594290,
+   "entity_type": "vote",
+   "label": "Emmi Zeulner - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594290",
+   "mandate": {
+    "id": 53930,
+    "entity_type": "candidacy_mandate",
+    "label": "Emmi Zeulner (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53930"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "yes",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 320,
+    "entity_type": "fraction",
+    "label": "CDU/CSU (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/320"
+   }
+  },
+  {
+   "id": 594286,
+   "entity_type": "vote",
+   "label": "Elisabeth Winkelmeier-Becker - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594286",
+   "mandate": {
+    "id": 53802,
+    "entity_type": "candidacy_mandate",
+    "label": "Elisabeth Winkelmeier-Becker (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53802"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "no_show",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 320,
+    "entity_type": "fraction",
+    "label": "CDU/CSU (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/320"
+   }
+  },
+  {
+   "id": 594096,
+   "entity_type": "vote",
+   "label": "Katrin Zschau - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594096",
+   "mandate": {
+    "id": 53725,
+    "entity_type": "candidacy_mandate",
+    "label": "Katrin Zschau (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53725"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "no",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 319,
+    "entity_type": "fraction",
+    "label": "SPD (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/319"
+   }
+  },
+  {
+   "id": 594095,
+   "entity_type": "vote",
+   "label": "Armand Zorn - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594095",
+   "mandate": {
+    "id": 53885,
+    "entity_type": "candidacy_mandate",
+    "label": "Armand Zorn (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53885"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "no",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 319,
+    "entity_type": "fraction",
+    "label": "SPD (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/319"
+   }
+  },
+  {
+   "id": 594409,
+   "entity_type": "vote",
+   "label": "Tina Winklmann - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594409",
+   "mandate": {
+    "id": 53654,
+    "entity_type": "candidacy_mandate",
+    "label": "Tina Winklmann (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53654"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "no",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 321,
+    "entity_type": "fraction",
+    "label": "BÜNDNIS 90/­DIE GRÜNEN (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/321"
+   }
+  },
+  {
+   "id": 594408,
+   "entity_type": "vote",
+   "label": "Stefan Wenzel - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594408",
+   "mandate": {
+    "id": 53477,
+    "entity_type": "candidacy_mandate",
+    "label": "Stefan Wenzel (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53477"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "no",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 321,
+    "entity_type": "fraction",
+    "label": "BÜNDNIS 90/­DIE GRÜNEN (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/321"
+   }
+  },
+  {
+   "id": 594394,
+   "entity_type": "vote",
+   "label": "Anne-Monika Spallek - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594394",
+   "mandate": {
+    "id": 53428,
+    "entity_type": "candidacy_mandate",
+    "label": "Anne-Monika Spallek (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53428"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "no_show",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 321,
+    "entity_type": "fraction",
+    "label": "BÜNDNIS 90/­DIE GRÜNEN (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/321"
+   }
+  },
+  {
+   "id": 594499,
+   "entity_type": "vote",
+   "label": "Katharina Willkomm - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594499",
+   "mandate": {
+    "id": 60126,
+    "entity_type": "candidacy_mandate",
+    "label": "Katharina Willkomm (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/60126"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "yes",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 322,
+    "entity_type": "fraction",
+    "label": "FDP (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/322"
+   }
+  },
+  {
+   "id": 594497,
+   "entity_type": "vote",
+   "label": "Sandra Weeser - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594497",
+   "mandate": {
+    "id": 53584,
+    "entity_type": "candidacy_mandate",
+    "label": "Sandra Weeser (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53584"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "yes",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 322,
+    "entity_type": "fraction",
+    "label": "FDP (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/322"
+   }
+  },
+  {
+   "id": 594496,
+   "entity_type": "vote",
+   "label": "Tim Wagner - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594496",
+   "mandate": {
+    "id": 60616,
+    "entity_type": "candidacy_mandate",
+    "label": "Tim Wagner (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/60616"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "yes",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 322,
+    "entity_type": "fraction",
+    "label": "FDP (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/322"
+   }
+  },
+  {
+   "id": 594461,
+   "entity_type": "vote",
+   "label": "Ulrich Lechte - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594461",
+   "mandate": {
+    "id": 53633,
+    "entity_type": "candidacy_mandate",
+    "label": "Ulrich Lechte (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53633"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "no",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 322,
+    "entity_type": "fraction",
+    "label": "FDP (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/322"
+   }
+  },
+  {
+   "id": 594480,
+   "entity_type": "vote",
+   "label": "Matthias Seestern-Pauly - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594480",
+   "mandate": {
+    "id": 53460,
+    "entity_type": "candidacy_mandate",
+    "label": "Matthias Seestern-Pauly (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53460"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "abstain",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 322,
+    "entity_type": "fraction",
+    "label": "FDP (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/322"
+   }
+  },
+  {
+   "id": 594575,
+   "entity_type": "vote",
+   "label": "Kay-Uwe Ziegler - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594575",
+   "mandate": {
+    "id": 53776,
+    "entity_type": "candidacy_mandate",
+    "label": "Kay-Uwe Ziegler (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53776"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "yes",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 323,
+    "entity_type": "fraction",
+    "label": "AfD (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/323"
+   }
+  },
+  {
+   "id": 594574,
+   "entity_type": "vote",
+   "label": "Joachim Wundrak - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594574",
+   "mandate": {
+    "id": 53462,
+    "entity_type": "candidacy_mandate",
+    "label": "Joachim Wundrak (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53462"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "yes",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 323,
+    "entity_type": "fraction",
+    "label": "AfD (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/323"
+   }
+  },
+  {
+   "id": 594613,
+   "entity_type": "vote",
+   "label": "Sahra Wagenknecht - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594613",
+   "mandate": {
+    "id": 53436,
+    "entity_type": "candidacy_mandate",
+    "label": "Sahra Wagenknecht (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53436"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "yes",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 387,
+    "entity_type": "fraction",
+    "label": "BSW (Gruppe) (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/387"
+   }
+  },
+  {
+   "id": 594603,
+   "entity_type": "vote",
+   "label": "Janine Wissler - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594603",
+   "mandate": {
+    "id": 54114,
+    "entity_type": "candidacy_mandate",
+    "label": "Janine Wissler (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/54114"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "no",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 386,
+    "entity_type": "fraction",
+    "label": "Die Linke. (Gruppe) (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/386"
+   }
+  },
+  {
+   "id": 594620,
+   "entity_type": "vote",
+   "label": "Dirk Spaniel - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594620",
+   "mandate": {
+    "id": 53714,
+    "entity_type": "candidacy_mandate",
+    "label": "Dirk Spaniel (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/53714"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "yes",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 325,
+    "entity_type": "fraction",
+    "label": "fraktionslos (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/325"
+   }
+  },
+  {
+   "id": 594618,
+   "entity_type": "vote",
+   "label": "Stefan Seidler - Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/votes/594618",
+   "mandate": {
+    "id": 54098,
+    "entity_type": "candidacy_mandate",
+    "label": "Stefan Seidler (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates/54098"
+   },
+   "poll": {
+    "id": 5864,
+    "entity_type": "node",
+    "label": "Zustrombegrenzungsgesetz",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz"
+   },
+   "vote": "no",
+   "reason_no_show": null,
+   "reason_no_show_other": null,
+   "fraction": {
+    "id": 325,
+    "entity_type": "fraction",
+    "label": "fraktionslos (Bundestag 2021 - 2025)",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/fractions/325"
+   }
+  }
+ ]
+}

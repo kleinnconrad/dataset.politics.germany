@@ -1,0 +1,62 @@
+{
+ "meta": {
+  "abgeordnetenwatch_api": {
+   "version": "2.9.0",
+   "changelog": "https://www.abgeordnetenwatch.de/api/version-changelog/aktuell",
+   "licence": "CC0 1.0",
+   "licence_link": "https://creativecommons.org/publicdomain/zero/1.0/deed.de",
+   "documentation": "https://www.abgeordnetenwatch.de/api/entitaeten/poll"
+  },
+  "status": "ok",
+  "status_message": "",
+  "result": {
+   "count": 1,
+   "total": 1,
+   "range_start": 0,
+   "range_end": 1000
+  }
+ },
+ "data": [
+  {
+   "id": 5864,
+   "entity_type": "node",
+   "label": "Zustrombegrenzungsgesetz",
+   "api_url": "https://www.abgeordnetenwatch.de/api/v2/polls/5864",
+   "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/abstimmungen/zustrombegrenzungsgesetz",
+   "field_accepted": false,
+   "field_committees": [
+    {
+     "id": 4416,
+     "entity_type": "node",
+     "label": "Ausschuss für Inneres und Heimat",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/committees/4416",
+     "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20/ausschuesse/ausschuss-fuer-inneres-und-heimat"
+    }
+   ],
+   "field_intro": "<p>Die <a class=\"link-committees\" href=\"https://www.abgeordnetenwatch.de/bundestag/20/abgeordnete?fraction=320&amp;constituency=All&amp;electoral_list=All&amp;candidacy_mandate_status_with_context=current_last\" target=\"_blank\">Fraktion der CDU/CSU</a> hat einen <a class=\"link-read-more\" href=\"https://dserver.bundestag.de/btd/20/128/2012804.pdf\" target=\"_blank\">Gesetzentwurf</a> zur \"Begrenzung des illegalen Zustroms von Drittstaatsangehörigen nach Deutschland\" eingebracht. Das sog. \"Zustrombegrenzungsgesetz\" sieht Verschärfungen in der Migrationspolitik vor und soll unter anderem den Familiennachzug zu Personen mit subsidiärem Schutz bis auf Weiteres beenden. Darüber hinaus soll die Bundespolizei laut Gesetzentwurf zukünftig eine eigene Kompetenz für Maßnahmen der Aufenthaltsbeendigung an bestimmten deutschen Bahnhöfen erhalten und das Wort \"Begrenzung\" soll wieder als übergeordnetes Ziel bezüglich des Zuzugs von Ausländer:innen in das Aufenthaltsgesetz aufgenommen werden.</p><p>Der Gesetzentwurf wurde mit 349 Nein-Stimmen zu 338 Ja-Stimmen bei fünf Enthaltungen aus der Fraktion der FDP <strong>abgelehnt</strong>.</p>",
+   "field_legislature": {
+    "id": 132,
+    "entity_type": "parliament_period",
+    "label": "Bundestag 2021 - 2025",
+    "api_url": "https://www.abgeordnetenwatch.de/api/v2/parliament-periods/132",
+    "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20"
+   },
+   "field_poll_date": "2025-01-31",
+   "field_related_links": [
+    {
+     "uri": "entity:node/4907",
+     "title": "Namentliche Abstimmungen: ABC der wichtigsten Begriffe"
+    }
+   ],
+   "field_topics": [
+    {
+     "id": 25,
+     "entity_type": "taxonomy_term",
+     "label": "Migration und Aufenthaltsrecht",
+     "api_url": "https://www.abgeordnetenwatch.de/api/v2/topics/25",
+     "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/themen-dip21/migration-und-aufenthaltsrecht"
+    }
+   ]
+  }
+ ]
+}
