@@ -21,23 +21,28 @@ A dataset of German politics for political analysis and the prediction of electi
 
 ## Dataset Overview
 <!-- DATASET_OVERVIEW_START -->
-**Last updated:** 2026-10-19 18:38 UTC
+**Last updated:** 2026-10-19 19:16 UTC
 
 | Dataset | Records | Items | Files | Observed | Content |
 |---|---|---|---|---|---|
-| `polls` | 0 | 0 | 0 | none | One published opinion poll (Sonntagsfrage). |
-| `wikipedia_pageviews` | 0 | 0 | 0 | none | Daily views of the German Wikipedia article of a party or politician. |
+| `polls` | 3,980 | 3,980 | 1 | 2026-10-19 to 2026-10-19 | One published opinion poll (Sonntagsfrage). |
+| `wikipedia_pageviews` | 993 | 993 | 1 | 2026-10-19 to 2026-10-19 | Daily views of the German Wikipedia article of a party or politician. |
 | `news_items` | 0 | 0 | 0 | none | Metadata of one news article. The text is not stored. |
 | `press_releases` | 0 | 0 | 0 | none | Metadata of one press release. The text is not stored. |
 | `text_annotations` | 0 | 0 | 0 | none | Gemini labels of one news article or press release. |
-| `roll_call_votes` | 0 | 0 | 0 | none | One roll-call vote (namentliche Abstimmung) in the Bundestag. |
-| `mp_votes` | 0 | 0 | 0 | none | The vote of one member in one roll-call vote. |
-| `parliamentary_procedures` | 0 | 0 | 0 | none | One parliamentary procedure (Vorgang) in the DIP, recorded when it appears or changes. |
-| `politicians` | 0 | 0 | 0 | none | A politician with a current mandate, recorded when the entry appears or changes. |
+| `roll_call_votes` | 247 | 247 | 1 | 2026-10-19 to 2026-10-19 | One roll-call vote (namentliche Abstimmung) in the Bundestag. |
+| `mp_votes` | 172,677 | 172,677 | 1 | 2026-10-19 to 2026-10-19 | The vote of one member in one roll-call vote. |
+| `parliamentary_procedures` | 19,265 | 19,265 | 1 | 2026-10-19 to 2026-10-19 | One parliamentary procedure (Vorgang) in the DIP, recorded when it appears or changes. |
+| `politicians` | 2,513 | 2,513 | 1 | 2026-10-19 to 2026-10-19 | A politician with a current mandate, recorded when the entry appears or changes. |
 
 **Runs**
 
-- No run yet.
+- **Latest run:** 2026-10-19 18:42 UTC (backfill)
+  - `parliamentary_procedures`: ok (parliamentary_procedures 19,265)
+  - `politicians`: ok (politicians 2,513)
+  - `polls`: ok (polls 3,980)
+  - `roll_call_votes`: ok (mp_votes 172,677, roll_call_votes 247)
+  - `wikipedia_pageviews`: ok (wikipedia_pageviews 993)
 
 **Sources**
 
@@ -129,6 +134,174 @@ A dataset of German politics for political analysis and the prediction of electi
 **Annotations**
 
 - No news articles or press releases yet.
+
+**Fields** (Filled: records with a value that is not null and not empty)
+
+<details>
+<summary><code>polls</code>: 21 fields</summary>
+
+| Field | Description | Filled | Distinct values |
+|---|---|---|---|
+| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (3,980) | 3,980 |
+| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (3,980) | 1 |
+| `dataset` | Name of the dataset. | 100.0% (3,980) | 1 |
+| `schema_version` | Version of the record schema. | 100.0% (3,980) | 1 |
+| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (3,980) | 2 |
+| `source_id` | Id of the source (API, outlet or press source). | 100.0% (3,980) | 1 |
+| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (3,980) | 1 |
+| `license` | License or terms of the source. | 100.0% (3,980) | 1 |
+| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (3,980) | 17 |
+| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (3,980) | 2 |
+| `poll_id` | Id of the poll at DAWUM. | 100.0% (3,980) | 3,980 |
+| `parliament` | Parliament the poll asks about. | 100.0% (3,980) | 3 |
+| `institute` | Polling institute. | 100.0% (3,980) | 22 |
+| `tasker` | Client that commissioned the poll. | 100.0% (3,980) | 119 |
+| `method` | Survey method. | 100.0% (3,980) | 6 |
+| `fieldwork_start` | First day of the fieldwork. | 100.0% (3,980) | 2,163 |
+| `fieldwork_end` | Last day of the fieldwork. | 100.0% (3,980) | 2,208 |
+| `published_date` | Publication date of the poll. | 100.0% (3,980) | 2,432 |
+| `sample_size` | Number of respondents. | 100.0% (3,980) | 1,061 |
+| `results` | Vote intention in percent by party code, without the others. | 100.0% (3,980) | 25 |
+| `others_share` | Share of all other parties in percent. | 100.0% (3,980) | 64 |
+
+</details>
+
+<details>
+<summary><code>wikipedia_pageviews</code>: 15 fields</summary>
+
+| Field | Description | Filled | Distinct values |
+|---|---|---|---|
+| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (993) | 993 |
+| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (993) | 1 |
+| `dataset` | Name of the dataset. | 100.0% (993) | 1 |
+| `schema_version` | Version of the record schema. | 100.0% (993) | 1 |
+| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (993) | 148 |
+| `source_id` | Id of the source (API, outlet or press source). | 100.0% (993) | 1 |
+| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (993) | 993 |
+| `license` | License or terms of the source. | 100.0% (993) | 1 |
+| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (993) | 1 |
+| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (993) | 1 |
+| `entity_id` | Party code, or politician id at abgeordnetenwatch. | 100.0% (993) | 993 |
+| `entity_type` | Type of the entity. | 100.0% (993) | 2 |
+| `wikipedia_title` | Title of the article in the German Wikipedia. | 100.0% (993) | 993 |
+| `wikidata_qid` | Wikidata id of the entity. | 98.9% (982) | 982 |
+| `daily_views` | Views by human users per day (UTC), for the days since the previous run. | 100.0% (993) | 4,128 |
+
+</details>
+
+<details>
+<summary><code>roll_call_votes</code>: 25 fields</summary>
+
+| Field | Description | Filled | Distinct values |
+|---|---|---|---|
+| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (247) | 247 |
+| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (247) | 1 |
+| `dataset` | Name of the dataset. | 100.0% (247) | 1 |
+| `schema_version` | Version of the record schema. | 100.0% (247) | 1 |
+| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (247) | 13 |
+| `source_id` | Id of the source (API, outlet or press source). | 100.0% (247) | 1 |
+| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (247) | 247 |
+| `license` | License or terms of the source. | 100.0% (247) | 1 |
+| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (247) | 1 |
+| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (247) | 2 |
+| `vote_id` | Id of the vote at abgeordnetenwatch. | 100.0% (247) | 247 |
+| `parliament_period` | Electoral period, e.g. 'Bundestag 2025 - 2029'. | 100.0% (247) | 2 |
+| `vote_date` | Date of the vote. | 100.0% (247) | 124 |
+| `title` | Title of the vote. | 100.0% (247) | 240 |
+| `topics` | Topics assigned by abgeordnetenwatch. | 99.2% (245) | 29 |
+| `committees` | Committees in charge. | 79.8% (197) | 26 |
+| `printed_papers` | Numbers of the Bundestag printed papers (Drucksachen) linked in the description of the vote, e.g. '21/7869'. They link the vote to procedures in the DIP (filter f.dokumentnummer). | 99.2% (245) | 419 |
+| `accepted` | Whether the motion was accepted. | 100.0% (247) | 2 |
+| `yes` | Number of yes votes. | 100.0% (247) | 180 |
+| `no` | Number of no votes. | 100.0% (247) | 178 |
+| `abstain` | Number of abstentions. | 100.0% (247) | 46 |
+| `no_show` | Number of members who did not vote. | 100.0% (247) | 104 |
+| `by_faction` | Counts of yes, no, abstain and no_show by parliamentary group at the time of the vote (party code, NONE for members without a group). | 100.0% (247) | 8 |
+| `cohesion` | Rice index \|yes - no\| / (yes + no) per parliamentary group; null if the group cast no yes or no votes. Members without a group (NONE) are not included. | 100.0% (247) | 7 |
+| `defectors` | Members per parliamentary group who voted yes while the group cast more no than yes votes, or no while it cast more yes than no votes. Members without a group (NONE) are not included. | 100.0% (247) | 7 |
+
+</details>
+
+<details>
+<summary><code>mp_votes</code>: 16 fields</summary>
+
+| Field | Description | Filled | Distinct values |
+|---|---|---|---|
+| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (172,677) | 172,677 |
+| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (172,677) | 1 |
+| `dataset` | Name of the dataset. | 100.0% (172,677) | 1 |
+| `schema_version` | Version of the record schema. | 100.0% (172,677) | 1 |
+| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (172,677) | 16 |
+| `source_id` | Id of the source (API, outlet or press source). | 100.0% (172,677) | 1 |
+| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (172,677) | 172,677 |
+| `license` | License or terms of the source. | 100.0% (172,677) | 1 |
+| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (172,677) | 1 |
+| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (172,677) | 2 |
+| `vote_id` | Id of the vote at abgeordnetenwatch. | 100.0% (172,677) | 247 |
+| `vote_date` | Date of the vote. | 100.0% (172,677) | 124 |
+| `politician_id` | Id of the politician at abgeordnetenwatch. | 100.0% (172,677) | 1,008 |
+| `faction` | Parliamentary group at the time of the vote as party code, NONE for members without a group. | 100.0% (172,677) | 8 |
+| `vote` | The member's vote. | 100.0% (172,677) | 4 |
+| `voted_against_faction` | True if the member voted yes while the group cast more no than yes votes, or no while it cast more yes than no votes. Always false for members without a group. | 100.0% (172,677) | 2 |
+
+</details>
+
+<details>
+<summary><code>parliamentary_procedures</code>: 24 fields</summary>
+
+| Field | Description | Filled | Distinct values |
+|---|---|---|---|
+| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (19,265) | 19,265 |
+| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (19,265) | 1 |
+| `dataset` | Name of the dataset. | 100.0% (19,265) | 1 |
+| `schema_version` | Version of the record schema. | 100.0% (19,265) | 1 |
+| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (19,265) | 21 |
+| `source_id` | Id of the source (API, outlet or press source). | 100.0% (19,265) | 1 |
+| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (19,265) | 19,265 |
+| `license` | License or terms of the source. | 100.0% (19,265) | 1 |
+| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (19,265) | 1 |
+| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (19,265) | 1 |
+| `procedure_id` | Id of the procedure in the DIP. | 100.0% (19,265) | 19,265 |
+| `change` | new for the first observation, status_changed if the status changed, updated for other tracked changes. | 100.0% (19,265) | 1 |
+| `procedure_type` | Type of the procedure, e.g. Gesetzgebung, Antrag, Kleine Anfrage. | 100.0% (19,265) | 43 |
+| `electoral_period` | Electoral period of the Bundestag. | 100.0% (19,265) | 1 |
+| `title` | Title of the procedure. | 100.0% (19,265) | 18,966 |
+| `initiators` | Initiators, e.g. Bundesregierung, Bundesrat or a parliamentary group. | 39.8% (7,666) | 85 |
+| `subject_areas` | Subject areas (Sachgebiete) of the DIP. | 26.2% (5,055) | 28 |
+| `descriptors` | Subject descriptors of the DIP thesaurus. | 88.6% (17,077) | 7,907 |
+| `consent_required` | Whether the consent of the Bundesrat is required, from the latest statement of the DIP (bill, Bundestag decision or promulgation); null if not stated. | 2.3% (450) | 2 |
+| `status` | Current status (Beratungsstand). | 83.6% (16,104) | 25 |
+| `previous_status` | Status at the previous observation; null for new procedures. | 0.0% (0) | 0 |
+| `gesta_id` | GESTA id of a bill. | 2.3% (450) | 450 |
+| `dip_updated_at` | Last update of the procedure in the DIP (UTC). | 100.0% (19,265) | 8,296 |
+| `latest_document_date` | Date of the latest document of the procedure (DIP field datum), e.g. of the printed paper or plenary record that set the current status. | 100.0% (19,265) | 383 |
+
+</details>
+
+<details>
+<summary><code>politicians</code>: 17 fields</summary>
+
+| Field | Description | Filled | Distinct values |
+|---|---|---|---|
+| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (2,513) | 2,513 |
+| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (2,513) | 1 |
+| `dataset` | Name of the dataset. | 100.0% (2,513) | 1 |
+| `schema_version` | Version of the record schema. | 100.0% (2,513) | 1 |
+| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (2,513) | 1 |
+| `source_id` | Id of the source (API, outlet or press source). | 100.0% (2,513) | 1 |
+| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (2,513) | 2,513 |
+| `license` | License or terms of the source. | 100.0% (2,513) | 1 |
+| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (2,513) | 17 |
+| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (2,513) | 1 |
+| `politician_id` | Id of the politician at abgeordnetenwatch. | 100.0% (2,513) | 2,513 |
+| `name` | Full name. | 100.0% (2,513) | 2,507 |
+| `party` | Current party as party code; NONE without party; OTHER for parties not in the registry; null if unknown. | 100.0% (2,513) | 12 |
+| `sex` | Sex as stated by abgeordnetenwatch. | 99.6% (2,504) | 3 |
+| `year_of_birth` | Year of birth. | 87.8% (2,207) | 59 |
+| `wikidata_qid` | Wikidata id. | 39.1% (982) | 982 |
+| `mandates` | Current mandates with parliament, period, faction (party code, NONE without group), constituency and electoral_list the member stood in (null if none), mandate_won (constituency, list or moved_up), start_date and end_date (YYYY-MM-DD; null if equal to the start or end of the period). | 100.0% (2,513) | 2,335 |
+
+</details>
 <!-- DATASET_OVERVIEW_END -->
 
 ## Datasets
