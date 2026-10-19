@@ -9,6 +9,7 @@ A dataset of German politics for political analysis and the prediction of electi
 ## Table of Contents
 - [Dataset Overview](#dataset-overview)
 - [Datasets](#datasets)
+- [Data Model](#data-model)
 - [Sources and Fetch Rules](#sources-and-fetch-rules)
 - [Pipeline](#pipeline)
 - [Data Files](#data-files)
@@ -327,6 +328,103 @@ A dataset of German politics for political analysis and the prediction of electi
 **No full texts.** News articles and press releases are stored as titles, URLs, metadata and derived variables. The lead text that Gemini reads is not stored.
 
 **Annotated sample.** Every new political item of a run is stored in `news_items` or `press_releases`. Up to 400 of them are annotated: all press releases, then news items in turns across the outlets, newest first. The other items are stored from the feed data without labels, so that the item counts per outlet stay complete and the annotated sample can be weighted against them.
+
+## Data Model
+
+The diagram shows the nine datasets, the three reference lists they point to, and the fields that link them. `party`, `outlet` and `press_source` are not datasets: the party codes are defined in [src/entities.py](src/entities.py), the outlets and press-release sources in [config/sources.toml](config/sources.toml). Solid lines are joins on stored fields; the dashed line needs a lookup in the DIP API.
+
+```mermaid
+erDiagram
+    party {
+        string code PK "e.g. CDU_CSU, SPD, GRUENE"
+    }
+    outlet {
+        string id PK
+        string outlet_type
+        string home_state
+    }
+    press_source {
+        string id PK
+        string actor_type
+    }
+    polls {
+        string poll_id PK
+        string parliament
+        date published_date
+        map results "vote share by party code"
+    }
+    politicians {
+        string politician_id PK "abgeordnetenwatch id"
+        string party FK
+        string wikidata_qid
+        list mandates
+    }
+    roll_call_votes {
+        string vote_id PK
+        date vote_date
+        list printed_papers "Drucksache numbers"
+        bool accepted
+    }
+    mp_votes {
+        string vote_id FK
+        string politician_id FK
+        string faction FK "party code or NONE"
+        string vote
+    }
+    parliamentary_procedures {
+        string procedure_id PK "DIP id"
+        string procedure_type
+        string status
+        string change
+    }
+    wikipedia_pageviews {
+        string entity_id FK "party code or politician_id"
+        string entity_type "party or politician"
+        map daily_views
+    }
+    news_items {
+        string record_id PK
+        string outlet_id FK
+        string url
+        datetime published_at
+    }
+    press_releases {
+        string record_id PK
+        string press_source_id FK
+        string party FK
+        datetime published_at
+    }
+    text_annotations {
+        string item_id FK "record_id of the item"
+        string item_dataset "news_items or press_releases"
+        string extraction_hash
+        list mentioned_parties FK
+        list mentioned_politicians FK
+    }
+
+    party |o--o{ politicians : "party"
+    party |o--o{ mp_votes : "faction"
+    party }o--o{ polls : "results keys"
+    party |o--o{ wikipedia_pageviews : "entity_id"
+    party |o--o{ press_releases : "party"
+    party }o--o{ text_annotations : "mentioned_parties"
+    outlet ||--o{ news_items : "outlet_id"
+    press_source ||--o{ press_releases : "press_source_id"
+    roll_call_votes ||--|{ mp_votes : "vote_id"
+    politicians |o--o{ mp_votes : "politician_id"
+    politicians |o--o{ wikipedia_pageviews : "entity_id"
+    politicians }o--o{ text_annotations : "mentioned_politicians"
+    news_items |o--o{ text_annotations : "item_id"
+    press_releases |o--o{ text_annotations : "item_id"
+    roll_call_votes }o..o{ parliamentary_procedures : "printed_papers via DIP"
+```
+
+**Reading the joins:**
+- Every record also has the common fields (`record_id`, `revision`, `observed_at`, ...). `politicians`, `parliamentary_procedures` and revised items have several records per key; for a point in time t, use the record with the highest revision observed at or before t.
+- `politicians` holds the members with a current mandate. Members of the previous Bundestag who left have votes in `mp_votes` but no entry in `politicians`.
+- An item has one annotation per `extraction_hash`, and none if it was stored without labels.
+- `mentioned_politicians` holds only names that resolved to the registry; the others are counted in `unresolved_person_count`.
+- The DIP API finds the procedure of a printed paper with the filter `f.dokumentnummer`.
 
 ## Sources and Fetch Rules
 
