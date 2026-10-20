@@ -285,6 +285,10 @@ def test_review_proposes_removals_fixes_additions_and_exclusions(review_setup, f
                 if change.action == "exclude"}
     assert excluded["https://office.example/"]["status"] == "blocked"
     assert excluded["https://reserved.example/"]["status"] == "tdm_reserved"
+    # Exclusions keep the attributes, so that a later review can check them again
+    assert excluded["https://office.example/"]["kind"] == "press_source"
+    assert excluded["https://office.example/"]["actor_type"] == "federal_ministry"
+    assert excluded["https://reserved.example/"]["home_state"] == "DE-BB"
 
     config = source_review.validate_config_text(text)
     by_id = {source.id: source for source in config.sources}
@@ -321,6 +325,60 @@ def test_only_one_source_is_admitted_per_state_government(review_setup, fake_web
     assert "landesportal.example/presse.rss" not in " ".join(fake_web.requested)
 
 
+def test_candidates_with_a_listed_feed_or_a_redirect_to_a_listed_host_are_duplicates(review_setup, fake_web) -> None:
+    settings, config_path = review_setup
+    fake_web.add("https://renamed.example/", "<html></html>")
+    fake_web.add("https://old-ministry.example/", "", status=301, headers={"location": "https://party.example/"})
+    fake_web.add("https://party.example/", "<html></html>")
+    answer = [
+        {"name": "Umbenanntes Ministerium", "homepage": "https://renamed.example/",
+         "feeds": ["https://party.example/presse.rss"], "actor_type": "federal_ministry"},
+        {"name": "Altes Ministerium", "homepage": "https://old-ministry.example/", "feeds": [],
+         "actor_type": "federal_ministry"},
+    ]
+
+    _, result = run_review(settings, config_path, fake_web.client(),
+                           FakeSearch({"federal government of Germany": answer}), NOW)
+
+    excluded = {change.entry.fields["homepage"]: change.entry.fields for change in result.changes
+                if change.action == "exclude"}
+    assert excluded["https://renamed.example/"]["status"] == "duplicate"
+    assert excluded["https://renamed.example/"]["reason"] == "same feed as `spd_example`"
+    assert excluded["https://old-ministry.example/"]["status"] == "duplicate"
+    assert "redirects to party.example" in excluded["https://old-ministry.example/"]["reason"]
+    assert not any(change.action == "add_source" for change in result.changes)
+
+
+def test_excluded_candidates_are_checked_again_by_every_review(review_setup, fake_web) -> None:
+    settings, config_path = review_setup
+    exclusion = ('\n[[excluded]]\nid = "{id}"\nname = "{name}"\nhomepage = "https://{host}/"\nkind = "press_source"\n'
+                 'actor_type = "state_government"\njurisdiction = "{state}"\nstatus = "no_feed"\n'
+                 'reason = "no readable feed found"\nchecked = 2026-10-01\n')
+    config_path.write_text(CONFIG + "".join(exclusion.format(id=state_id, name=name, host=host, state=state)
+                                            for state_id, name, host, state in (
+        ("state_bw", "Staatsministerium Baden-Württemberg", "stm.example", "DE-BW"),
+        ("state_he", "Hessische Staatskanzlei", "hessen.example", "DE-HE"),
+        ("state_hb", "Senatskanzlei Bremen", "bremen.example", "DE-HB"),
+    )), encoding="utf-8")
+    fake_web.add("https://stm.example/", '<html><head><link rel="alternate" type="application/rss+xml" '
+                 'href="/presse.rss"></head></html>')
+    fake_web.add("https://stm.example/presse.rss", political_feed("stm.example", 2), content_type="application/rss+xml")
+    fake_web.add("https://hessen.example/", "<html><body>Keine Feeds</body></html>")
+    fake_web.add("https://bremen.example/", "Forbidden", status=403)
+
+    text, result = run_review(settings, config_path, fake_web.client(), None, NOW)
+
+    assert result.rechecked == 3
+    added = [change.entry.fields for change in result.changes if change.action == "add_source"]
+    assert [(entry["id"], entry["jurisdiction"]) for entry in added] == [("state_bw", "DE-BW")]
+    config = source_review.validate_config_text(text)
+    by_id = {entry.id: entry for entry in config.excluded}
+    assert "state_bw" not in by_id and config.press_sources[-1].id == "state_bw"
+    # An unchanged result leaves the entry as it is; a new reason updates it
+    assert by_id["state_he"].checked == datetime(2026, 10, 1).date()
+    assert by_id["state_hb"].status == "blocked" and by_id["state_hb"].checked == NOW.date()
+
+
 def test_review_without_search_changes_only_existing_sources(review_setup, fake_web) -> None:
     settings, config_path = review_setup
 
@@ -349,7 +407,7 @@ def test_apply_changes_keeps_other_entries_byte_identical(tmp_path) -> None:
     assert source_review.validate_config_text(text).outlets[2].removed_reason == 'no "items"'
 
 
-def test_expired_exclusion_is_dropped_when_the_candidate_is_admitted(tmp_path) -> None:
+def test_dropped_exclusion_is_removed_from_the_configuration(tmp_path) -> None:
     config_path = tmp_path / "sources.toml"
     config_path.write_text(CONFIG.replace('status = "blocked"', 'status = "no_feed"'), encoding="utf-8")
     config = load_config(config_path)

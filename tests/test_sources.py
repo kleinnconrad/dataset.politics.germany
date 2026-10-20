@@ -36,17 +36,24 @@ def test_lifecycle_keys_and_exclusions_are_read(tmp_path) -> None:
     assert outlet.removed_reason == "blocked" and outlet.keep is True
     assert not outlet.active and config.active_sources == ()
     assert config.excluded[0].status == "tdm_reserved"
-    assert config.excluded[0].is_permanent_or_recent(date(2030, 1, 1))
+    assert not config.excluded[0].rechecked
 
 
-def test_expiring_exclusion_is_checked_again_after_a_year(tmp_path) -> None:
-    text = ENTRY + ("\n[[excluded]]\nid = \"blog\"\nname = \"Blog\"\nhomepage = \"https://blog.example/\"\n"
-                    "status = \"no_feed\"\nreason = \"no feed\"\nchecked = 2026-10-19\n")
+def test_exclusion_with_a_temporary_reason_and_attributes_is_rechecked(tmp_path) -> None:
+    text = ENTRY + ("\n[[excluded]]\nid = \"state_bw\"\nname = \"Staatsministerium\"\n"
+                    "homepage = \"https://stm.example/\"\nkind = \"press_source\"\nactor_type = \"state_government\"\n"
+                    "jurisdiction = \"DE-BW\"\nfeeds = [\"https://stm.example/rss\"]\nstatus = \"no_feed\"\n"
+                    "reason = \"no feed\"\nchecked = 2026-10-19\n\n[[excluded]]\nid = \"blog\"\nname = \"Blog\"\n"
+                    "homepage = \"https://blog.example/\"\nstatus = \"no_feed\"\nreason = \"no feed\"\n"
+                    "checked = 2026-10-19\n")
 
-    entry = load_config(write(tmp_path, text)).excluded[0]
+    with_attributes, without_kind = load_config(write(tmp_path, text)).excluded
 
-    assert entry.is_permanent_or_recent(date(2027, 10, 18))
-    assert not entry.is_permanent_or_recent(date(2027, 10, 19))
+    assert with_attributes.rechecked and with_attributes.feeds == ("https://stm.example/rss",)
+    assert with_attributes.actor_type == "state_government" and with_attributes.jurisdiction == "DE-BW"
+    assert not without_kind.rechecked
+    with pytest.raises(ValueError, match="actor_type"):
+        load_config(write(tmp_path, text.replace('"state_government"', '"ministry"')))
 
 
 @pytest.mark.parametrize("line", ['added = "2026-10-19"', "added = 2026-10-19T10:00:00Z"])

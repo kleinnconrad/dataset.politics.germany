@@ -6,7 +6,8 @@ review (``source_review.py``) proposes changes to. Every source has the date
 on which it was ``added``; a source that is no longer collected keeps its
 entry with the date on which it was ``removed``, so that the coverage period
 of every source stays known. ``[[excluded]]`` entries are candidates that
-were checked and not admitted; the review does not propose them again.
+were checked and not admitted; the search does not propose them again, and
+every review checks the entries with a temporary reason again.
 
 The health of the sources is kept in ``state/sources.json`` and follows fixed rules:
 
@@ -39,11 +40,11 @@ BROKEN_AFTER_FAILURES = 7
 BROKEN_RETRY_DAYS = 7
 
 SourceStatus = Literal["active", "broken", "blocked", "tdm_reserved"]
-# Why a candidate was excluded. blocked, tdm_reserved and not_relevant are permanent until the entry is
-# changed by hand; the other reasons expire after EXCLUSION_RECHECK_DAYS, so that the review checks the candidate again.
-ExclusionStatus = Literal["blocked", "tdm_reserved", "not_relevant", "no_feed", "inactive", "robots"]
-PERMANENT_EXCLUSIONS: tuple[str, ...] = ("blocked", "tdm_reserved", "not_relevant")
-EXCLUSION_RECHECK_DAYS = 365
+# Why a candidate was excluded. blocked, tdm_reserved, duplicate and not_relevant are permanent until the
+# entry is changed by hand; every source review checks the entries with the other reasons again.
+ExclusionStatus = Literal["blocked", "tdm_reserved", "duplicate", "not_relevant", "no_feed", "inactive", "robots"]
+PERMANENT_EXCLUSIONS: tuple[str, ...] = ("blocked", "tdm_reserved", "duplicate", "not_relevant")
+SourceKind = Literal["outlet", "press_source"]
 
 
 @dataclass(frozen=True)
@@ -142,7 +143,17 @@ class ExcludedSource:
         homepage (str): Homepage URL.
         status (str): Kind of the reason (see ``ExclusionStatus``).
         reason (str): Description of the reason.
-        checked (date): Day of the check.
+        checked (date): Day on which the status was set.
+        kind (Optional[str]): outlet or press_source; with the attributes below it lets the
+            source review check the candidate again and admit it.
+        feeds (tuple[str, ...]): Feed URLs that were proposed for the candidate.
+        actor_type (Optional[str]): Actor type of a press source.
+        party (Optional[str]): Party code of a party or parliamentary group.
+        jurisdiction (Optional[str]): DE or the state of a press source.
+        outlet_type (Optional[str]): Type of an outlet.
+        owner_group (Optional[str]): Publisher group of an outlet.
+        home_state (Optional[str]): State of a regional outlet.
+        paywall_model (Optional[str]): Paywall model of an outlet.
     """
     id: str
     name: str
@@ -150,17 +161,20 @@ class ExcludedSource:
     status: str
     reason: str
     checked: date
+    kind: Optional[str] = None
+    feeds: tuple[str, ...] = ()
+    actor_type: Optional[str] = None
+    party: Optional[str] = None
+    jurisdiction: Optional[str] = None
+    outlet_type: Optional[str] = None
+    owner_group: Optional[str] = None
+    home_state: Optional[str] = None
+    paywall_model: Optional[str] = None
 
-    def is_permanent_or_recent(self, today: date) -> bool:
-        """Tells whether the exclusion still applies.
-
-        Args:
-            today: Day of the review.
-
-        Returns:
-            bool: True for permanent reasons and for checks less than EXCLUSION_RECHECK_DAYS ago.
-        """
-        return self.status in PERMANENT_EXCLUSIONS or (today - self.checked).days < EXCLUSION_RECHECK_DAYS
+    @property
+    def rechecked(self) -> bool:
+        """True if every source review checks the candidate again: a temporary reason and a known kind."""
+        return self.status not in PERMANENT_EXCLUSIONS and self.kind is not None
 
 
 @dataclass(frozen=True)
@@ -266,11 +280,22 @@ def load_config(path: Path = CONFIG_PATH) -> SourceConfig:
             checked = _date_value(str(item.get("id", "?")), item, "checked")
             if checked is None:
                 raise KeyError("checked")
-            candidate = ExcludedSource(id=item["id"], name=item["name"], homepage=item["homepage"],
-                                       status=item["status"], reason=item["reason"], checked=checked)
+            candidate = ExcludedSource(
+                id=item["id"], name=item["name"], homepage=item["homepage"], status=item["status"],
+                reason=item["reason"], checked=checked, kind=item.get("kind"), feeds=tuple(item.get("feeds", [])),
+                actor_type=item.get("actor_type"), party=item.get("party"), jurisdiction=item.get("jurisdiction"),
+                outlet_type=item.get("outlet_type"), owner_group=item.get("owner_group"),
+                home_state=item.get("home_state"), paywall_model=item.get("paywall_model"),
+            )
         except KeyError as e:
             raise ValueError(f"Excluded entry {item.get('id', '?')} misses the key {e}") from e
         _check_value(candidate.id, "status", candidate.status, get_args(ExclusionStatus))
+        _check_value(candidate.id, "kind", candidate.kind, get_args(SourceKind))
+        _check_value(candidate.id, "actor_type", candidate.actor_type, get_args(ActorType))
+        _check_value(candidate.id, "jurisdiction", candidate.jurisdiction, ("DE", *get_args(StateCode)))
+        _check_value(candidate.id, "outlet_type", candidate.outlet_type, get_args(OutletType))
+        _check_value(candidate.id, "home_state", candidate.home_state, get_args(StateCode))
+        _check_value(candidate.id, "paywall_model", candidate.paywall_model, get_args(PaywallModel))
         excluded.append(candidate)
     ids = [entry.id for entry in (*outlets, *press_sources, *excluded)]
     duplicates = sorted({source_id for source_id in ids if ids.count(source_id) > 1})
