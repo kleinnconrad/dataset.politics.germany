@@ -5,8 +5,9 @@
 #   removed = YYYY-MM-DD         day on which the source was removed; the entry stays, so that its coverage period is known
 #   removed_reason = "..."       why the source was removed
 #   keep = true                  the review does not propose a removal for low yield
-# [[excluded]] entries at the end are candidates that were checked and not admitted (status blocked, tdm_reserved
-# and not_relevant are permanent; no_feed, inactive and robots are checked again after a year).
+# [[excluded]] entries at the end are candidates that were checked and not admitted. The search does not propose
+# them again. Status blocked, tdm_reserved, duplicate and not_relevant are permanent; entries with no_feed, inactive
+# or robots and a kind are checked again by every review and added when they pass.
 
 # feeds: 107 h, 13056 h, 18483 h; news sitemap: none; robots.txt states a TDM reservation (§ 44b UrhG) in natural language, therefore fetch_pages = false
 [[outlet]]

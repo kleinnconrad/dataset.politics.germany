@@ -62,6 +62,7 @@ from schema import PartyCode, PaywallModel, StateCode
 from settings import Settings
 from sources import (
     CONFIG_PATH,
+    ExcludedSource,
     Outlet,
     PressSource,
     Source,
@@ -70,7 +71,7 @@ from sources import (
     SourceHealthStore,
     load_config,
 )
-from urls import domain_id, path_tokens
+from urls import domain_id, normalize_url, path_tokens
 from web import (
     MAX_CRAWL_DELAY_S,
     BlockedError,
@@ -128,6 +129,8 @@ Rules:
 FEDERAL_PROMPT = """\
 Use Google Search to find the official RSS or Atom feeds with press releases of the federal government of Germany in its current composition: the Bundesregierung (Presse- und Informationsamt), the Federal Chancellery and every federal ministry. Ministries are renamed and restructured after elections; use their current names and websites.
 
+These federal institutions are already in the list; do not suggest them again, also not under an earlier name or domain: {listed}.
+
 {rules}
 
 Return only a JSON array without other text, with one object per institution:
@@ -163,6 +166,11 @@ Return only a JSON array without other text, with up to {count} objects:
 ChangeAction = Literal["remove_source", "remove_feed", "replace_feed", "remove_sitemap", "set_fetch_pages",
                        "add_source", "exclude", "drop_exclusion"]
 SearchCategory = Literal["federal", "groups", "states", "dailies"]
+# Search category of an excluded press source, by actor type, for its recheck
+EXCLUSION_CATEGORIES: dict[str, SearchCategory] = {
+    "federal_government": "federal", "federal_ministry": "federal", "party": "groups",
+    "parliamentary_group": "groups", "state_government": "states",
+}
 
 
 class SearchError(Exception):
@@ -249,11 +257,17 @@ class Rejection:
         reason (str): Why it was not admitted.
         status (Optional[str]): Exclusion status (see ``ExclusionStatus``); None if the
             reason may be temporary, so that the candidate is not excluded.
+        kind (Optional[str]): outlet or press_source, if the attributes were valid.
+        attributes (dict[str, Any]): The validated attributes, kept with an exclusion for its recheck.
+        feeds (tuple[str, ...]): The proposed feed URLs.
     """
     name: str
     homepage: str
     reason: str
     status: Optional[str] = None
+    kind: Optional[str] = None
+    attributes: dict[str, Any] = field(default_factory=dict)
+    feeds: tuple[str, ...] = ()
 
 
 @dataclass
@@ -267,7 +281,8 @@ class ReviewResult:
         gaps (Gaps): Gaps that were searched for.
         searches (list[str]): Search categories that were sent to Gemini.
         checked_sources (int): Active sources that were checked.
-        candidates (int): Candidates that were evaluated.
+        candidates (int): Candidates from the search that were evaluated.
+        rechecked (int): Excluded candidates that were checked again.
     """
     changes: list[Change] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
@@ -276,6 +291,7 @@ class ReviewResult:
     searches: list[str] = field(default_factory=list)
     checked_sources: int = 0
     candidates: int = 0
+    rechecked: int = 0
 
 
 class PressCandidate(BaseModel):
@@ -635,16 +651,15 @@ def find_gaps(config: SourceConfig, politicians: dict[str, Politician], leaving:
     )
 
 
-def known_hosts(config: SourceConfig, today: date) -> set[str]:
+def known_hosts(config: SourceConfig) -> set[str]:
     """Returns the hosts that the search must not propose.
 
     Args:
         config: The configuration.
-        today: Day of the review.
 
     Returns:
-        set[str]: Hosts (without ``www.``) of all sources, including removed ones, and of the
-        exclusions that still apply.
+        set[str]: Hosts (without ``www.``) of all sources, including removed ones, and of all
+        exclusions; the review checks the exclusions with a temporary reason itself.
     """
     hosts: set[str] = set()
     for source in config.sources:
@@ -653,10 +668,27 @@ def known_hosts(config: SourceConfig, today: date) -> set[str]:
                 hosts.add(domain_id(url))
             except ValueError:
                 continue
-    for entry in config.excluded:
-        if entry.is_permanent_or_recent(today):
-            hosts.add(domain_id(entry.homepage))
+    hosts.update(domain_id(entry.homepage) for entry in config.excluded)
     return hosts
+
+
+def known_feeds(config: SourceConfig) -> dict[str, str]:
+    """Returns the listed feeds and news sitemaps, so that a candidate with the same feed is recognized.
+
+    Args:
+        config: The configuration.
+
+    Returns:
+        dict[str, str]: Source id by normalized URL, for all sources including removed ones.
+    """
+    feeds: dict[str, str] = {}
+    for source in config.sources:
+        for url in _source_urls(source)[1:]:
+            try:
+                feeds.setdefault(normalize_url(url), source.id)
+            except ValueError:
+                continue
+    return feeds
 
 
 def _actor_lines(gaps: Gaps) -> list[str]:
@@ -673,8 +705,8 @@ def _state_lines(codes: Sequence[str]) -> str:
     return "\n".join(f"- {STATE_NAMES[code]} ({code})" for code in codes)
 
 
-def search_candidates(model: Any, gaps: Gaps, known: set[str],
-                      result: ReviewResult) -> list[tuple[SearchCategory, SearchCandidate]]:
+def search_candidates(model: Any, gaps: Gaps, known: set[str], result: ReviewResult,
+                      listed_federal: Sequence[str] = ()) -> list[tuple[SearchCategory, SearchCandidate]]:
     """Asks the search for candidates: the federal government always, the gaps where there are any.
 
     Args:
@@ -682,13 +714,15 @@ def search_candidates(model: Any, gaps: Gaps, known: set[str],
         gaps: The gaps.
         known: Hosts that must not be proposed.
         result: The review result; searches and notes are added.
+        listed_federal: Names of the federal institutions in the list.
 
     Returns:
         list: Category and candidate, in the order of the answers.
     """
     rules = SEARCH_RULES.format(known=", ".join(sorted(known)) or "(none)")
+    listed = "; ".join(listed_federal) or "(none)"
     requests: list[tuple[SearchCategory, str, type[BaseModel]]] = [
-        ("federal", FEDERAL_PROMPT.format(rules=rules), PressCandidate),
+        ("federal", FEDERAL_PROMPT.format(rules=rules, listed=listed), PressCandidate),
     ]
     actors = _actor_lines(gaps)
     if actors:
@@ -808,14 +842,17 @@ def _feed_order(url: str, outlet: bool) -> tuple[int, str]:
 
 
 def evaluate_candidate(web: WebClient, category: SearchCategory, candidate: SearchCandidate, gaps: Gaps,
-                       now: datetime, taken: set[str]) -> tuple[Optional[NewEntry], Optional[Rejection]]:
+                       now: datetime, taken: set[str], known: set[str], known_feeds: dict[str, str],
+                       source_id: Optional[str] = None) -> tuple[Optional[NewEntry], Optional[Rejection]]:
     """Checks a candidate with the fetch rules of the pipeline and builds its entry.
 
-    A candidate is admitted if its robots.txt can be read and allows the
-    feeds, it declares no TDM reservation (TDMRep, header or meta tag), it
-    does not block automated requests, and its feeds are recent: a press
-    source needs an item in the last PRESS_RECENT_DAYS days, an outlet
-    MIN_OUTLET_POLITICAL_ITEMS political items in the last OUTLET_RECENT_DAYS days.
+    A candidate is admitted if its robots.txt can be read, it declares no TDM
+    reservation (TDMRep, header or meta tag), it does not block automated
+    requests, it is not a source of the list under another domain (a homepage
+    that redirects to a listed host, or only feeds that are listed), and its
+    feeds are recent: a press source needs an item in the last
+    PRESS_RECENT_DAYS days, an outlet MIN_OUTLET_POLITICAL_ITEMS political
+    items in the last OUTLET_RECENT_DAYS days.
 
     Args:
         web: The HTTP client.
@@ -824,11 +861,15 @@ def evaluate_candidate(web: WebClient, category: SearchCategory, candidate: Sear
         gaps: The searched gaps.
         now: Time of the review (UTC).
         taken: Ids in use; the id of an admitted candidate is added.
+        known: Hosts of the listed sources.
+        known_feeds: Source id by normalized URL of every listed feed and news sitemap.
+        source_id: Id of the new entry; built from the attributes if omitted.
 
     Returns:
         tuple: The new entry, or the rejection.
     """
     homepage = candidate.homepage.strip()
+    proposed = tuple(dict.fromkeys(url.strip() for url in candidate.feeds if url.strip()))
     if urlsplit(homepage).scheme not in ("http", "https"):
         return None, Rejection(candidate.name, homepage, "homepage is not an http(s) URL")
     try:
@@ -836,6 +877,11 @@ def evaluate_candidate(web: WebClient, category: SearchCategory, candidate: Sear
     except ValueError as e:
         return None, Rejection(candidate.name, homepage, f"not used: {e}")
     outlet = isinstance(candidate, OutletCandidate)
+
+    def reject(reason: str, status: Optional[str] = None) -> tuple[None, Rejection]:
+        return None, Rejection(candidate.name, homepage, reason, status, "outlet" if outlet else "press_source",
+                               attributes, proposed)
+
     provisional: Source
     if outlet:
         provisional = Outlet(id="candidate", name=candidate.name, homepage=homepage, outlet_type="regional_daily",
@@ -848,44 +894,57 @@ def evaluate_candidate(web: WebClient, category: SearchCategory, candidate: Sear
     try:
         rules = web.robots_rules(homepage)
     except FetchError as e:
-        return None, Rejection(candidate.name, homepage, f"robots.txt not readable ({e.reason})")
+        return reject(f"robots.txt not readable ({e.reason})")
     delay = rules.crawl_delay if rules else None
     if delay is not None and delay > MAX_CRAWL_DELAY_S:
-        return None, Rejection(candidate.name, homepage, f"robots.txt crawl delay {delay:g} s", "robots")
+        return reject(f"robots.txt crawl delay {delay:g} s", "robots")
     if web.tdm_reserved(homepage):
-        return None, Rejection(candidate.name, homepage, "TDM reservation (tdmrep.json)", "tdm_reserved")
+        return reject("TDM reservation (tdmrep.json)", "tdm_reserved")
 
+    host = domain_id(homepage)
     discovered: list[str] = []
     try:
         page = web.get(homepage)
     except RobotsDisallowedError:
         page = None
     except BlockedError as e:
-        return None, Rejection(candidate.name, homepage, f"homepage {e.reason}", "blocked")
+        return reject(f"homepage {e.reason}", "blocked")
     except NotFoundError as e:
-        return None, Rejection(candidate.name, homepage, f"homepage not found ({e.reason})")
+        return reject(f"homepage not found ({e.reason})")
     except FetchError as e:
-        return None, Rejection(candidate.name, homepage, f"homepage not reachable ({e.reason})")
+        return reject(f"homepage not reachable ({e.reason})")
     if page is not None:
+        final_host = domain_id(page.url)
+        if final_host != host and final_host in known:
+            return reject(f"homepage redirects to {final_host}, which is in the list", "duplicate")
         if web.tdm_reserved(page.url, page):
-            return None, Rejection(candidate.name, homepage, "TDM reservation (header)", "tdm_reserved")
+            return reject("TDM reservation (header)", "tdm_reserved")
         if "html" in page.content_type:
             if parse_page(page.text).tdm_reserved:
-                return None, Rejection(candidate.name, homepage, "TDM reservation (meta tag)", "tdm_reserved")
+                return reject("TDM reservation (meta tag)", "tdm_reserved")
             discovered = feed_links(page.text, page.url)
 
-    urls = sorted(dict.fromkeys([*candidate.feeds, *discovered]), key=lambda url: _feed_order(url, outlet))
+    urls = sorted(dict.fromkeys([*proposed, *discovered]), key=lambda url: _feed_order(url, outlet))
     recent_after = now - timedelta(days=OUTLET_RECENT_DAYS if outlet else PRESS_RECENT_DAYS)
     feeds: list[str] = []
+    duplicates: set[str] = set()
     recent = 0
     readable = False
     for url in urls[:MAX_FEEDS_CHECKED_PER_CANDIDATE]:
         if len(feeds) >= MAX_FEEDS_PER_SOURCE:
             break
+        listed = _listed_feed(known_feeds, url)
+        if listed is not None:
+            duplicates.add(listed)
+            continue
         check = check_feed(web, url, provisional)
         if check.outcome == "blocked":
-            return None, Rejection(candidate.name, homepage, f"feed {check.detail}", "blocked")
+            return reject(f"feed {check.detail}", "blocked")
         if check.outcome != "ok":
+            continue
+        listed = _listed_feed(known_feeds, check.moved_to) if check.moved_to else None
+        if listed is not None:
+            duplicates.add(listed)
             continue
         readable = True
         items = [entry for entry in check.entries if entry.published_at and entry.published_at >= recent_after
@@ -898,6 +957,10 @@ def evaluate_candidate(web: WebClient, category: SearchCategory, candidate: Sear
         sitemap_urls = [candidate.news_sitemap] if candidate.news_sitemap else []
         sitemap_urls.extend(url for url in (rules.sitemaps if rules else ()) if "news" in url.lower())
         for url in dict.fromkeys(sitemap_urls):
+            listed = _listed_feed(known_feeds, url)
+            if listed is not None:
+                duplicates.add(listed)
+                continue
             check = check_feed(web, url, provisional, sitemap=True)
             items = [entry for entry in check.entries if entry.published_at and entry.published_at >= recent_after
                      and looks_political(entry)]
@@ -907,16 +970,17 @@ def evaluate_candidate(web: WebClient, category: SearchCategory, candidate: Sear
                 recent = max(recent, len(items))
                 break
     if not feeds and sitemap is None:
+        if duplicates:
+            return reject("same feed as " + ", ".join(f"`{listed}`" for listed in sorted(duplicates)), "duplicate")
         if not readable:
-            return None, Rejection(candidate.name, homepage, "no readable feed found", "no_feed")
-        return None, Rejection(candidate.name, homepage, "no feed with recent items", "inactive")
+            return reject("no readable feed found", "no_feed")
+        return reject("no feed with recent items", "inactive")
     minimum = MIN_OUTLET_POLITICAL_ITEMS if outlet else 1
     if recent < minimum:
-        return None, Rejection(candidate.name, homepage, f"{recent} recent items, fewer than {minimum}", "inactive")
+        return reject(f"{recent} recent items, fewer than {minimum}", "inactive")
 
     fetch_pages = not (rules is not None and rules.tdm_statement) and not (delay is not None and
                                                                           delay > MAX_PAGE_CRAWL_DELAY_S)
-    host = domain_id(homepage)
     days = OUTLET_RECENT_DAYS if outlet else PRESS_RECENT_DAYS
     evidence = [f"{recent} {'political ' if outlet else ''}items in the last {days} days"]
     if delay is not None:
@@ -924,7 +988,7 @@ def evaluate_candidate(web: WebClient, category: SearchCategory, candidate: Sear
     if rules is not None and rules.tdm_statement:
         evidence.append("robots.txt states a TDM reservation in natural language, therefore fetch_pages = false")
     comment = f"source review {now.date().isoformat()}: " + "; ".join(evidence)
-    source_id = candidate_id(attributes, host, taken)
+    source_id = source_id or candidate_id(attributes, host, taken)
     if outlet:
         fields = {"id": source_id, "name": candidate.name, "homepage": homepage,
                   "outlet_type": attributes["outlet_type"], "owner_group": attributes["owner_group"],
@@ -935,6 +999,14 @@ def evaluate_candidate(web: WebClient, category: SearchCategory, candidate: Sear
               "party": attributes["party"], "jurisdiction": attributes["jurisdiction"], "feeds": feeds,
               "fetch_pages": fetch_pages, "added": now.date()}
     return NewEntry("press_source", fields, comment), None
+
+
+def _listed_feed(known_feeds: dict[str, str], url: str) -> Optional[str]:
+    """Returns the id of the listed source that has a feed or news sitemap with this URL, if any."""
+    try:
+        return known_feeds.get(normalize_url(url))
+    except ValueError:
+        return None
 
 
 def _press_key(actor_type: Optional[str], party: Optional[str], jurisdiction: Optional[str]) -> Optional[str]:
@@ -955,6 +1027,40 @@ def _candidate_key(category: SearchCategory, candidate: SearchCandidate) -> Opti
     return None
 
 
+def _candidate_from_exclusion(entry: ExcludedSource) -> Optional[tuple[SearchCategory, SearchCandidate]]:
+    """Rebuilds the search candidate of an exclusion, so that it can be checked again."""
+    if entry.kind == "outlet":
+        return "dailies", OutletCandidate(name=entry.name, homepage=entry.homepage, feeds=list(entry.feeds),
+                                          home_state=entry.home_state, owner_group=entry.owner_group,
+                                          paywall_model=entry.paywall_model)
+    category = EXCLUSION_CATEGORIES.get(entry.actor_type or "")
+    if entry.kind != "press_source" or category is None:
+        return None
+    return category, PressCandidate(name=entry.name, homepage=entry.homepage, feeds=list(entry.feeds),
+                                    actor_type=entry.actor_type, jurisdiction=entry.jurisdiction, party=entry.party)
+
+
+def exclusion_entry(rejection: Rejection, exclusion_id: str, today: date) -> NewEntry:
+    """Builds the ``[[excluded]]`` entry of a rejected candidate, with the attributes for its recheck.
+
+    Args:
+        rejection: The rejection.
+        exclusion_id: Id of the entry.
+        today: Day of the review.
+
+    Returns:
+        NewEntry: The entry.
+    """
+    fields: dict[str, Any] = {"id": exclusion_id, "name": rejection.name, "homepage": rejection.homepage}
+    if rejection.kind is not None:
+        fields["kind"] = rejection.kind
+        fields.update(rejection.attributes)
+        if rejection.feeds:
+            fields["feeds"] = list(rejection.feeds)
+    fields.update(status=rejection.status, reason=rejection.reason, checked=today)
+    return NewEntry("excluded", fields)
+
+
 # ---------------------------------------------------------------------------
 # Review
 # ---------------------------------------------------------------------------
@@ -967,7 +1073,8 @@ def run_review(settings: Settings, config_path: Path, web: WebClient, model: Opt
         settings: The run settings (data and state folders).
         config_path: The configuration file.
         web: The HTTP client.
-        model: A ``SearchModel`` or a compatible test double; None skips the search.
+        model: A ``SearchModel`` or a compatible test double; None skips the search, but
+            not the recheck of the excluded candidates.
         now: Time of the review (UTC).
         clock: Monotonic clock in seconds, for the time budget.
 
@@ -999,64 +1106,127 @@ def run_review(settings: Settings, config_path: Path, web: WebClient, model: Opt
 
     leaving = frozenset(change.source_id for change in result.changes if change.action == "remove_source")
     result.gaps = find_gaps(config, load_politicians(settings.state_dir), leaving)
+    state = _CandidateState(
+        known=known_hosts(config), known_feeds=known_feeds(config),
+        taken={entry.id for entry in (*config.sources, *config.excluded)},
+        press_keys={_press_key(source.actor_type, source.party, source.jurisdiction) for source in config.active_sources
+                    if isinstance(source, PressSource) and source.id not in leaving},
+    )
+    _recheck_exclusions(web, config, result, state, now, clock, started)
     if model is not None:
-        _add_candidates(web, model, config, result, now, clock, started)
+        _search(web, model, config, result, state, now, clock, started)
     return apply_changes(config_path.read_text(encoding="utf-8"), config, result.changes, today), result
 
 
-def _add_candidates(web: WebClient, model: Any, config: SourceConfig, result: ReviewResult, now: datetime,
-                    clock: Callable[[], float], started: float) -> None:
+@dataclass
+class _CandidateState:
+    """What the recheck of the exclusions and the search share in one review.
+
+    Attributes:
+        known: Hosts of the listed sources and exclusions.
+        known_feeds: Source id by normalized feed and news sitemap URL.
+        taken: Ids in use.
+        press_keys: Parties, parliamentary groups and state governments that have a source.
+        additions: Sources admitted in this review.
+    """
+    known: set[str]
+    known_feeds: dict[str, str]
+    taken: set[str]
+    press_keys: set[Optional[str]]
+    additions: int = 0
+
+
+def _admit(result: ReviewResult, state: _CandidateState, entry: NewEntry, key: Optional[str],
+           candidate: SearchCandidate) -> bool:
+    """Adds an admitted candidate to the changes, unless the limit of additions is reached.
+
+    Returns:
+        bool: True if the candidate was added.
+    """
+    if state.additions >= MAX_ADDITIONS_PER_REVIEW:
+        result.notes.append(f"{candidate.name} ({candidate.homepage}) passes the checks; not added because of the "
+                            f"limit of {MAX_ADDITIONS_PER_REVIEW} additions per review")
+        return False
+    state.additions += 1
+    state.press_keys.add(key)
+    urls = [*entry.fields.get("feeds", []), *([entry.fields["news_sitemap"]] if entry.fields.get("news_sitemap") else [])]
+    for url in urls:
+        state.known_feeds[normalize_url(url)] = str(entry.fields["id"])
+    result.changes.append(Change("add_source", str(entry.fields["id"]), entry.comment or "", entry=entry))
+    return True
+
+
+def _recheck_exclusions(web: WebClient, config: SourceConfig, result: ReviewResult, state: _CandidateState,
+                        now: datetime, clock: Callable[[], float], started: float) -> None:
+    """Checks the excluded candidates with a temporary reason again, without the search.
+
+    A candidate that passes now is added under the id of its exclusion, and the
+    exclusion is dropped. If its reason changed, the exclusion gets the new
+    status; an unchanged result leaves the configuration as it is.
+    """
+    for exclusion in config.excluded:
+        if not exclusion.rechecked:
+            continue
+        rebuilt = _candidate_from_exclusion(exclusion)
+        if rebuilt is None:
+            continue
+        category, candidate = rebuilt
+        key = _candidate_key(category, candidate)
+        if key is not None and key in state.press_keys:
+            continue
+        if clock() - started > REVIEW_TIME_BUDGET_S:
+            result.notes.append("Time budget reached: further excluded candidates not checked again")
+            return
+        result.rechecked += 1
+        own_host = domain_id(exclusion.homepage)
+        entry, rejection = evaluate_candidate(web, category, candidate, result.gaps, now, state.taken,
+                                              state.known - {own_host}, state.known_feeds, source_id=exclusion.id)
+        if entry is not None:
+            if _admit(result, state, entry, key, candidate):
+                result.changes.append(Change("drop_exclusion", exclusion.id, "admitted"))
+            continue
+        assert rejection is not None
+        if rejection.status is None or rejection.status == exclusion.status:
+            continue
+        result.changes.append(Change("exclude", exclusion.id, rejection.reason,
+                                     entry=exclusion_entry(rejection, exclusion.id, now.date())))
+
+
+def _search(web: WebClient, model: Any, config: SourceConfig, result: ReviewResult, state: _CandidateState,
+            now: datetime, clock: Callable[[], float], started: float) -> None:
     """Searches for candidates, evaluates them and adds the changes to the result."""
-    today = now.date()
-    known = known_hosts(config, today)
-    taken = {entry.id for entry in (*config.sources, *config.excluded)}
-    leaving = {change.source_id for change in result.changes if change.action == "remove_source"}
-    press_keys = {_press_key(source.actor_type, source.party, source.jurisdiction) for source in config.active_sources
-                  if isinstance(source, PressSource) and source.id not in leaving}
-    expired = {domain_id(entry.homepage): entry for entry in config.excluded if not entry.is_permanent_or_recent(today)}
+    listed = [source.name for source in config.active_sources if isinstance(source, PressSource)
+              and source.actor_type in ("federal_government", "federal_ministry")]
     seen_hosts: set[str] = set()
-    additions = 0
-    for category, candidate in search_candidates(model, result.gaps, known, result):
+    for category, candidate in search_candidates(model, result.gaps, state.known, result, listed):
         try:
             host = domain_id(candidate.homepage)
         except ValueError:
             result.rejections.append(Rejection(candidate.name, candidate.homepage, "homepage has no host"))
             continue
-        if host in known or host in seen_hosts:
+        if host in state.known or host in seen_hosts:
             continue
         key = _candidate_key(category, candidate)
-        if key is not None and key in press_keys:
+        if key is not None and key in state.press_keys:
             continue
         if clock() - started > REVIEW_TIME_BUDGET_S:
             result.notes.append("Time budget reached: further candidates not evaluated")
             break
         seen_hosts.add(host)
         result.candidates += 1
-        entry, rejection = evaluate_candidate(web, category, candidate, result.gaps, now, taken)
+        entry, rejection = evaluate_candidate(web, category, candidate, result.gaps, now, state.taken, state.known,
+                                              state.known_feeds)
         if entry is not None:
-            if additions >= MAX_ADDITIONS_PER_REVIEW:
-                result.notes.append(f"{candidate.name} ({candidate.homepage}) passes the checks; not added because "
-                                    f"of the limit of {MAX_ADDITIONS_PER_REVIEW} additions per review")
-                continue
-            additions += 1
-            if key is not None:
-                press_keys.add(key)
-            result.changes.append(Change("add_source", str(entry.fields["id"]), entry.comment or "", entry=entry))
-            if host in expired:
-                result.changes.append(Change("drop_exclusion", expired[host].id, "admitted"))
+            _admit(result, state, entry, key, candidate)
             continue
         assert rejection is not None
         result.rejections.append(rejection)
         if rejection.status is None:
             continue
-        if host in expired:
-            # The yearly check of an expired exclusion failed again; the entry gets the new date
-            exclusion_id = expired[host].id
-        else:
-            exclusion_id = _new_id(host.split(".")[0], taken)
-        fields = {"id": exclusion_id, "name": candidate.name, "homepage": candidate.homepage.strip(),
-                  "status": rejection.status, "reason": rejection.reason, "checked": today}
-        result.changes.append(Change("exclude", exclusion_id, rejection.reason, entry=NewEntry("excluded", fields)))
+        exclusion_id = candidate_id(rejection.attributes, host, state.taken) if rejection.attributes \
+            else _new_id(host.split(".")[0], state.taken)
+        result.changes.append(Change("exclude", exclusion_id, rejection.reason,
+                                     entry=exclusion_entry(rejection, exclusion_id, now.date())))
 
 
 # ---------------------------------------------------------------------------
@@ -1306,8 +1476,9 @@ def build_report(result: ReviewResult, config: SourceConfig, now: datetime, sear
     lines = [
         f"## Source review {now:%Y-%m}",
         "",
-        f"Checked {result.checked_sources} of {len(config.active_sources)} active sources"
-        + (f" and {result.candidates} candidates from {len(result.searches)} searches"
+        f"Checked {result.checked_sources} of {len(config.active_sources)} active sources and "
+        f"{result.rechecked} excluded candidates again"
+        + (f", and {result.candidates} candidates from {len(result.searches)} searches"
            if search else "; the search for new sources was turned off") + ".",
         "",
         f"**Proposed:** {len(removals)} removals, {len(edits)} changes of feeds or page fetching, "
@@ -1338,7 +1509,9 @@ def build_report(result: ReviewResult, config: SourceConfig, now: datetime, sear
     if exclusions:
         lines.extend(["", "### Exclusions", "",
                       "Rejected candidates are added to the `[[excluded]]` entries, so that the search does not "
-                      "propose them again.", "", "| Candidate | Status | Reason |", "|---|---|---|"])
+                      "propose them again. Every review checks the entries with the status no_feed, inactive or "
+                      "robots again and adds them when they pass.", "",
+                      "| Candidate | Status | Reason |", "|---|---|---|"])
         for change in exclusions:
             assert change.entry is not None
             entry = change.entry.fields
