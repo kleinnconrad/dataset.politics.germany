@@ -471,6 +471,47 @@ def test_feed_links_and_json_answers() -> None:
     assert toml_value(NOW.date()) == "2026-11-01"
 
 
+def test_feed_links_reads_feed_links_in_the_page_body() -> None:
+    html = ('<html><body><a href="/presse/rss.xml">RSS</a><a href="/service/rss-feeds/">Alle Feeds</a>'
+            '<a href="/feedback">Feedback</a><a href="/kontakt">Kontakt</a><a href="mailto:presse@land.example">Mail</a>'
+            '<a href="https://feeds.example/atom#oben">Atom</a><a href="/presse/pm.xml?view=all">PM</a>'
+            '<a href="/sitemap.html">Sitemap</a></body></html>')
+
+    assert feed_links(html, "https://land.example/start") == [
+        "https://land.example/presse/rss.xml", "https://land.example/service/rss-feeds/", "https://feeds.example/atom",
+        "https://land.example/presse/pm.xml?view=all",
+    ]
+
+
+def test_overview_pages_and_feeds_of_a_failing_homepage_are_checked(review_setup, fake_web) -> None:
+    settings, config_path = review_setup
+    fake_web.add("https://land.example/", "<html></html>")
+    fake_web.add("https://land.example/presse/rss-feeds/", '<html><body><a href="/presse/pm.xml">Pressemitteilungen'
+                 '</a><a href="/kontakt">Kontakt</a></body></html>')
+    fake_web.add("https://land.example/presse/pm.xml", political_feed("land.example", 2),
+                 content_type="application/rss+xml")
+    fake_web.add("https://senat.example/", "Gone", status=410)
+    fake_web.add("https://senat.example/rss", political_feed("senat.example", 3), content_type="application/rss+xml")
+    fake_web.add("https://vergessen.example/", "Gone", status=410)
+    answer = [
+        {"name": "Staatskanzlei", "homepage": "https://land.example/", "feeds": ["https://land.example/presse/rss-feeds/"],
+         "jurisdiction": "DE-HE"},
+        {"name": "Senatskanzlei", "homepage": "https://senat.example/", "feeds": ["https://senat.example/rss"],
+         "jurisdiction": "DE-HB"},
+        {"name": "Vergessene Kanzlei", "homepage": "https://vergessen.example/", "feeds": [], "jurisdiction": "DE-HH"},
+    ]
+
+    _, result = run_review(settings, config_path, fake_web.client(), FakeSearch({"governments of these": answer}), NOW)
+
+    added = {change.source_id: change.entry.fields for change in result.changes if change.action == "add_source"}
+    assert added["state_he"]["feeds"] == ["https://land.example/presse/pm.xml"]
+    assert added["state_hb"]["feeds"] == ["https://senat.example/rss"]
+    # A homepage that is gone without a working feed may be a wrong answer of the search: not excluded
+    rejection = next(item for item in result.rejections if item.homepage == "https://vergessen.example/")
+    assert rejection.status is None and rejection.reason.startswith("homepage not found")
+    assert not any(change.action == "exclude" for change in result.changes)
+
+
 def test_search_model_stops_at_the_budget_and_wraps_errors() -> None:
     answers = iter([SimpleNamespace(text="[]", usage_metadata=None)] * 10)
     client = SimpleNamespace(models=SimpleNamespace(generate_content=lambda **kwargs: next(answers)))

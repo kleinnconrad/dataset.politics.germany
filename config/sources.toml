@@ -845,6 +845,17 @@ added = 2026-10-19
 removed = 2026-10-20
 removed_reason = "blocked since 2026-10-20: blocked (HTTP 403): https://www.saarland.de/DE/presse-informationen/informationen/rss-feed/_feeds/pressemitteilungen_feed.xml"
 
+# source review 2026-10-20: 6 items in the last 60 days; found by the first review, added by hand
+[[press_source]]
+id = "state_be"
+name = "Senatskanzlei Berlin"
+homepage = "https://www.berlin.de/senatskanzlei/"
+actor_type = "state_government"
+jurisdiction = "DE-BE"
+feeds = ["https://www.berlin.de/rbmskzl/index.php/rss"]
+fetch_pages = true
+added = 2026-10-20
+
 # Candidates that were checked and not admitted. The source review does not propose them again (see the header).
 [[excluded]]
 id = "faz"
