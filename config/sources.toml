@@ -842,6 +842,8 @@ jurisdiction = "DE-SL"
 feeds = ["https://www.saarland.de/DE/presse-informationen/informationen/rss-feed/_feeds/pressemitteilungen_feed.xml"]
 fetch_pages = true
 added = 2026-10-19
+removed = 2026-10-20
+removed_reason = "blocked since 2026-10-20: blocked (HTTP 403): https://www.saarland.de/DE/presse-informationen/informationen/rss-feed/_feeds/pressemitteilungen_feed.xml"
 
 # Candidates that were checked and not admitted. The source review does not propose them again (see the header).
 [[excluded]]
@@ -883,3 +885,160 @@ homepage = "https://www.rnd.de/"
 status = "blocked"
 reason = "blocks automated requests, as do the regional titles of the RND network"
 checked = 2026-10-19
+
+[[excluded]]
+id = "bundeskanzler"
+name = "Bundeskanzleramt"
+homepage = "https://www.bundeskanzler.de"
+kind = "press_source"
+actor_type = "federal_government"
+jurisdiction = "DE"
+feeds = ["https://www.bundeskanzler.de/SiteGlobals/Functions/RSSFeed/DE/RSSNewsfeed/rssnewsfeed_aktuelles_node.xml"]
+status = "no_feed"
+reason = "no readable feed found"
+checked = 2026-10-20
+
+[[excluded]]
+id = "auswaertiges_amt"
+name = "Auswärtiges Amt"
+homepage = "https://www.auswaertiges-amt.de/de"
+kind = "press_source"
+actor_type = "federal_ministry"
+jurisdiction = "DE"
+feeds = ["https://www.auswaertiges-amt.de/de/newsroom/presse/rss-newsfeeds/pressemitteilungen-node"]
+status = "no_feed"
+reason = "no readable feed found"
+checked = 2026-10-20
+
+[[excluded]]
+id = "bmwk"
+name = "Bundesministerium für Wirtschaft und Klimaschutz"
+homepage = "https://www.bmwk.de"
+kind = "press_source"
+actor_type = "federal_ministry"
+jurisdiction = "DE"
+feeds = ["https://www.bmwk.de/Redaktion/DE/RSS/Pressemitteilungen/pressemitteilungen.xml"]
+status = "no_feed"
+reason = "no readable feed found"
+checked = 2026-10-20
+
+[[excluded]]
+id = "bmas"
+name = "Bundesministerium für Arbeit und Soziales"
+homepage = "https://www.bmas.de"
+kind = "press_source"
+actor_type = "federal_ministry"
+jurisdiction = "DE"
+feeds = ["https://www.bmas.de/SiteGlobals/Functions/RSSFeed/DE/RSSNewsfeed/RSSNewsfeed.xml"]
+status = "robots"
+reason = "robots.txt crawl delay 180 s"
+checked = 2026-10-20
+
+[[excluded]]
+id = "bmel"
+name = "Bundesministerium für Ernährung und Landwirtschaft"
+homepage = "https://www.bmel.de"
+kind = "press_source"
+actor_type = "federal_ministry"
+jurisdiction = "DE"
+feeds = ["https://www.bmel.de/SiteGlobals/Functions/RSSFeed/DE/RSSNewsfeed/RSSNewsfeed_Pressemitteilungen.xml"]
+status = "no_feed"
+reason = "no readable feed found"
+checked = 2026-10-20
+
+[[excluded]]
+id = "bmbf"
+name = "Bundesministerium für Bildung und Forschung"
+homepage = "https://www.bmbf.de"
+kind = "press_source"
+actor_type = "federal_ministry"
+jurisdiction = "DE"
+feeds = ["https://www.bmbf.de/SharedDocs/RSS/de/pressemitteilungen.xml"]
+status = "no_feed"
+reason = "no readable feed found"
+checked = 2026-10-20
+
+[[excluded]]
+id = "cdu_csu_fraktion"
+name = "CDU/CSU-Fraktion im Deutschen Bundestag"
+homepage = "https://www.cducsu.de"
+kind = "press_source"
+actor_type = "parliamentary_group"
+party = "CDU_CSU"
+jurisdiction = "DE"
+feeds = ["https://www.csu-landesgruppe.de/presse/alle-pressemitteilungen-der-cducsu-fraktion"]
+status = "no_feed"
+reason = "no readable feed found"
+checked = 2026-10-20
+
+[[excluded]]
+id = "fw"
+name = "Freie Wähler Bundesvereinigung"
+homepage = "https://www.freiewaehler.eu"
+kind = "press_source"
+actor_type = "party"
+party = "FW"
+jurisdiction = "DE"
+status = "no_feed"
+reason = "no readable feed found"
+checked = 2026-10-20
+
+[[excluded]]
+id = "gruene"
+name = "Bündnis 90/Die Grünen"
+homepage = "https://www.gruene.de"
+kind = "press_source"
+actor_type = "party"
+party = "GRUENE"
+jurisdiction = "DE"
+status = "no_feed"
+reason = "no readable feed found"
+checked = 2026-10-20
+
+[[excluded]]
+id = "ssw"
+name = "Südschleswigscher Wählerverband"
+homepage = "https://www.ssw.de"
+kind = "press_source"
+actor_type = "party"
+party = "SSW"
+jurisdiction = "DE"
+status = "no_feed"
+reason = "no readable feed found"
+checked = 2026-10-20
+
+[[excluded]]
+id = "state_bw"
+name = "Staatsministerium Baden-Württemberg"
+homepage = "https://www.baden-wuerttemberg.de"
+kind = "press_source"
+actor_type = "state_government"
+jurisdiction = "DE-BW"
+feeds = ["https://www.baden-wuerttemberg.de/rss/staatsministerium.xml", "https://www.baden-wuerttemberg.de/rss/landesregierung.xml"]
+status = "no_feed"
+reason = "no readable feed found"
+checked = 2026-10-20
+
+[[excluded]]
+id = "state_st"
+name = "Staatskanzlei des Landes Sachsen-Anhalt"
+homepage = "https://www.sachsen-anhalt.de/"
+kind = "press_source"
+actor_type = "state_government"
+jurisdiction = "DE-ST"
+feeds = ["https://www.sachsen-anhalt.de/meta/pressemitteilungen-als-rss-feeds/"]
+status = "no_feed"
+reason = "no readable feed found"
+checked = 2026-10-20
+
+[[excluded]]
+id = "state_sh"
+name = "Staatskanzlei Schleswig-Holstein"
+homepage = "https://www.schleswig-holstein.de"
+kind = "press_source"
+actor_type = "state_government"
+jurisdiction = "DE-SH"
+feeds = ["https://www.schleswig-holstein.de/DE/Landesregierung/RSS-Feeds/rss_landesregierung.xml", "https://www.schleswig-holstein.de/DE/Landesregierung/RSS-Feeds/rss_staatskanzlei.xml"]
+status = "robots"
+reason = "robots.txt crawl delay 180 s"
+checked = 2026-10-20
