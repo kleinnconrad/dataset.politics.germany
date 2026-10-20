@@ -62,6 +62,18 @@ def test_update_readme_requires_markers(tmp_path) -> None:
         update_readme(readme, "x")
 
 
+def test_removed_sources_are_counted_as_removed(tmp_path) -> None:
+    config = (FIXTURES_DIR / "feeds" / "sources.toml").read_text(encoding="utf-8").replace(
+        'id = "regional_example"', 'id = "regional_example"\nremoved = 2026-10-01')
+    config_path = tmp_path / "sources.toml"
+    config_path.write_text(config, encoding="utf-8")
+
+    overview = build_overview(tmp_path / "data", config_path, now=NOW)
+
+    assert "- **News outlets:** 2 configured (1 active, 1 removed)" in overview
+    assert "| Regional Example | public broadcaster regional | removed | 0 |" in overview
+
+
 def test_overview_without_data(tmp_path) -> None:
     overview = build_overview(tmp_path / "data", FIXTURES_DIR / "feeds" / "sources.toml", now=NOW)
     assert "- No run yet." in overview

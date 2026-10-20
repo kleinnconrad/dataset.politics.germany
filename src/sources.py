@@ -1,8 +1,14 @@
 """
 The curated news outlets and press-release sources and their health status.
 
-The sources are listed by hand in ``config/sources.toml``. Their health is
-kept in ``state/sources.json`` and follows fixed rules:
+The sources are listed in ``config/sources.toml``, which the monthly source
+review (``source_review.py``) proposes changes to. Every source has the date
+on which it was ``added``; a source that is no longer collected keeps its
+entry with the date on which it was ``removed``, so that the coverage period
+of every source stays known. ``[[excluded]]`` entries are candidates that
+were checked and not admitted; the review does not propose them again.
+
+The health of the sources is kept in ``state/sources.json`` and follows fixed rules:
 
 - ``blocked``: the host refused automated requests (HTTP 401/403, challenge
   page, CAPTCHA). The source is not fetched again until the entry is reset by hand.
@@ -16,9 +22,9 @@ kept in ``state/sources.json`` and follows fixed rules:
 import logging
 import tomllib
 from dataclasses import dataclass, field
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
-from typing import Literal, Optional, get_args
+from typing import Any, Literal, Optional, Union, get_args
 
 from pydantic import BaseModel
 
@@ -33,6 +39,11 @@ BROKEN_AFTER_FAILURES = 7
 BROKEN_RETRY_DAYS = 7
 
 SourceStatus = Literal["active", "broken", "blocked", "tdm_reserved"]
+# Why a candidate was excluded. blocked, tdm_reserved and not_relevant are permanent until the entry is
+# changed by hand; the other reasons expire after EXCLUSION_RECHECK_DAYS, so that the review checks the candidate again.
+ExclusionStatus = Literal["blocked", "tdm_reserved", "not_relevant", "no_feed", "inactive", "robots"]
+PERMANENT_EXCLUSIONS: tuple[str, ...] = ("blocked", "tdm_reserved", "not_relevant")
+EXCLUSION_RECHECK_DAYS = 365
 
 
 @dataclass(frozen=True)
@@ -50,6 +61,10 @@ class Outlet:
         feeds (tuple[str, ...]): RSS or Atom feed URLs.
         news_sitemap (Optional[str]): URL of the news sitemap.
         fetch_pages (bool): Whether article pages may be fetched.
+        added (Optional[date]): Day on which the outlet was added to the list.
+        removed (Optional[date]): Day on which the outlet was removed; it is no longer collected.
+        removed_reason (Optional[str]): Why the outlet was removed.
+        keep (bool): True if the source review must not propose a removal for low yield.
     """
     id: str
     name: str
@@ -61,11 +76,20 @@ class Outlet:
     home_state: Optional[str] = None
     news_sitemap: Optional[str] = None
     fetch_pages: bool = False
+    added: Optional[date] = None
+    removed: Optional[date] = None
+    removed_reason: Optional[str] = None
+    keep: bool = False
 
     @property
     def jurisdiction(self) -> str:
         """The state of a regional outlet, DE otherwise."""
         return self.home_state or "DE"
+
+    @property
+    def active(self) -> bool:
+        """True if the outlet is collected, i.e. it was not removed."""
+        return self.removed is None
 
 
 @dataclass(frozen=True)
@@ -81,6 +105,10 @@ class PressSource:
         jurisdiction (str): DE or the ISO 3166-2 code of a state.
         feeds (tuple[str, ...]): RSS or Atom feed URLs.
         fetch_pages (bool): Whether press release pages may be fetched.
+        added (Optional[date]): Day on which the source was added to the list.
+        removed (Optional[date]): Day on which the source was removed; it is no longer collected.
+        removed_reason (Optional[str]): Why the source was removed.
+        keep (bool): True if the source review must not propose a removal for low yield.
     """
     id: str
     name: str
@@ -90,6 +118,49 @@ class PressSource:
     feeds: tuple[str, ...]
     party: Optional[str] = None
     fetch_pages: bool = False
+    added: Optional[date] = None
+    removed: Optional[date] = None
+    removed_reason: Optional[str] = None
+    keep: bool = False
+
+    @property
+    def active(self) -> bool:
+        """True if the source is collected, i.e. it was not removed."""
+        return self.removed is None
+
+
+Source = Union[Outlet, PressSource]
+
+
+@dataclass(frozen=True)
+class ExcludedSource:
+    """A candidate that was checked and not admitted.
+
+    Attributes:
+        id (str): Stable id.
+        name (str): Display name.
+        homepage (str): Homepage URL.
+        status (str): Kind of the reason (see ``ExclusionStatus``).
+        reason (str): Description of the reason.
+        checked (date): Day of the check.
+    """
+    id: str
+    name: str
+    homepage: str
+    status: str
+    reason: str
+    checked: date
+
+    def is_permanent_or_recent(self, today: date) -> bool:
+        """Tells whether the exclusion still applies.
+
+        Args:
+            today: Day of the review.
+
+        Returns:
+            bool: True for permanent reasons and for checks less than EXCLUSION_RECHECK_DAYS ago.
+        """
+        return self.status in PERMANENT_EXCLUSIONS or (today - self.checked).days < EXCLUSION_RECHECK_DAYS
 
 
 @dataclass(frozen=True)
@@ -97,17 +168,51 @@ class SourceConfig:
     """All curated sources.
 
     Attributes:
-        outlets (tuple[Outlet, ...]): News outlets.
-        press_sources (tuple[PressSource, ...]): Press-release sources.
+        outlets (tuple[Outlet, ...]): News outlets, including removed ones.
+        press_sources (tuple[PressSource, ...]): Press-release sources, including removed ones.
+        excluded (tuple[ExcludedSource, ...]): Candidates that were checked and not admitted.
     """
     outlets: tuple[Outlet, ...] = field(default_factory=tuple)
     press_sources: tuple[PressSource, ...] = field(default_factory=tuple)
+    excluded: tuple[ExcludedSource, ...] = field(default_factory=tuple)
+
+    @property
+    def sources(self) -> tuple[Source, ...]:
+        """All outlets and press sources in the order of the configuration, including removed ones."""
+        return (*self.outlets, *self.press_sources)
+
+    @property
+    def active_sources(self) -> tuple[Source, ...]:
+        """The outlets and press sources that are collected, in the order of the configuration."""
+        return tuple(source for source in self.sources if source.active)
 
 
 def _check_value(source_id: str, key: str, value: Optional[str], allowed: tuple[str, ...]) -> None:
     """Raises ValueError if a configured value is not in its vocabulary."""
     if value is not None and value not in allowed:
         raise ValueError(f"Source {source_id}: {key} {value!r} is not one of {', '.join(allowed)}")
+
+
+def _date_value(source_id: str, item: dict[str, Any], key: str) -> Optional[date]:
+    """Returns an optional TOML date of an entry.
+
+    Raises:
+        ValueError: If the value is not a date without time (e.g. ``added = 2026-10-19``).
+    """
+    value = item.get(key)
+    if value is None:
+        return None
+    if not isinstance(value, date) or isinstance(value, datetime):
+        raise ValueError(f"Source {source_id}: {key} must be a date such as 2026-10-19, got {value!r}")
+    return value
+
+
+def _lifecycle(source_id: str, item: dict[str, Any]) -> dict[str, Any]:
+    """Reads the keys added, removed, removed_reason and keep of an entry."""
+    return {
+        "added": _date_value(source_id, item, "added"), "removed": _date_value(source_id, item, "removed"),
+        "removed_reason": item.get("removed_reason"), "keep": bool(item.get("keep", False)),
+    }
 
 
 def load_config(path: Path = CONFIG_PATH) -> SourceConfig:
@@ -120,7 +225,8 @@ def load_config(path: Path = CONFIG_PATH) -> SourceConfig:
         SourceConfig: The outlets and press sources.
 
     Raises:
-        ValueError: If an entry misses a key, uses an unknown value or repeats an id.
+        ValueError: If an entry misses a key, uses an unknown value or a value that is
+            not a date where a date is required, or repeats an id.
         FileNotFoundError: If the file does not exist.
     """
     data = tomllib.loads(path.read_text(encoding="utf-8"))
@@ -132,6 +238,7 @@ def load_config(path: Path = CONFIG_PATH) -> SourceConfig:
                 owner_group=item["owner_group"], paywall_model=item["paywall_model"],
                 feeds=tuple(item.get("feeds", [])), home_state=item.get("home_state"),
                 news_sitemap=item.get("news_sitemap"), fetch_pages=bool(item.get("fetch_pages", False)),
+                **_lifecycle(str(item.get("id", "?")), item),
             )
         except KeyError as e:
             raise ValueError(f"Outlet {item.get('id', '?')} misses the key {e}") from e
@@ -146,17 +253,30 @@ def load_config(path: Path = CONFIG_PATH) -> SourceConfig:
                 id=item["id"], name=item["name"], homepage=item["homepage"], actor_type=item["actor_type"],
                 jurisdiction=item.get("jurisdiction", "DE"), feeds=tuple(item.get("feeds", [])),
                 party=item.get("party"), fetch_pages=bool(item.get("fetch_pages", False)),
+                **_lifecycle(str(item.get("id", "?")), item),
             )
         except KeyError as e:
             raise ValueError(f"Press source {item.get('id', '?')} misses the key {e}") from e
         _check_value(source.id, "actor_type", source.actor_type, get_args(ActorType))
         _check_value(source.id, "jurisdiction", source.jurisdiction, ("DE", *get_args(StateCode)))
         press_sources.append(source)
-    ids = [source.id for source in (*outlets, *press_sources)]
+    excluded = []
+    for item in data.get("excluded", []):
+        try:
+            checked = _date_value(str(item.get("id", "?")), item, "checked")
+            if checked is None:
+                raise KeyError("checked")
+            candidate = ExcludedSource(id=item["id"], name=item["name"], homepage=item["homepage"],
+                                       status=item["status"], reason=item["reason"], checked=checked)
+        except KeyError as e:
+            raise ValueError(f"Excluded entry {item.get('id', '?')} misses the key {e}") from e
+        _check_value(candidate.id, "status", candidate.status, get_args(ExclusionStatus))
+        excluded.append(candidate)
+    ids = [entry.id for entry in (*outlets, *press_sources, *excluded)]
     duplicates = sorted({source_id for source_id in ids if ids.count(source_id) > 1})
     if duplicates:
         raise ValueError(f"Duplicate source ids in {path.name}: {', '.join(duplicates)}")
-    return SourceConfig(outlets=tuple(outlets), press_sources=tuple(press_sources))
+    return SourceConfig(outlets=tuple(outlets), press_sources=tuple(press_sources), excluded=tuple(excluded))
 
 
 class SourceHealth(BaseModel):
@@ -271,6 +391,17 @@ class SourceHealthStore:
         })
         self._entries[source_id] = updated
         return updated
+
+    def status_of(self, source: Source) -> str:
+        """Returns the status of a configured source: removed, or its health status.
+
+        Args:
+            source: The source.
+
+        Returns:
+            str: removed, active, broken, blocked or tdm_reserved.
+        """
+        return "removed" if not source.active else self.get(source.id).status
 
     def status_counts(self, source_ids: list[str]) -> dict[str, int]:
         """Counts the sources per status.

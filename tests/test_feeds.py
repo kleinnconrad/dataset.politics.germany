@@ -331,6 +331,20 @@ def test_batches_are_annotated_in_parallel_and_written_in_order(fake_web, make_c
     assert len(read_dataset(ctx.settings.output_dir, "text_annotations")) == 25
 
 
+def test_removed_sources_are_not_read(fake_web, make_ctx, tmp_path) -> None:
+    setup_sources(fake_web)
+    config = SOURCES.read_text(encoding="utf-8").replace(
+        'feeds = ["https://party.example/presse.rss"]', 'feeds = ["https://party.example/presse.rss"]\nremoved = 2026-10-01')
+    config_path = tmp_path / "sources.toml"
+    config_path.write_text(config, encoding="utf-8")
+    ctx = make_ctx()
+
+    FeedsCollector(FakeAnnotator(), config_path=config_path).collect(ctx, CollectorEntry(first_run=ctx.today))
+
+    assert "https://party.example/presse.rss" not in fake_web.requested
+    assert read_dataset(ctx.settings.output_dir, "press_releases") == []
+
+
 def test_dry_run_reads_sources_without_writing(fake_web, make_ctx) -> None:
     setup_sources(fake_web)
     ctx = make_ctx(dry_run=True)

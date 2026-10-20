@@ -162,11 +162,12 @@ class UsageTotals:
         self.total_tokens += getattr(usage_metadata, "total_token_count", None) or 0
 
 
-def create_client(api_key: Optional[str] = None) -> genai.Client:
+def create_client(api_key: Optional[str] = None, timeout_ms: int = REQUEST_TIMEOUT_MS) -> genai.Client:
     """Creates the Gemini client with timeout and retry options.
 
     Args:
         api_key: API key; defaults to the GEMINI_API_KEY environment variable.
+        timeout_ms: Timeout per request attempt in milliseconds.
 
     Returns:
         genai.Client: The configured client.
@@ -180,7 +181,7 @@ def create_client(api_key: Optional[str] = None) -> genai.Client:
     return genai.Client(
         api_key=key,
         http_options=types.HttpOptions(
-            timeout=REQUEST_TIMEOUT_MS,
+            timeout=timeout_ms,
             retry_options=types.HttpRetryOptions(attempts=SDK_RETRY_ATTEMPTS, http_status_codes=SDK_RETRY_STATUS_CODES),
         ),
     )
