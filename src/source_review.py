@@ -33,7 +33,7 @@ import re
 import sys
 import tempfile
 import time
-from collections import Counter
+from collections import Counter, deque
 from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass, field, replace
 from datetime import date, datetime, timedelta, timezone
@@ -92,7 +92,9 @@ STALE_FEED_DAYS = 180
 # Article pages are fetched only from hosts with at most this crawl delay, so that a run stays short
 MAX_PAGE_CRAWL_DELAY_S = 10.0
 MAX_FEEDS_PER_SOURCE = 3
-MAX_FEEDS_CHECKED_PER_CANDIDATE = 8
+MAX_FEEDS_CHECKED_PER_CANDIDATE = 12
+# Feed links read from one page (head links and links whose address looks like a feed)
+MAX_FEED_LINKS_PER_PAGE = 20
 MAX_ADDITIONS_PER_REVIEW = 5
 MAX_SEARCH_CALLS = 4
 # One search can return a candidate for each of the 16 states
@@ -112,6 +114,8 @@ MAX_REPORT_NOTES = 40
 ITEM_DATASETS = ("news_items", "press_releases")
 FEED_TYPES = ("application/rss+xml", "application/atom+xml")
 PRESS_URL_TOKENS = ("presse", "press", "mitteilung", "meldung", "news", "aktuell")
+# Link addresses that look like a feed or an overview page of feeds, e.g. /rss.xml, /service/rss-feeds/, /feed/
+FEED_LINK_PATTERN = re.compile(r"(?<![a-z])(rss|atom)(?![a-z])|feed(?!back)|\.xml(?:\?|$)", re.IGNORECASE)
 
 STATE_NAMES: dict[str, str] = {
     "DE-BW": "Baden-Württemberg", "DE-BY": "Bayern", "DE-BE": "Berlin", "DE-BB": "Brandenburg", "DE-HB": "Bremen",
@@ -222,6 +226,8 @@ class FeedCheck:
         entries (tuple[Candidate, ...]): The items of the feed.
         newest (Optional[datetime]): Publication time of the newest item.
         moved_to (Optional[str]): New URL after permanent redirects.
+        links (tuple[str, ...]): Feed links of an HTML page that is not a feed, e.g. an
+            overview page of the feeds of a ministry.
     """
     url: str
     outcome: Literal["ok", "not_found", "disallowed", "blocked", "error", "invalid"]
@@ -229,6 +235,7 @@ class FeedCheck:
     entries: tuple[Candidate, ...] = ()
     newest: Optional[datetime] = None
     moved_to: Optional[str] = None
+    links: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -484,8 +491,11 @@ def check_feed(web: WebClient, url: str, source: Source, sitemap: bool = False) 
                     logger.info("Child sitemap %s failed: %s", child, e)
         else:
             entries = parse_feed(response.content, source, url)
+            if not entries and "html" in response.content_type:
+                raise ValueError("not a feed (HTML page)")
     except ValueError as e:
-        return FeedCheck(url, "invalid", str(e)[:160])
+        links = tuple(feed_links(response.text, response.url)) if "html" in response.content_type else ()
+        return FeedCheck(url, "invalid", str(e)[:160], links=links)
     dates = [entry.published_at for entry in entries if entry.published_at is not None]
     moved_to = response.url if response.moved_permanently and response.url != url else None
     return FeedCheck(url, "ok", entries=tuple(entries), newest=max(dates, default=None), moved_to=moved_to)
@@ -749,14 +759,17 @@ def search_candidates(model: Any, gaps: Gaps, known: set[str], result: ReviewRes
 
 
 def feed_links(html: str, base_url: str) -> list[str]:
-    """Returns the RSS and Atom feeds that a page links in its head.
+    """Returns the feeds that a page links: the RSS and Atom links of its head, then the
+    links whose address looks like a feed or an overview page of feeds (FEED_LINK_PATTERN).
+
+    Government websites often list their feeds as normal links on an overview page.
 
     Args:
         html: The page.
         base_url: URL of the page, for relative links.
 
     Returns:
-        list[str]: Absolute feed URLs without duplicates.
+        list[str]: Absolute http(s) URLs without duplicates, at most MAX_FEED_LINKS_PER_PAGE.
     """
     soup = BeautifulSoup(html, "html.parser")
     links = []
@@ -765,7 +778,13 @@ def feed_links(html: str, base_url: str) -> list[str]:
         rels = [value.lower() for value in (rel if isinstance(rel, list) else [rel])]
         if "alternate" in rels and str(tag.get("type") or "").lower() in FEED_TYPES:
             links.append(urljoin(base_url, str(tag["href"])))
-    return list(dict.fromkeys(links))
+    for tag in soup.find_all("a", href=True):
+        url = urljoin(base_url, str(tag["href"]).strip())
+        parts = urlsplit(url)
+        target = f"{parts.path}?{parts.query}" if parts.query else parts.path
+        if parts.scheme in ("http", "https") and FEED_LINK_PATTERN.search(target):
+            links.append(url.split("#", 1)[0])
+    return list(dict.fromkeys(links))[:MAX_FEED_LINKS_PER_PAGE]
 
 
 def _new_id(base: str, taken: set[str]) -> str:
@@ -846,11 +865,13 @@ def evaluate_candidate(web: WebClient, category: SearchCategory, candidate: Sear
                        source_id: Optional[str] = None) -> tuple[Optional[NewEntry], Optional[Rejection]]:
     """Checks a candidate with the fetch rules of the pipeline and builds its entry.
 
-    A candidate is admitted if its robots.txt can be read, it declares no TDM
-    reservation (TDMRep, header or meta tag), it does not block automated
-    requests, it is not a source of the list under another domain (a homepage
-    that redirects to a listed host, or only feeds that are listed), and its
-    feeds are recent: a press source needs an item in the last
+    The feeds are the proposed ones and those linked on the homepage; an HTML
+    page among them, such as an overview page of the feeds of a ministry, is
+    read for further feed links. A candidate is admitted if its robots.txt can
+    be read, it declares no TDM reservation (TDMRep, header or meta tag), it
+    does not block automated requests, it is not a source of the list under
+    another domain (a homepage that redirects to a listed host, or only feeds
+    that are listed), and its feeds are recent: a press source needs an item in the last
     PRESS_RECENT_DAYS days, an outlet MIN_OUTLET_POLITICAL_ITEMS political
     items in the last OUTLET_RECENT_DAYS days.
 
@@ -903,6 +924,8 @@ def evaluate_candidate(web: WebClient, category: SearchCategory, candidate: Sear
 
     host = domain_id(homepage)
     discovered: list[str] = []
+    # A homepage that fails does not end the check: the proposed feeds may still work
+    page_error: Optional[str] = None
     try:
         page = web.get(homepage)
     except RobotsDisallowedError:
@@ -910,9 +933,9 @@ def evaluate_candidate(web: WebClient, category: SearchCategory, candidate: Sear
     except BlockedError as e:
         return reject(f"homepage {e.reason}", "blocked")
     except NotFoundError as e:
-        return reject(f"homepage not found ({e.reason})")
+        page, page_error = None, f"homepage not found ({e.reason})"
     except FetchError as e:
-        return reject(f"homepage not reachable ({e.reason})")
+        page, page_error = None, f"homepage not reachable ({e.reason})"
     if page is not None:
         final_host = domain_id(page.url)
         if final_host != host and final_host in known:
@@ -930,16 +953,26 @@ def evaluate_candidate(web: WebClient, category: SearchCategory, candidate: Sear
     duplicates: set[str] = set()
     recent = 0
     readable = False
-    for url in urls[:MAX_FEEDS_CHECKED_PER_CANDIDATE]:
-        if len(feeds) >= MAX_FEEDS_PER_SOURCE:
-            break
+    # (URL, whether an HTML page at the URL is read for further feed links); overview pages are read one level deep
+    queue: deque[tuple[str, bool]] = deque((url, True) for url in urls)
+    queued = set(urls)
+    checked = 0
+    while queue and len(feeds) < MAX_FEEDS_PER_SOURCE and checked < MAX_FEEDS_CHECKED_PER_CANDIDATE:
+        url, expand = queue.popleft()
         listed = _listed_feed(known_feeds, url)
         if listed is not None:
             duplicates.add(listed)
             continue
+        checked += 1
         check = check_feed(web, url, provisional)
         if check.outcome == "blocked":
             return reject(f"feed {check.detail}", "blocked")
+        if check.outcome == "invalid" and expand and check.links:
+            found = sorted((link for link in check.links if link not in queued),
+                           key=lambda link: _feed_order(link, outlet))
+            queued.update(found)
+            queue.extendleft((link, False) for link in reversed(found))
+            continue
         if check.outcome != "ok":
             continue
         listed = _listed_feed(known_feeds, check.moved_to) if check.moved_to else None
@@ -972,6 +1005,8 @@ def evaluate_candidate(web: WebClient, category: SearchCategory, candidate: Sear
     if not feeds and sitemap is None:
         if duplicates:
             return reject("same feed as " + ", ".join(f"`{listed}`" for listed in sorted(duplicates)), "duplicate")
+        if not readable and page_error is not None:
+            return reject(f"{page_error}; no readable feed found")
         if not readable:
             return reject("no readable feed found", "no_feed")
         return reject("no feed with recent items", "inactive")
@@ -1149,7 +1184,8 @@ def _admit(result: ReviewResult, state: _CandidateState, entry: NewEntry, key: O
         return False
     state.additions += 1
     state.press_keys.add(key)
-    urls = [*entry.fields.get("feeds", []), *([entry.fields["news_sitemap"]] if entry.fields.get("news_sitemap") else [])]
+    sitemap = entry.fields.get("news_sitemap")
+    urls = [*entry.fields.get("feeds", []), *([sitemap] if sitemap else [])]
     for url in urls:
         state.known_feeds[normalize_url(url)] = str(entry.fields["id"])
     result.changes.append(Change("add_source", str(entry.fields["id"]), entry.comment or "", entry=entry))
