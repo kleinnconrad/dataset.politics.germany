@@ -33,7 +33,7 @@ from collectors.base import Collector, CollectorResult, CollectorSkipped, RunCon
 from content import PageInfo, clean_text, parse_datetime, parse_page
 from entities import PoliticianIndex, load_politicians
 from schema import ItemAnnotation, NewsItemRecord, PressReleaseRecord, TextAnnotationRecord
-from sources import CONFIG_PATH, Outlet, PressSource, SourceConfig, SourceHealthStore, load_config
+from sources import CONFIG_PATH, Outlet, PressSource, Source, SourceConfig, SourceHealthStore, load_config
 from state import CollectorEntry, is_backfilled
 from urls import domain_id, normalize_url, path_tokens, url_id
 from web import BlockedError, FetchError, NotFoundError, RobotsDisallowedError, host_of
@@ -79,9 +79,6 @@ OUTLET_TYPE_LABELS = {
     "online_only": "online news site",
     "business": "business newspaper",
 }
-
-Source = Union[Outlet, PressSource]
-
 
 class SourceFailure(Exception):
     """No feed of a source could be read in this run."""
@@ -546,7 +543,8 @@ class FeedsCollector(Collector):
         new_by_source: dict[str, int] = {}
         by_key: dict[str, Candidate] = {}
         due: list[Source] = []
-        for source in (*config.outlets, *config.press_sources):
+        # Removed sources keep their entries for their coverage period but are not read
+        for source in config.active_sources:
             if health.is_due(source.id, ctx.today):
                 due.append(source)
             else:
@@ -595,7 +593,7 @@ class FeedsCollector(Collector):
             counters[f"seen_pruned_{dataset}"] = ctx.seen(dataset).prune(ctx.today, SEEN_RETENTION_DAYS)
         health.save()
         ctx.save_seen()
-        counters["source_status"] = health.status_counts([s.id for s in (*config.outlets, *config.press_sources)])
+        counters["source_status"] = health.status_counts([s.id for s in config.active_sources])
         if self._annotator is not None:
             counters["gemini_model"] = self._annotator.model
             counters["gemini_usage"] = vars(self._annotator.usage).copy()

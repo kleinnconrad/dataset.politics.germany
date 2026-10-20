@@ -114,6 +114,28 @@ def test_network_errors_become_fetch_errors(fake_web) -> None:
         fake_web.client().get(ARTICLE)
 
 
+def test_robots_txt_sitemaps_and_tdm_statements_are_read() -> None:
+    robots = parse_robots("# Text- und Data-Mining nach § 44b UrhG ist vorbehalten\nUser-agent: *\nDisallow: /a\n"
+                          "Sitemap: https://news.example/news.xml\nSitemap: https://news.example/news.xml\n")
+
+    assert robots.tdm_statement is True
+    assert robots.sitemaps == ("https://news.example/news.xml",)
+    assert parse_robots("User-agent: *\nDisallow: /tdmrep-info\n# see TDMRep\n").tdm_statement is False
+
+
+def test_permanent_redirects_are_reported(fake_web) -> None:
+    fake_web.add(ARTICLE, "", status=301, headers={"location": "https://news.example/neu"})
+    fake_web.add("https://news.example/neu", "<html></html>")
+    fake_web.add("https://news.example/temp", "", status=302, headers={"location": "https://news.example/neu"})
+    client = fake_web.client()
+
+    moved = client.get(ARTICLE)
+    temporary = client.get("https://news.example/temp")
+
+    assert moved.url == "https://news.example/neu" and moved.moved_permanently
+    assert temporary.redirects == (302,) and not temporary.moved_permanently
+
+
 def test_unreachable_robots_txt_is_requested_once_per_run(fake_web) -> None:
     fake_web.fail("https://news.example/robots.txt")
     client = fake_web.client()

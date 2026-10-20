@@ -130,7 +130,11 @@ Variables that follow from these fields, such as the weekday, the hour or the de
 | News outlets | RSS, news sitemaps, article pages | publisher rights, metadata only | `news_items` |
 | Federal and state governments, ministries, parliaments, parliamentary groups, parties, courts | RSS and Atom | publisher rights, metadata only | `press_releases` |
 
-The news outlets and press-release sources are listed in [config/sources.toml](config/sources.toml): 40 outlets (national and regional public broadcasters, national dailies and magazines, a tabloid, online outlets, and regional dailies for all 16 states) and 26 press-release sources (federal government, Bundestag, Bundesrat, federal ministries, parliamentary groups, parties, three state governments). Each entry was checked for robots.txt, TDM reservation, bot protection and feed content on 2026-10-19; the comment line above each entry records the result and the time span of its feeds.
+The news outlets and press-release sources are listed in [config/sources.toml](config/sources.toml): 40 outlets (national and regional public broadcasters, national dailies and magazines, a tabloid, online outlets, and regional dailies for all 16 states) and 26 press-release sources (federal government, Bundestag, Bundesrat, federal ministries, parliamentary groups, parties, three state governments). Each entry was checked for robots.txt, TDM reservation, bot protection and feed content on 2026-10-19; the comment line above each entry records the result and the time span of its feeds. Every entry has the date on which it was `added`; a source that is no longer collected keeps its entry with `removed` and `removed_reason`. `[[excluded]]` entries record candidates that were checked and not admitted, with the reason (`blocked`, `tdm_reserved`, `not_relevant`, which are permanent, or `no_feed`, `inactive`, `robots`, which are checked again after a year).
+
+**Source review.** On the first day of every month, `source_review.yml` runs [src/source_review.py](src/source_review.py) and opens a pull request with the proposed changes of the list. The review removes sources that are blocked or TDM-reserved, still broken, without a working feed, or without a political item in 90 days (unless `keep = true`); removes feeds that are gone, disallowed or stale (newest item older than 180 days) and follows permanent redirects; and turns page fetching off where robots.txt states a TDM reservation in natural language or requires a crawl delay above 10 seconds. It derives gaps from the data of the pipeline: Bundestag groups (from the politician registry) and parties with seats without a press source, states without a state government source or a regional daily. Gemini with Google Search proposes the official feeds of the federal government and its ministries and of these gaps; each candidate is checked with the fetch rules of section 5 and admitted with recent items, at most five per review. Rejected candidates become `[[excluded]]` entries. The changes take effect when the pull request is merged.
+
+**Sources as a slowly changing dimension.** Each news item and press release copies the attributes of its source (outlet type, owner group, home state; actor type, party) when it is observed, so a later change of an attribute in the configuration does not rewrite earlier records. The `added` and `removed` dates give the coverage period of every source, so that counts over time can account for sources that enter or leave the list; the git history of `config/sources.toml` records every change.
 
 **Reservations in plain text.** No host publishes a machine-readable TDMRep file, but 26 of the 40 outlets (including all ARD broadcasters) state a reservation under § 44b UrhG in plain-text comments of their robots.txt. For these outlets, `fetch_pages` is false: their article pages are not fetched, and their items are annotated from title and teaser only. Outlets that declare a machine-readable reservation (FAZ, B.Z.) or block automated requests (Die Zeit, Stern, the RND titles) are not included.
 
@@ -178,7 +182,8 @@ german_politics_dataset/
 │   └── workflows/
 │       ├── ci.yml              # lint, tests, commit messages
 │       ├── notify.yml          # run summary as a commit comment that mentions the owner
-│       └── pipeline.yml        # due collectors, Tuesdays and Fridays 02:07 Europe/Berlin; backfill by hand
+│       ├── pipeline.yml        # due collectors, Tuesdays and Fridays 02:07 Europe/Berlin; backfill by hand
+│       └── source_review.yml   # monthly review of the sources as a pull request
 ├── config/
 │   └── sources.toml            # curated news outlets and press-release sources
 ├── data/                       # datasets, state and data license, committed by the workflow
@@ -194,6 +199,7 @@ german_politics_dataset/
 │   ├── annotation.py           # Gemini labels
 │   ├── storage.py, state.py, urls.py
 │   ├── generate_dataset_overview.py
+│   ├── source_review.py        # monthly review of config/sources.toml
 │   └── collectors/
 │       ├── base.py             # collector interface and run context
 │       ├── parliament.py       # politicians, roll-call votes (abgeordnetenwatch)
@@ -264,6 +270,7 @@ german_politics_dataset/
 | Part | Status |
 |---|---|
 | Polls, Wikipedia pageviews, news, press releases, annotations, politicians, roll-call votes, procedures | implemented |
+| Monthly source review with pull requests (`source_review.yml`) | implemented |
 | Election results and calendar (`elections`) | planned |
 | Government composition (`governments`, from Wikidata) | planned |
 | Party donations above 35,000 EUR (bundestag.de) | planned |

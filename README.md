@@ -462,7 +462,7 @@ A dataset of German politics for political analysis and the prediction of electi
 
 ## Data Model
 
-The diagram shows the nine datasets, the three reference lists they point to, and the fields that link them. `party`, `outlet` and `press_source` are not datasets: the party codes are defined in [src/entities.py](src/entities.py), the outlets and press-release sources in [config/sources.toml](config/sources.toml). Solid lines are joins on stored fields; the dashed line needs a lookup in the DIP API.
+The diagram shows the nine datasets, the three reference lists they point to, and the fields that link them. `party`, `outlet` and `press_source` are not datasets: the party codes are defined in [src/entities.py](src/entities.py), the outlets and press-release sources in [config/sources.toml](config/sources.toml), with the dates `added` and `removed` of their coverage period. Solid lines are joins on stored fields; the dashed line needs a lookup in the DIP API.
 
 ```mermaid
 erDiagram
@@ -473,10 +473,14 @@ erDiagram
         string id PK
         string outlet_type
         string home_state
+        date added
+        date removed
     }
     press_source {
         string id PK
         string actor_type
+        date added
+        date removed
     }
     polls {
         string poll_id PK
@@ -566,6 +570,7 @@ erDiagram
 - **Text and data mining reservations:** a source whose host or pages declare a machine-readable reservation (TDMRep header, `/.well-known/tdmrep.json` or meta tag) is set to `tdm_reserved` and is not used. For outlets whose robots.txt states a reservation under § 44b UrhG in plain text, article pages are not fetched (`fetch_pages = false`); their feed items are used with title and teaser only.
 - **Pacing:** at most one request per second per host (abgeordnetenwatch: one per 2.1 seconds), retries for server errors and rate limits.
 - **Broken sources:** a source whose feeds fail on 7 consecutive runs is `broken` and is retried weekly.
+- **Source review:** on the first day of every month, `source_review.yml` checks the list and proposes removals, fixes and additions as a pull request (see [Workflows](#workflows)).
 
 ## Pipeline
 
@@ -629,11 +634,20 @@ polls = duckdb.sql("select * from read_json('data/polls/**/*.json', hive_partiti
 |---|---|---|
 | `pipeline.yml` | Tuesdays and Fridays, 02:07 Europe/Berlin | Runs the due collectors (timeout 30 minutes), updates the overview and commits `data/` and `README.md` |
 | `notify.yml` | After each `normal` or `backfill` run of `pipeline.yml` | Posts a summary of the run (status and records per collector, annotated items, Gemini tokens and estimated cost) as a commit comment that mentions the repository owner |
+| `source_review.yml` | First day of every month, 07:17 Europe/Berlin | Checks the sources and proposes changes of `config/sources.toml` as a pull request |
 | `ci.yml` | Pull requests, pushes to `main` | Lint, tests and commit message checks |
 
 **Notification email.** GitHub sends an email for the mention in the comment of `notify.yml` if email notifications for participating and @mentions are enabled (the default, under **Settings > Notifications** of the GitHub account). The summary is built by `scripts/run_summary.py` from the last line of `data/state/run_log.jsonl`; the cost estimate uses the list prices in that script. `notify.yml` runs only once it is on the default branch.
 
-**Manual runs.** Both workflows can be started by hand: open the **Actions** tab, select **German Politics Pipeline** (or **CI**), click **Run workflow**, and choose the branch and the `mode`. The button appears once the workflow file is on the default branch. The modes of `pipeline.yml`:
+**Source review.** `source_review.yml` (code in [src/source_review.py](src/source_review.py)) proposes changes of `config/sources.toml` as a pull request from the branch `source-review`; they take effect when the pull request is merged. The description lists every change with its reason.
+- **Removals:** sources that are `blocked` or `tdm_reserved`, that are `broken` and still fail, that have no working feed left, whose robots.txt requires a crawl delay above 120 seconds, or that yielded no political item in 90 days. A removed source keeps its entry with `removed` and `removed_reason`, so that its coverage period stays known. To keep a source with low yield, set `keep = true` in its entry.
+- **Fixes:** feeds that return HTTP 404 or 410, are disallowed by robots.txt or whose newest item is older than 180 days are removed; feeds that moved permanently get their new URL. Page fetching is turned off where robots.txt states a TDM reservation in natural language or requires a crawl delay above 10 seconds.
+- **Additions:** Gemini with Google Search looks for the official press-release feeds of the federal government and its ministries, of Bundestag groups and parties with seats that have no press source and of state governments without one, and for regional dailies in states without one. Each candidate is checked with the fetch rules of the pipeline: readable robots.txt, no TDM reservation, no bot protection, and recent items (a press release in the last 60 days, or five political articles in the last 7 days). At most five sources are added per review, with `added` set to the review date.
+- **Exclusions:** rejected candidates are added to the `[[excluded]]` entries, so that the search does not propose them again. Blocked and TDM-reserved candidates stay excluded until the entry is changed by hand; candidates without a usable feed are checked again after a year.
+
+Hosts that blocked automated requests or reserved TDM are not requested again. The review sends about four Gemini requests with Google Search per month, which cost a few cents. A pull request opened with the `GITHUB_TOKEN` starts no workflows, so the review starts `ci.yml` on its branch. The next review rebuilds the branch, so merge or close the pull request before the first day of the next month. A manual run can turn the search off.
+
+**Manual runs.** The workflows can be started by hand: open the **Actions** tab, select **German Politics Pipeline** (or **Source Review**, **CI**), click **Run workflow**, and choose the branch and the inputs. The button appears once the workflow file is on the default branch. The modes of `pipeline.yml`:
 - `normal`: same as the scheduled run; commits the data.
 - `backfill`: imports the history of all collectors except the feeds, without the per-run caps and the weekly interval, and commits it (timeout 90 minutes, deadline 85 minutes). Run it once before the first `normal` run (see [Setup](#setup)).
 - `shadow`: runs on a copy of the state in a temporary folder and uploads the output as an artifact; nothing is committed. Uses the same API keys and quotas.
@@ -667,6 +681,7 @@ uv run python src/main.py --backfill                             # import the hi
 uv run python src/main.py --collectors polls,wikipedia_pageviews # selected collectors
 uv run python src/main.py --max-annotations 20                   # a short full run
 uv run python src/generate_dataset_overview.py                   # README overview
+uv run python src/source_review.py --report review.md --no-search # source review; changes config/sources.toml
 ```
 
 Secrets are read from a `.env` file in the repository root (`GEMINI_API_KEY=...`, `DIP_API_KEY=...`); the file is listed in `.gitignore`. Local runs write to `~/Downloads/german_politics_dataset/` unless `--output-dir` is given; in GitHub Actions they write to `data/`. The collectors, in the order of a run, are `politicians`, `feeds`, `roll_call_votes`, `parliamentary_procedures`, `polls` and `wikipedia_pageviews`.
@@ -693,7 +708,7 @@ uv run pytest
 ## Setup
 
 1. Add the repository secrets `GEMINI_API_KEY` and `DIP_API_KEY` under **Settings > Secrets and variables > Actions**. The current public DIP key is listed on the [DIP help page](https://dip.bundestag.de/%C3%BCber-dip/hilfe/api); it is replaced from time to time.
-2. Allow workflows to push to the repository under **Settings > Actions > General > Workflow permissions** (read and write permissions).
+2. Under **Settings > Actions > General > Workflow permissions**, choose read and write permissions, so that the workflows can push, and allow GitHub Actions to create and approve pull requests, so that the source review can open its pull request.
 3. Start `pipeline.yml` once by hand in the mode `backfill` before the first scheduled run. It imports the history: all polls since 2017, the pageviews of the party articles since July 2015 and of the members of parliament for one year, all procedures of the current electoral period, and the roll-call votes of the current and the previous electoral period (about 250, at the rate limit of abgeordnetenwatch). It takes about 40 minutes. The regular runs then fetch only the changes; without the backfill, they import the history over several runs, at most 120 roll-call votes per run and within the run deadline.
 
 ## License

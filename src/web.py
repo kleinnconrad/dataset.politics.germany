@@ -48,6 +48,9 @@ CHALLENGE_MARKERS = ("just a moment...", "cf-chl-", "challenge-platform", "px-ca
 SHORT_PAGE_BYTES = 20_000
 # Token matched against the User-agent lines of robots.txt
 ROBOTS_AGENT = USER_AGENT.split("/")[0]
+# A text-and-data-mining reservation stated in natural language in robots.txt, e.g. a reference to § 44b UrhG
+TDM_STATEMENT_PATTERN = re.compile(r"§\s*44\s*b|data[\s-]*mining|(?<![a-z])tdm(?![a-z])", re.IGNORECASE)
+PERMANENT_REDIRECTS = frozenset({301, 308})
 
 
 class FetchError(Exception):
@@ -88,12 +91,19 @@ class Response:
         headers (Mapping[str, str]): Response headers with lower-case names.
         content (bytes): The body.
         encoding (Optional[str]): Character encoding detected by httpx.
+        redirects (tuple[int, ...]): Status codes of the redirects that led to the final URL.
     """
     url: str
     status: int
     headers: Mapping[str, str]
     content: bytes
     encoding: Optional[str] = None
+    redirects: tuple[int, ...] = ()
+
+    @property
+    def moved_permanently(self) -> bool:
+        """True if the URL was reached only through permanent redirects (301 or 308)."""
+        return bool(self.redirects) and all(status in PERMANENT_REDIRECTS for status in self.redirects)
 
     @property
     def content_type(self) -> str:
@@ -166,9 +176,14 @@ class RobotsRules:
     Attributes:
         rules (tuple): ``(allow, pattern, regex)`` per allow or disallow line.
         crawl_delay (Optional[float]): Crawl delay in seconds, if the group sets one.
+        sitemaps (tuple[str, ...]): URLs of the ``Sitemap`` lines.
+        tdm_statement (bool): Whether the file states a text-and-data-mining
+            reservation in natural language, e.g. in a comment (see TDM_STATEMENT_PATTERN).
     """
     rules: tuple[tuple[bool, str, re.Pattern[str]], ...] = ()
     crawl_delay: Optional[float] = None
+    sitemaps: tuple[str, ...] = ()
+    tdm_statement: bool = False
 
     def allows(self, path: str) -> bool:
         """Tells whether a path (with query) may be fetched.
@@ -204,12 +219,14 @@ def parse_robots(text: str, agent: str = ROBOTS_AGENT) -> RobotsRules:
         agent: Product token of the crawler.
 
     Returns:
-        RobotsRules: The applicable rules and crawl delay.
+        RobotsRules: The applicable rules and crawl delay, the sitemap URLs and
+        whether the file states a text-and-data-mining reservation.
     """
     groups: list[tuple[set[str], list[tuple[bool, str]], Optional[float]]] = []
     agents: set[str] = set()
     rules: list[tuple[bool, str]] = []
     delay: Optional[float] = None
+    sitemaps: list[str] = []
     in_rules = False
     for raw_line in text.splitlines():
         line = raw_line.split("#", 1)[0].strip()
@@ -217,7 +234,10 @@ def parse_robots(text: str, agent: str = ROBOTS_AGENT) -> RobotsRules:
             continue
         key, value = (part.strip() for part in line.split(":", 1))
         key = key.lower()
-        if key == "user-agent":
+        if key == "sitemap":
+            if value:
+                sitemaps.append(value)
+        elif key == "user-agent":
             if in_rules:
                 groups.append((agents, rules, delay))
                 agents, rules, delay, in_rules = set(), [], None, False
@@ -237,7 +257,8 @@ def parse_robots(text: str, agent: str = ROBOTS_AGENT) -> RobotsRules:
     selected = [group for group in groups if agent.lower() in group[0]] or [group for group in groups if "*" in group[0]]
     combined = tuple((allow, pattern, _path_pattern_regex(pattern)) for group in selected for allow, pattern in group[1])
     delays = [group[2] for group in selected if group[2] is not None]
-    return RobotsRules(rules=combined, crawl_delay=max(delays) if delays else None)
+    return RobotsRules(rules=combined, crawl_delay=max(delays) if delays else None,
+                       sitemaps=tuple(dict.fromkeys(sitemaps)), tdm_statement=bool(TDM_STATEMENT_PATTERN.search(text)))
 
 
 @dataclass
@@ -386,6 +407,21 @@ class WebClient:
         robots = self._robots[host]
         return robots is None or robots.allows(_path_with_query(url))
 
+    def robots_rules(self, url: str) -> Optional[RobotsRules]:
+        """Returns the robots.txt rules of the host of a URL, loading them on first use.
+
+        Args:
+            url: A URL of the host.
+
+        Returns:
+            Optional[RobotsRules]: The rules, or None if the host has no robots.txt.
+
+        Raises:
+            FetchError: If the robots.txt of the host cannot be fetched.
+        """
+        self.allowed(url)
+        return self._robots.get(host_of(url))
+
     # -- TDM reservation ----------------------------------------------------
 
     def _load_tdm_rules(self, host: str) -> list[tuple[re.Pattern[str], bool]]:
@@ -485,7 +521,8 @@ class WebClient:
             if raw.status_code >= 400:
                 raise FetchError(url, f"HTTP {raw.status_code}", raw.status_code)
             return Response(url=str(raw.url), status=raw.status_code, headers=response_headers,
-                            content=raw.content, encoding=raw.encoding)
+                            content=raw.content, encoding=raw.encoding,
+                            redirects=tuple(step.status_code for step in raw.history))
 
     @staticmethod
     def _retry_wait(response: httpx.Response, attempt: int) -> float:

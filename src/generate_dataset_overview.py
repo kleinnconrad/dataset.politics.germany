@@ -174,7 +174,7 @@ def source_lines(state_dir: Path, config_path: Path, datasets: dict[str, Dataset
     tables: list[str] = []
     groups = (("News outlets", config.outlets, "outlet_type"), ("Press-release sources", config.press_sources, "actor_type"))
     for label, sources, type_attribute in groups:
-        counts = health.status_counts([source.id for source in sources])
+        counts = Counter(health.status_of(source) for source in sources)
         text = ", ".join(f"{count} {status}" for status, count in sorted(counts.items())) or "none"
         lines.append(f"- **{label}:** {len(sources)} configured ({text})")
         tables.extend([
@@ -194,7 +194,7 @@ def source_lines(state_dir: Path, config_path: Path, datasets: dict[str, Dataset
             latest = max(published or observed, default="none")
             tables.append(
                 f"| {_cell(source.name)} | {getattr(source, type_attribute).replace('_', ' ')} | "
-                f"{health.get(source.id).status} | {len(source_items):,} | {recent:,} | "
+                f"{health.status_of(source)} | {len(source_items):,} | {recent:,} | "
                 f"{_share(with_labels, len(source_items))} | {_share(with_lead, len(source_items))} | {latest} |"
             )
         tables.extend(["", "</details>", ""])
