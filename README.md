@@ -9,6 +9,7 @@ A dataset of German politics for political analysis and the prediction of electi
 ## Table of Contents
 - [Dataset Overview](#dataset-overview)
 - [Datasets](#datasets)
+  - [News Items and Press Releases](#news-items-and-press-releases)
 - [Data Model](#data-model)
 - [Example Records](#example-records)
 - [Sources and Fetch Rules](#sources-and-fetch-rules)
@@ -452,6 +453,13 @@ A dataset of German politics for political analysis and the prediction of electi
 | `parliamentary_procedures` | Procedures of the Bundestag and Bundesrat (bills, motions, interpellations), recorded when they appear or change | Bundestag DIP | change |
 | `politicians` | Members of the Bundestag and the 16 state parliaments with party, mandates and Wikidata id, recorded when they appear or change | abgeordnetenwatch.de | change |
 
+> [!IMPORTANT]
+> **`news_items` and `press_releases` differ in who publishes the text.**
+> - **`news_items`** are articles of journalistic media (tagesschau, Spiegel, Bild, regional papers, ...). They show how the media report on politics.
+> - **`press_releases`** are statements of the political actors themselves (federal government, ministries, Bundestag, Bundesrat, parliamentary groups, parties, state governments). They show what the actors want to communicate.
+>
+> Both are labelled in the same dataset, `text_annotations`; the field `item_dataset` tells which of the two an annotation belongs to. Do not pool the two in an analysis without this distinction, e.g. when counting how often a party is mentioned or with which tone. See [News Items and Press Releases](#news-items-and-press-releases).
+
 **Fields of every record:** `record_id`, `revision`, `dataset`, `schema_version`, `observed_at`, `source_id`, `source_url`, `license`, `jurisdiction`, `backfilled`. All other fields are defined with descriptions in [src/schema.py](src/schema.py); the variables and the prediction targets they serve are described in [project_architecture.md](project_architecture.md).
 
 **Point-in-time correctness.** `observed_at` is the time at which the pipeline observed the item. Filtering `observed_at <= t` gives the state of knowledge at time t, so that models can be tested on past data without information from the future. Records of items that are older than the start of collection (e.g. the poll history) have `backfilled: true`.
@@ -461,6 +469,26 @@ A dataset of German politics for political analysis and the prediction of electi
 **No full texts.** News articles and press releases are stored as titles, URLs, metadata and derived variables. The lead text that Gemini reads is not stored.
 
 **Annotated sample.** Every new political item of a run is stored in `news_items` or `press_releases`. Up to 400 of them are annotated: all press releases, then news items in turns across the outlets, newest first. The other items are stored from the feed data without labels, so that the item counts per outlet stay complete and the annotated sample can be weighted against them.
+
+### News Items and Press Releases
+
+| | `news_items` | `press_releases` |
+|---|---|---|
+| **Author** | A journalistic outlet (`outlet_id`) | A political actor (`press_source_id`) |
+| **Perspective** | Report about politics by a third party | Self-presentation of the actor |
+| **Sources** | Public broadcasters, national and regional newspapers, magazines, online outlets, a tabloid | Federal government, ministries, Bundestag, Bundesrat, parliamentary groups, parties, state governments |
+| **Fields that describe the author** | `outlet_type`, `owner_group`, `home_state` | `actor_type`, `party` |
+| **Read from** | RSS feeds and news sitemaps (`channel`) | RSS feeds |
+| **Page metadata** | `section`, `keywords`, `jsonld_type`, `is_agency_copy`, `author_count`, `word_count`, `is_paywalled`, `has_video`, `updated_at` | none |
+| **Stored** | Political items only: from a politics section, or with a political term in title, teaser or keywords | Every release |
+| **Annotation order** | After the press releases, in turns across the outlets | First |
+| **Annotation fields used** | All except `communication_type` (`Not applicable`) and `populism_markers` (empty) | All, including `communication_type` (purpose of the release) and `populism_markers` |
+| **Author in the annotation** | The outlet is not labelled as an actor | The issuing actor is labelled as `Initiator`, with the tone of its own presentation |
+
+**Typical uses:**
+- **`news_items`:** media attention (share of voice), tone toward parties and politicians, framing, and the events the media report.
+- **`press_releases`:** agenda and communication strategy of the actors: topics, attacks on opponents, achievement claims, populist rhetoric.
+- **Both together:** whether an actor gets its topics into the media, by comparing the topics of its press releases with the topics of the news items that mention it (planned feature `agenda_alignment`, see [project_architecture.md](project_architecture.md)).
 
 ## Data Model
 
