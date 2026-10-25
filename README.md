@@ -10,6 +10,7 @@ A dataset of German politics for political analysis and the prediction of electi
 - [Dataset Overview](#dataset-overview)
 - [Datasets](#datasets)
 - [Data Model](#data-model)
+- [Example Records](#example-records)
 - [Sources and Fetch Rules](#sources-and-fetch-rules)
 - [Pipeline](#pipeline)
 - [Data Files](#data-files)
@@ -463,85 +464,193 @@ A dataset of German politics for political analysis and the prediction of electi
 
 ## Data Model
 
-The diagram shows the nine datasets, the three reference lists they point to, and the fields that link them. `party`, `outlet` and `press_source` are not datasets: the party codes are defined in [src/entities.py](src/entities.py), the outlets and press-release sources in [config/sources.toml](config/sources.toml), with the dates `added` and `removed` of their coverage period. Solid lines are joins on stored fields; the dashed line needs a lookup in the DIP API.
+The diagram shows the nine datasets with all their fields, the three reference lists they point to, and the fields that link them. Each field has a short comment; the full descriptions are in [src/schema.py](src/schema.py).
+
+- **`common_fields`** lists the ten fields that every record of every dataset has. They are not repeated in the dataset entities.
+- **`party`, `outlet` and `press_source`** are reference lists, not datasets: the party codes are defined in [src/entities.py](src/entities.py), the outlets and press-release sources in [config/sources.toml](config/sources.toml), with the dates `added` and `removed` of their coverage period.
+- **Lines:** solid lines are joins on stored fields; the dashed line needs a lookup in the DIP API.
+- **Types:** `list` and `map` are JSON arrays and objects; the comment names their content.
 
 ```mermaid
 erDiagram
+    common_fields {
+        string record_id "stable id of the item, e.g. dawum:4360"
+        int revision "0 for the first version, +1 per source change"
+        string dataset "name of the dataset"
+        string schema_version "version of the record schema"
+        datetime observed_at "UTC time the pipeline saw this version"
+        string source_id "id of the API, outlet or press source"
+        string source_url "URL of the item or API resource"
+        string license "license or terms of the source"
+        string jurisdiction "DE or state code, e.g. DE-BY"
+        bool backfilled "older than the start of collection"
+    }
     party {
-        string code PK "e.g. CDU_CSU, SPD, GRUENE"
+        string code PK "party code, e.g. CDU_CSU, SPD, OTHER"
+        string name "official party name"
     }
     outlet {
-        string id PK
-        string outlet_type
-        string home_state
-        date added
-        date removed
+        string id PK "outlet id, e.g. tagesschau"
+        string name "display name"
+        string outlet_type "e.g. regional_daily, tabloid"
+        string owner_group "publisher group, or public"
+        string home_state "state of a regional outlet"
+        string paywall_model "free, mixed or hard"
+        bool fetch_pages "article pages are fetched"
+        date added "start of coverage"
+        date removed "end of coverage"
     }
     press_source {
-        string id PK
-        string actor_type
-        date added
-        date removed
+        string id PK "press source id, e.g. bmi"
+        string name "issuing institution"
+        string actor_type "e.g. federal_ministry, party"
+        string party FK "party of a party or group"
+        string jurisdiction "DE or state code"
+        date added "start of coverage"
+        date removed "end of coverage"
     }
     polls {
-        string poll_id PK
-        string parliament
-        date published_date
-        map results "vote share by party code"
+        string poll_id PK "DAWUM poll id"
+        string parliament "Bundestag, Landtag or European Parliament"
+        string institute "polling institute, e.g. INSA"
+        string tasker "client that commissioned the poll"
+        string method "survey method, e.g. Online"
+        date fieldwork_start "first day of fieldwork"
+        date fieldwork_end "last day of fieldwork"
+        date published_date "publication date"
+        int sample_size "number of respondents"
+        map results "vote share in percent by party code"
+        float others_share "share of all other parties in percent"
     }
     politicians {
         string politician_id PK "abgeordnetenwatch id"
-        string party FK
-        string wikidata_qid
-        list mandates
+        string name "full name"
+        string party FK "party code, NONE without party"
+        string sex "female, male or diverse"
+        int year_of_birth "year of birth"
+        string wikidata_qid "Wikidata id, e.g. Q85783"
+        list mandates "current mandates: parliament, period, faction, constituency, list"
     }
     roll_call_votes {
-        string vote_id PK
-        date vote_date
-        list printed_papers "Drucksache numbers"
-        bool accepted
+        string vote_id PK "abgeordnetenwatch id of the vote"
+        string parliament_period "e.g. Bundestag 2025 - 2029"
+        date vote_date "date of the vote"
+        string title "subject of the vote"
+        list topics "abgeordnetenwatch topics"
+        list committees "committees in charge"
+        list printed_papers "Drucksache numbers, e.g. 21/8293"
+        bool accepted "motion accepted"
+        int yes "number of yes votes"
+        int no "number of no votes"
+        int abstain "number of abstentions"
+        int no_show "members who did not vote"
+        map by_faction "yes, no, abstain, no_show per group"
+        map cohesion "Rice index per group"
+        map defectors "members voting against their group"
     }
     mp_votes {
-        string vote_id FK
-        string politician_id FK
-        string faction FK "party code or NONE"
-        string vote
+        string vote_id FK "roll-call vote"
+        string politician_id FK "member of parliament"
+        date vote_date "date of the vote"
+        string faction FK "group at the time, party code or NONE"
+        string vote "yes, no, abstain or no_show"
+        bool voted_against_faction "voted against the group majority"
     }
     parliamentary_procedures {
-        string procedure_id PK "DIP id"
-        string procedure_type
-        string status
-        string change
+        string procedure_id PK "DIP id of the procedure"
+        string change "new, status_changed or updated"
+        string procedure_type "e.g. Gesetzgebung, Kleine Anfrage"
+        int electoral_period "electoral period, e.g. 21"
+        string title "title of the procedure"
+        list initiators "e.g. Bundesregierung, a parliamentary group"
+        list subject_areas "DIP subject areas"
+        list descriptors "DIP thesaurus terms"
+        bool consent_required "Bundesrat consent required"
+        string status "current status (Beratungsstand)"
+        string previous_status "status at the previous observation"
+        string gesta_id "GESTA id of a bill"
+        datetime dip_updated_at "last update in the DIP"
+        date latest_document_date "date of the latest document"
     }
     wikipedia_pageviews {
         string entity_id FK "party code or politician_id"
         string entity_type "party or politician"
-        map daily_views
+        string wikipedia_title "title of the German Wikipedia article"
+        string wikidata_qid "Wikidata id of the entity"
+        map daily_views "views per day since the previous run"
     }
     news_items {
-        string record_id PK
-        string outlet_id FK
-        string url
-        datetime published_at
+        string outlet_id FK "outlet"
+        string outlet_type "type of the outlet"
+        string owner_group "publisher group, or public"
+        string home_state "state of a regional outlet"
+        string channel "rss or news_sitemap"
+        string url "URL of the article"
+        string canonical_url "canonical URL of the page"
+        string title "headline"
+        datetime published_at "publication time (UTC)"
+        datetime updated_at "last modification (UTC)"
+        string section "section, e.g. Inland"
+        list feed_categories "categories in the feed"
+        list keywords "keywords of the page or sitemap"
+        string jsonld_type "schema.org type, e.g. NewsArticle"
+        bool is_agency_copy "credited to a news agency"
+        int author_count "number of named authors"
+        int word_count "word count stated by the page"
+        bool is_paywalled "marked as not free"
+        bool has_video "page embeds a video"
+        string content_basis "title_only, title_teaser or lead_text"
     }
     press_releases {
-        string record_id PK
-        string press_source_id FK
-        string party FK
-        datetime published_at
+        string press_source_id FK "press source"
+        string actor_type "type of the issuing actor"
+        string party FK "party of a party or group"
+        string url "URL of the press release"
+        string canonical_url "canonical URL of the page"
+        string title "title"
+        datetime published_at "publication time (UTC)"
+        list feed_categories "categories in the feed"
+        string content_basis "title_only, title_teaser or lead_text"
     }
     text_annotations {
-        string item_id FK "record_id of the item"
         string item_dataset "news_items or press_releases"
-        string extraction_hash
-        list mentioned_parties FK
-        list mentioned_politicians FK
+        string item_id FK "record_id of the item"
+        string model "Gemini model"
+        string extraction_hash "hash of prompt, schema and settings"
+        string content_basis "text the model saw"
+        bool is_political "item is about politics"
+        string political_level "municipal, state, federal, EU, international"
+        list states_concerned "state codes the item is about"
+        string cap_topic "main policy topic (CAP)"
+        list cap_topics_secondary "up to two further topics"
+        string issue_detail "issue in a few words"
+        string article_type "news, opinion, interview, analysis, ..."
+        list event_types "political events reported"
+        string event_status "announced, ongoing or concluded"
+        bool government_involved "a government acts or is addressed"
+        list mentioned_parties FK "party codes"
+        map party_roles "initiator, target or commentator per party"
+        map party_tone "tone per party"
+        list quoted_parties "parties whose representatives are quoted"
+        list mentioned_politicians FK "politician ids"
+        map politician_tone "tone per politician"
+        int unresolved_person_count "named persons not in the registry"
+        string overall_tone "positive, neutral, negative or mixed"
+        string government_tone "tone toward the federal government"
+        string frame "dominant news frame"
+        list conflict_pairs "pairs of parties in dispute"
+        bool reports_poll "poll results reported"
+        string poll_institute "institute of a reported poll"
+        list upcoming_events "event type and date of future events"
+        string communication_type "purpose of a press release"
+        list populism_markers "anti-elite, people-centric, exclusionary"
     }
 
     party |o--o{ politicians : "party"
     party |o--o{ mp_votes : "faction"
     party }o--o{ polls : "results keys"
     party |o--o{ wikipedia_pageviews : "entity_id"
+    party |o--o{ press_source : "party"
     party |o--o{ press_releases : "party"
     party }o--o{ text_annotations : "mentioned_parties"
     outlet ||--o{ news_items : "outlet_id"
@@ -556,11 +665,476 @@ erDiagram
 ```
 
 **Reading the joins:**
-- Every record also has the common fields (`record_id`, `revision`, `observed_at`, ...). `politicians`, `parliamentary_procedures` and revised items have several records per key; for a point in time t, use the record with the highest revision observed at or before t.
+- `politicians`, `parliamentary_procedures` and revised items have several records per key; for a point in time t, use the record with the highest revision observed at or before t.
 - `politicians` holds the members with a current mandate. Members of the previous Bundestag who left have votes in `mp_votes` but no entry in `politicians`.
 - An item has one annotation per `extraction_hash`, and none if it was stored without labels.
 - `mentioned_politicians` holds only names that resolved to the registry; the others are counted in `unresolved_person_count`.
 - The DIP API finds the procedure of a printed paper with the filter `f.dokumentnummer`.
+
+## Example Records
+
+One record per dataset, taken from the data the pipeline collected. Most examples are linked:
+- **News and annotation:** the Bild article on the Berlin coalition talks (`news_items`) has its Gemini labels in `text_annotations` (`item_id`).
+- **Politician:** the labels name politician `79412`, Alexander Dobrindt. He appears in `politicians`, in `wikipedia_pageviews` (`entity_id`) and in `mp_votes` (`politician_id`).
+- **Vote:** his vote belongs to roll-call vote `6731` in `roll_call_votes` (`vote_id`).
+
+The values are unchanged from the data files, where each record is one line; here they are formatted for reading. Only `daily_views` of the pageviews example is shortened.
+
+<details>
+<summary><code>polls</code>: an Allensbach poll for the Bundestag</summary>
+
+```json
+{
+  "record_id": "dawum:4360",
+  "revision": 0,
+  "dataset": "polls",
+  "schema_version": "1.0",
+  "observed_at": "2026-10-23T04:52:19Z",
+  "source_id": "dawum",
+  "source_url": "https://api.dawum.de/",
+  "license": "ODbL-1.0",
+  "jurisdiction": "DE",
+  "backfilled": false,
+  "poll_id": "4360",
+  "parliament": "Bundestag",
+  "institute": "Allensbach",
+  "tasker": "Frankfurter Allgemeine Zeitung",
+  "method": "Face to face",
+  "fieldwork_start": "2026-10-02",
+  "fieldwork_end": "2026-10-16",
+  "published_date": "2026-10-22",
+  "sample_size": 1048,
+  "results": {
+    "AFD": 27.0,
+    "CDU_CSU": 23.0,
+    "SPD": 14.0,
+    "GRUENE": 14.0,
+    "LINKE": 11.0,
+    "FDP": 4.0
+  },
+  "others_share": 7.0
+}
+```
+
+</details>
+
+<details>
+<summary><code>politicians</code>: Alexander Dobrindt (CSU), member of the Bundestag</summary>
+
+```json
+{
+  "record_id": "aw-politician:79412",
+  "revision": 0,
+  "dataset": "politicians",
+  "schema_version": "1.0",
+  "observed_at": "2026-10-19T18:44:45Z",
+  "source_id": "abgeordnetenwatch",
+  "source_url": "https://www.abgeordnetenwatch.de/api/v2/politicians/79412",
+  "license": "CC0-1.0",
+  "jurisdiction": "DE",
+  "backfilled": false,
+  "politician_id": "79412",
+  "name": "Alexander Dobrindt",
+  "party": "CSU",
+  "sex": "male",
+  "year_of_birth": 1970,
+  "wikidata_qid": "Q85783",
+  "mandates": [
+    {
+      "parliament": "Bundestag",
+      "period": "Bundestag 2025 - 2029",
+      "faction": "CDU_CSU",
+      "constituency": "225 - Weilheim",
+      "electoral_list": "Landesliste Bayern",
+      "start_date": null,
+      "end_date": null,
+      "mandate_won": "constituency"
+    }
+  ]
+}
+```
+
+</details>
+
+<details>
+<summary><code>roll_call_votes</code>: the Bundestag vote on the extension of the UNMISS mission in South Sudan</summary>
+
+```json
+{
+  "record_id": "aw-poll:6731",
+  "revision": 0,
+  "dataset": "roll_call_votes",
+  "schema_version": "1.0",
+  "observed_at": "2026-10-19T18:46:46Z",
+  "source_id": "abgeordnetenwatch",
+  "source_url": "https://www.abgeordnetenwatch.de/api/v2/polls/6731",
+  "license": "CC0-1.0",
+  "jurisdiction": "DE",
+  "backfilled": false,
+  "vote_id": "6731",
+  "parliament_period": "Bundestag 2025 - 2029",
+  "vote_date": "2026-10-15",
+  "title": "Verlängerung des Bundeswehreinsatzes im Südsudan (UNMISS)",
+  "topics": [
+    "Außenpolitik und internationale Beziehungen",
+    "Verteidigung"
+  ],
+  "committees": [
+    "Auswärtiger Ausschuss",
+    "Haushaltsausschuss"
+  ],
+  "printed_papers": [
+    "21/8293",
+    "21/8613",
+    "21/8615"
+  ],
+  "accepted": true,
+  "yes": 496,
+  "no": 73,
+  "abstain": 4,
+  "no_show": 57,
+  "by_faction": {
+    "AFD": {
+      "yes": 109,
+      "no": 21,
+      "abstain": 4,
+      "no_show": 16
+    },
+    "CDU_CSU": {
+      "yes": 196,
+      "no": 0,
+      "abstain": 0,
+      "no_show": 12
+    },
+    "GRUENE": {
+      "yes": 81,
+      "no": 0,
+      "abstain": 0,
+      "no_show": 4
+    },
+    "LINKE": {
+      "yes": 0,
+      "no": 52,
+      "abstain": 0,
+      "no_show": 12
+    },
+    "NONE": {
+      "yes": 3,
+      "no": 0,
+      "abstain": 0,
+      "no_show": 0
+    },
+    "SPD": {
+      "yes": 107,
+      "no": 0,
+      "abstain": 0,
+      "no_show": 13
+    }
+  },
+  "cohesion": {
+    "AFD": 0.6769,
+    "CDU_CSU": 1.0,
+    "GRUENE": 1.0,
+    "LINKE": 1.0,
+    "SPD": 1.0
+  },
+  "defectors": {
+    "AFD": 21,
+    "CDU_CSU": 0,
+    "GRUENE": 0,
+    "LINKE": 0,
+    "SPD": 0
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><code>mp_votes</code>: Alexander Dobrindt's vote in that roll-call vote</summary>
+
+```json
+{
+  "record_id": "aw-vote:6731:79412",
+  "revision": 0,
+  "dataset": "mp_votes",
+  "schema_version": "1.0",
+  "observed_at": "2026-10-19T18:46:46Z",
+  "source_id": "abgeordnetenwatch",
+  "source_url": "https://www.abgeordnetenwatch.de/api/v2/votes/683166",
+  "license": "CC0-1.0",
+  "jurisdiction": "DE",
+  "backfilled": false,
+  "vote_id": "6731",
+  "vote_date": "2026-10-15",
+  "politician_id": "79412",
+  "faction": "CDU_CSU",
+  "vote": "yes",
+  "voted_against_faction": false
+}
+```
+
+</details>
+
+<details>
+<summary><code>parliamentary_procedures</code>: a status change of the bill amending the tobacco tax act</summary>
+
+```json
+{
+  "record_id": "dip-vorgang:338367",
+  "revision": 1,
+  "dataset": "parliamentary_procedures",
+  "schema_version": "1.0",
+  "observed_at": "2026-10-23T04:52:16Z",
+  "source_id": "dip",
+  "source_url": "https://search.dip.bundestag.de/api/v1/vorgang/338367",
+  "license": "DIP-Nutzungsbedingungen",
+  "jurisdiction": "DE",
+  "backfilled": false,
+  "procedure_id": "338367",
+  "change": "status_changed",
+  "procedure_type": "Gesetzgebung",
+  "electoral_period": 21,
+  "title": "Gesetz zur Änderung des Tabaksteuergesetzes",
+  "initiators": [
+    "Bundesregierung"
+  ],
+  "subject_areas": [
+    "Gesundheit",
+    "Öffentliche Finanzen, Steuern und Abgaben"
+  ],
+  "descriptors": [
+    "E-Zigarette",
+    "Gesundheitsschutz",
+    "Jugendschutz",
+    "Steuererhöhung",
+    "Tabaksteuer",
+    "Tabaksteuergesetz",
+    "Tabaksteuerverordnung",
+    "Tabakwaren"
+  ],
+  "consent_required": false,
+  "status": "Verkündet",
+  "previous_status": "Bundesrat hat Vermittlungsausschuss nicht angerufen",
+  "gesta_id": "D051",
+  "dip_updated_at": "2026-10-21T10:41:06Z",
+  "latest_document_date": "2026-10-16"
+}
+```
+
+</details>
+
+<details>
+<summary><code>wikipedia_pageviews</code>: the article on Alexander Dobrindt, first run (daily_views shortened to the last 5 of 365 days)</summary>
+
+```json
+{
+  "record_id": "pageviews:79412:2025-10-19:2026-10-18",
+  "revision": 0,
+  "dataset": "wikipedia_pageviews",
+  "schema_version": "1.0",
+  "observed_at": "2026-10-19T19:16:18Z",
+  "source_id": "wikimedia_pageviews",
+  "source_url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/de.wikipedia.org/all-access/user/Alexander_Dobrindt/daily/20251019/20261018",
+  "license": "CC0-1.0",
+  "jurisdiction": "DE",
+  "backfilled": true,
+  "entity_id": "79412",
+  "entity_type": "politician",
+  "wikipedia_title": "Alexander Dobrindt",
+  "wikidata_qid": "Q85783",
+  "daily_views": {
+    "2026-10-14": 339,
+    "2026-10-15": 301,
+    "2026-10-16": 244,
+    "2026-10-17": 221,
+    "2026-10-18": 242
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><code>news_items</code>: a Bild article on the Berlin coalition talks</summary>
+
+```json
+{
+  "record_id": "news:86883a11854a9995",
+  "revision": 0,
+  "dataset": "news_items",
+  "schema_version": "1.0",
+  "observed_at": "2026-10-20T04:44:46Z",
+  "source_id": "bild",
+  "source_url": "https://www.bild.de/politik/inland/dobrindt-nach-berlin-sondierungen-rot-gruen-rot-hat-rein-gar-nichts-verstanden-6ad64519199dc15f1abd9a99",
+  "license": "Publisher rights; metadata only",
+  "jurisdiction": "DE",
+  "backfilled": false,
+  "outlet_id": "bild",
+  "outlet_type": "tabloid",
+  "owner_group": "Axel Springer",
+  "home_state": null,
+  "channel": "rss",
+  "url": "https://www.bild.de/politik/inland/dobrindt-nach-berlin-sondierungen-rot-gruen-rot-hat-rein-gar-nichts-verstanden-6ad64519199dc15f1abd9a99",
+  "canonical_url": "https://www.bild.de/politik/inland/dobrindt-nach-berlin-sondierungen-rot-gruen-rot-hat-rein-gar-nichts-verstanden-6ad64519199dc15f1abd9a99",
+  "title": "Dobrindt nach Berlin-Sondierungen - Rot-Grün-Rot „hat rein gar nichts verstanden“!",
+  "published_at": "2026-10-20T02:53:47Z",
+  "updated_at": "2026-10-20T02:53:47Z",
+  "section": "Inland",
+  "feed_categories": [
+    "Inland",
+    "Berlin",
+    "Antisemitismus",
+    "Berlin-Wahl",
+    "die Linke",
+    "Dobrindt Alexander",
+    "Die Linke Berlin"
+  ],
+  "keywords": [
+    "Die Linke Berlin",
+    "Berlin",
+    "die Linke",
+    "Antisemitismus",
+    "Berlin-Wahl",
+    "Dobrindt Alexander"
+  ],
+  "jsonld_type": "NewsArticle",
+  "is_agency_copy": false,
+  "author_count": 1,
+  "word_count": null,
+  "is_paywalled": false,
+  "has_video": false,
+  "content_basis": "lead_text"
+}
+```
+
+</details>
+
+<details>
+<summary><code>press_releases</code>: a press release of the Linke parliamentary group</summary>
+
+```json
+{
+  "record_id": "press:3876c647b5212498",
+  "revision": 0,
+  "dataset": "press_releases",
+  "schema_version": "1.0",
+  "observed_at": "2026-10-20T04:45:48Z",
+  "source_id": "linke_fraktion",
+  "source_url": "https://www.dielinkebt.de/presse/pressemitteilungen/detail/aeusserst-zweifelhaftes-demokratieverstaendnis/",
+  "license": "Publisher rights; metadata only",
+  "jurisdiction": "DE",
+  "backfilled": false,
+  "press_source_id": "linke_fraktion",
+  "actor_type": "parliamentary_group",
+  "party": "LINKE",
+  "url": "https://www.dielinkebt.de/presse/pressemitteilungen/detail/aeusserst-zweifelhaftes-demokratieverstaendnis/",
+  "canonical_url": "https://www.dielinkebt.de/presse/pressemitteilungen/detail/aeusserst-zweifelhaftes-demokratieverstaendnis/",
+  "title": "Äußerst zweifelhaftes Demokratieverständnis",
+  "published_at": "2026-10-18T10:54:30Z",
+  "feed_categories": [
+    "Pressemitteilung",
+    "21. Legislatur",
+    "Verkehr, Bau und Stadtentwicklung"
+  ],
+  "content_basis": "lead_text"
+}
+```
+
+</details>
+
+<details>
+<summary><code>text_annotations</code>: the Gemini labels of the Bild article above</summary>
+
+```json
+{
+  "record_id": "annotation:news:86883a11854a9995:c34252824e086aab",
+  "revision": 0,
+  "dataset": "text_annotations",
+  "schema_version": "1.0",
+  "observed_at": "2026-10-20T04:44:58Z",
+  "source_id": "bild",
+  "source_url": "https://www.bild.de/politik/inland/dobrindt-nach-berlin-sondierungen-rot-gruen-rot-hat-rein-gar-nichts-verstanden-6ad64519199dc15f1abd9a99",
+  "license": "Derived data (ODbL-1.0)",
+  "jurisdiction": "DE",
+  "backfilled": false,
+  "item_dataset": "news_items",
+  "item_id": "news:86883a11854a9995",
+  "model": "gemini-2.5-flash",
+  "extraction_hash": "c34252824e086aab",
+  "content_basis": "lead_text",
+  "is_political": true,
+  "political_level": "State",
+  "states_concerned": [
+    "DE-BE"
+  ],
+  "cap_topic": "Government operations",
+  "cap_topics_secondary": [
+    "Immigration",
+    "Law and crime"
+  ],
+  "issue_detail": "Berlin coalition talks",
+  "article_type": "News",
+  "event_types": [
+    "Coalition formation",
+    "Intra-party conflict"
+  ],
+  "event_status": "Ongoing",
+  "government_involved": true,
+  "mentioned_parties": [
+    "CSU",
+    "GRUENE",
+    "SPD",
+    "LINKE"
+  ],
+  "party_roles": {
+    "CSU": "Commentator",
+    "GRUENE": "Target",
+    "SPD": "Target",
+    "LINKE": "Target"
+  },
+  "party_tone": {
+    "CSU": "Neutral",
+    "GRUENE": "Negative",
+    "SPD": "Negative",
+    "LINKE": "Negative"
+  },
+  "quoted_parties": [
+    "CSU"
+  ],
+  "mentioned_politicians": [
+    "79412"
+  ],
+  "politician_tone": {
+    "79412": "Neutral"
+  },
+  "unresolved_person_count": 1,
+  "overall_tone": "Negative",
+  "government_tone": "Not applicable",
+  "frame": "Conflict",
+  "conflict_pairs": [
+    [
+      "CSU",
+      "GRUENE"
+    ],
+    [
+      "CSU",
+      "SPD"
+    ],
+    [
+      "CSU",
+      "LINKE"
+    ]
+  ],
+  "reports_poll": false,
+  "poll_institute": null,
+  "upcoming_events": [],
+  "communication_type": "Not applicable",
+  "populism_markers": []
+}
+```
+
+</details>
 
 ## Sources and Fetch Rules
 
