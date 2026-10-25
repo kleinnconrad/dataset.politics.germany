@@ -1,5 +1,5 @@
 # German Politics Dataset
-[![CI](https://github.com/kleinnconrad/german_politics_dataset/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kleinnconrad/german_politics_dataset/actions/workflows/ci.yml)
+[![CI](https://github.com/kleinnconrad/dataset.politics.germany/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kleinnconrad/dataset.politics.germany/actions/workflows/ci.yml)
 
 > [!IMPORTANT]
 > **The DIP API key expires on 31 May 2027.** Before that date, take the current key from the [DIP help page](https://dip.bundestag.de/%C3%BCber-dip/hilfe/api), replace the repository secret `DIP_API_KEY` (**Settings > Secrets and variables > Actions**) and the value in your local `.env`, and update the expiry date in `.github/workflows/pipeline.yml` (`DIP_KEY_VALID_UNTIL`) and in this note. The pipeline workflow shows a warning from 45 days before the date and fails from 14 days before, so that GitHub sends a notification.

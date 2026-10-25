@@ -3,7 +3,7 @@ name = "political-dataset"
 version = "0.1.0"
 description = "A dataset of German political news, polls, elections and parliamentary activity for political analysis and prediction"
 requires-python = ">=3.11"
-# Same versions as in style_dataset, so that the shared modules run on a tested set
+# Same versions as in dataset.fashion, so that the shared modules run on a tested set
 dependencies = [
     "beautifulsoup4==4.15.0",
     "feedparser==6.0.14",

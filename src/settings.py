@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Optional
 
 DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
-USER_AGENT = "GermanPoliticsDataset/0.1 (+https://github.com/kleinnconrad/german_politics_dataset)"
+USER_AGENT = "GermanPoliticsDataset/0.1 (+https://github.com/kleinnconrad/dataset.politics.germany)"
 
 
 def _env_int(name: str, default: int) -> int:

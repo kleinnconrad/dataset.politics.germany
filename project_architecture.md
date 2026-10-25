@@ -1,6 +1,6 @@
 # German Politics Dataset: Architecture
 
-This document describes the structure of the pipeline: scope and decisions, datasets and variables, sources, storage, the run, and the implementation status. The pipeline adopts the structure of [style_dataset](https://github.com/kleinnconrad/style_dataset). Usage and configuration are described in the [README](README.md).
+This document describes the structure of the pipeline: scope and decisions, datasets and variables, sources, storage, the run, and the implementation status. The pipeline adopts the structure of [dataset.fashion](https://github.com/kleinnconrad/dataset.fashion). Usage and configuration are described in the [README](README.md).
 
 ## Table of Contents
 - [1. Scope and Decisions](#1-scope-and-decisions)
@@ -26,8 +26,8 @@ This document describes the structure of the pipeline: scope and decisions, data
 - **Scope:** Germany only: federal level, the 16 states, and the elections to the European Parliament held in Germany. `jurisdiction` is `DE` or an ISO 3166-2 state code (`DE-BY`, `DE-SN`, ...).
 - **Repository:** public. Every record names the license of its source; the data is published under the ODbL 1.0 (see [data/LICENSE.md](data/LICENSE.md)); no full texts of articles or press releases are stored.
 - **Article pages:** fetched for metadata and lead text where `robots.txt` and the text-and-data-mining reservations of the host permit it. The lead text is used for the annotation and then discarded.
-- **Schedule:** one workflow runs the due collectors on Tuesdays and Fridays at 02:07 Europe/Berlin, the schedule of style_dataset. A run takes at most 30 minutes; the history is imported once by a separate `backfill` run. The politician registry and the pageviews are updated once a week.
-- **Model:** Google Gemini (`gemini-2.5-flash` by default, thinking off) labels up to 400 news articles and press releases per run, with the request handling of style_dataset. At the measured token use of about 2,500 input and 2,300 output tokens per request of ten items, this costs about $0.26 per run.
+- **Schedule:** one workflow runs the due collectors on Tuesdays and Fridays at 02:07 Europe/Berlin, the schedule of dataset.fashion. A run takes at most 30 minutes; the history is imported once by a separate `backfill` run. The politician registry and the pageviews are updated once a week.
+- **Model:** Google Gemini (`gemini-2.5-flash` by default, thinking off) labels up to 400 news articles and press releases per run, with the request handling of dataset.fashion. At the measured token use of about 2,500 input and 2,300 output tokens per request of ten items, this costs about $0.26 per run.
 
 **Consequence of the schedule for news.** RSS feeds and news sitemaps list only recent items; a news sitemap covers 48 hours, many feeds less. With runs every three or four days and a lookback of 96 hours, the pipeline collects what the feeds and sitemaps still list at run time. Articles that have left a feed before the next run are missing, so news coverage is a sample, not a complete record. Changing the cron line of `pipeline.yml` to a daily schedule closes most of this gap, at a Gemini cost of about $0.26 per day instead of per half week; the other collectors only fetch changes and are not affected by the frequency.
 
@@ -176,7 +176,7 @@ data/
 ## 7. Repository Structure
 
 ```text
-german_politics_dataset/
+dataset.politics.germany/
 ├── .github/
 │   ├── dependabot.yml
 │   └── workflows/
