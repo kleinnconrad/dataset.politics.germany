@@ -7,6 +7,7 @@
 A dataset of German politics for political analysis and the prediction of elections and other political events. A pipeline in GitHub Actions runs twice a week (Tuesdays and Fridays) for at most 30 minutes. It collects opinion polls, roll-call votes, parliamentary procedures, Wikipedia pageviews, news articles and press releases from public APIs, feeds and websites without bot protection, labels the news and press releases with Google Gemini (`gemini-2.5-flash`), and stores everything as partitioned JSON files in this repository.
 
 ## Table of Contents
+- [Variable Overview](#variable-overview)
 - [Dataset Overview](#dataset-overview)
 - [Datasets](#datasets)
   - [News Items and Press Releases](#news-items-and-press-releases)
@@ -21,6 +22,104 @@ A dataset of German politics for political analysis and the prediction of electi
 - [Continuous Integration](#continuous-integration)
 - [Setup](#setup)
 - [License](#license)
+
+## Variable Overview
+
+The table lists the variables that carry content and the dataset (table) that stores them. Not listed are the fields that every record has, the ids of the items at their sources (polls, votes, procedures), ids that link the datasets (including the printed papers that link votes to procedures), Wikipedia titles, Wikidata and GESTA ids, URLs, the feed channel and the bookkeeping of revisions and annotations; all fields are in the [Data Model](#data-model). Of the common fields, `jurisdiction` gives the level of each record: `DE` for the federal level or the code of a state, e.g. `DE-BY` for a Landtag poll in Bavaria.
+
+| Variable | Table | Description | Example |
+|---|---|---|---|
+| `parliament` | `polls` | Parliament the poll asks about: Bundestag, Landtag or European Parliament | `Bundestag` |
+| `institute` | `polls` | Polling institute | `INSA` |
+| `tasker` | `polls` | Client that commissioned the poll | `BILD` |
+| `method` | `polls` | Survey method, e.g. online or telephone | `Online` |
+| `fieldwork_start` | `polls` | First day of the fieldwork | `2026-10-16` |
+| `fieldwork_end` | `polls` | Last day of the fieldwork | `2026-10-19` |
+| `published_date` | `polls` | Publication date of the poll | `2026-10-20` |
+| `sample_size` | `polls` | Number of respondents | `2002` |
+| `results` | `polls` | Vote intention in percent by party code, without the other parties | `{"AFD": 30.0, "CDU_CSU": 18.0, "SPD": 14.0, "GRUENE": 14.0, "LINKE": 11.0, "FDP": 5.0, "BSW": 3.5}` |
+| `others_share` | `polls` | Share of all other parties in percent | `4.5` |
+| `entity_type` | `wikipedia_pageviews` | Subject of the article: party or politician | `politician` |
+| `daily_views` | `wikipedia_pageviews` | Views by people per day of the German Wikipedia article of a party or politician, for the days since the previous run | `{..., "2026-10-17": 221, "2026-10-18": 242}` |
+| `outlet_id` | `news_items` | Outlet that published the article | `berliner_zeitung` |
+| `outlet_type` | `news_items` | Type of the outlet | `regional_daily` |
+| `owner_group` | `news_items` | Publisher group of the outlet, or `public` | `Berliner Verlag` |
+| `home_state` | `news_items` | State of a regional outlet (ISO 3166-2) | `DE-BE` |
+| `title` | `news_items` | Title of the article | `Berliner Grüne und SPD geben grünes Licht für Koalitionsverhandlungen mit der Linken` |
+| `published_at` | `news_items` | Publication time (UTC) | `2026-10-19T16:36:31Z` |
+| `updated_at` | `news_items` | Last modification time (UTC) | `2026-10-19T19:59:42Z` |
+| `section` | `news_items` | Section of the outlet | `Politik` |
+| `feed_categories` | `news_items` | Categories of the item in the feed | `["Politik"]` |
+| `keywords` | `news_items` | Keywords of the article page or news sitemap | `["Schienenverkehr", "Verkehrspolitik", "Nahverkehr"]` |
+| `jsonld_type` | `news_items` | schema.org type of the page, e.g. news article or live blog | `NewsArticle` |
+| `is_agency_copy` | `news_items` | Credited to a news agency | `false` |
+| `author_count` | `news_items` | Number of named authors (names are not stored) | `1` |
+| `word_count` | `news_items` | Word count stated by the article page (null if not given) | `null` |
+| `is_paywalled` | `news_items` | Not accessible for free | `false` |
+| `has_video` | `news_items` | Page embeds a video | `false` |
+| `press_source_id` | `press_releases` | Government, ministry, parliament, parliamentary group, party or court that issued the release | `bundesregierung` |
+| `actor_type` | `press_releases` | Type of the issuer | `federal_government` |
+| `party` | `press_releases` | Party of an issuing party or parliamentary group | `LINKE` |
+| `title` | `press_releases` | Title of the release | `Klares Zeichen für mehr Investitionen in Deutschland` |
+| `published_at` | `press_releases` | Publication time (UTC) | `2026-10-19T12:41:48Z` |
+| `feed_categories` | `press_releases` | Categories of the item in the feed | `["Gesundheit", "Antwort"]` |
+| `is_political` | `text_annotations` | Item is about politics | `true` |
+| `political_level` | `text_annotations` | Main political level: municipal, state, federal, EU or international | `State` |
+| `states_concerned` | `text_annotations` | German states the item is mainly about | `["DE-BE"]` |
+| `cap_topic` | `text_annotations` | Main policy topic (Comparative Agendas Project) | `Government operations` |
+| `cap_topics_secondary` | `text_annotations` | Up to two further policy topics | `["Immigration", "Law and crime"]` |
+| `issue_detail` | `text_annotations` | Specific issue in a few words | `Berlin coalition talks` |
+| `article_type` | `text_annotations` | Form of the item: news, opinion, interview, analysis and others | `News` |
+| `event_types` | `text_annotations` | Political events reported | `["Coalition formation", "Intra-party conflict"]` |
+| `event_status` | `text_annotations` | Stage of the main event | `Ongoing` |
+| `government_involved` | `text_annotations` | A government or its members act or are addressed | `true` |
+| `mentioned_parties` | `text_annotations` | Parties the item refers to | `["CSU", "GRUENE", "SPD", "LINKE"]` |
+| `party_roles` | `text_annotations` | Role of each mentioned party: initiator, target or commentator | `{"CSU": "Commentator", "GRUENE": "Target", "SPD": "Target", "LINKE": "Target"}` |
+| `party_tone` | `text_annotations` | Tone toward each mentioned party | `{"CSU": "Neutral", "GRUENE": "Negative", "SPD": "Negative", "LINKE": "Negative"}` |
+| `quoted_parties` | `text_annotations` | Parties whose representatives are quoted | `["CSU"]` |
+| `mentioned_politicians` | `text_annotations` | abgeordnetenwatch ids of the named politicians in the registry | `["79412"]` |
+| `politician_tone` | `text_annotations` | Tone toward each named politician of the registry | `{"79412": "Neutral"}` |
+| `unresolved_person_count` | `text_annotations` | Number of named persons not in the registry (names are not stored) | `1` |
+| `overall_tone` | `text_annotations` | Overall tone of the item | `Negative` |
+| `government_tone` | `text_annotations` | Tone toward the federal government | `Neutral` |
+| `frame` | `text_annotations` | Dominant news frame (Semetko and Valkenburg) | `Conflict` |
+| `conflict_pairs` | `text_annotations` | Pairs of parties reported in dispute | `[["CSU", "GRUENE"], ["CSU", "SPD"], ["CSU", "LINKE"]]` |
+| `reports_poll` | `text_annotations` | Poll results reported | `false` |
+| `poll_institute` | `text_annotations` | Institute of a reported poll | `Forsa` |
+| `upcoming_events` | `text_annotations` | Future events with type and date | `[{"event_type": "Party convention", "date": "2026-10-31"}]` |
+| `communication_type` | `text_annotations` | Purpose of a press release; `Not applicable` for news | `Achievement claim` |
+| `populism_markers` | `text_annotations` | Populist rhetoric in a press release: anti-elite, people-centric or exclusionary | `["Anti-elite"]` |
+| `parliament_period` | `roll_call_votes` | Electoral period of the Bundestag | `Bundestag 2025 - 2029` |
+| `vote_date` | `roll_call_votes` | Date of the vote | `2026-10-15` |
+| `title` | `roll_call_votes` | Title of the vote | `Verlängerung des Bundeswehreinsatzes im Südsudan (UNMISS)` |
+| `topics` | `roll_call_votes` | Topics assigned by abgeordnetenwatch | `["Außenpolitik und internationale Beziehungen", "Verteidigung"]` |
+| `committees` | `roll_call_votes` | Committees in charge | `["Auswärtiger Ausschuss", "Haushaltsausschuss"]` |
+| `accepted` | `roll_call_votes` | Motion accepted | `true` |
+| `yes` | `roll_call_votes` | Number of yes votes | `496` |
+| `no` | `roll_call_votes` | Number of no votes | `73` |
+| `abstain` | `roll_call_votes` | Number of abstentions | `4` |
+| `no_show` | `roll_call_votes` | Number of members who did not vote | `57` |
+| `by_faction` | `roll_call_votes` | Yes, no, abstain and no_show counts per parliamentary group (`NONE` for members without a group) | `{"AFD": {"yes": 109, "no": 21, "abstain": 4, "no_show": 16}, ...}` |
+| `cohesion` | `roll_call_votes` | Rice index of voting cohesion per parliamentary group (0 to 1) | `{"AFD": 0.6769, "CDU_CSU": 1.0, "GRUENE": 1.0, "LINKE": 1.0, "SPD": 1.0}` |
+| `defectors` | `roll_call_votes` | Members per parliamentary group who voted against the group majority | `{"AFD": 21, "CDU_CSU": 0, "GRUENE": 0, "LINKE": 0, "SPD": 0}` |
+| `vote_date` | `mp_votes` | Date of the vote | `2026-10-15` |
+| `faction` | `mp_votes` | Parliamentary group of the member at the time of the vote (party code, `NONE` without a group) | `CDU_CSU` |
+| `vote` | `mp_votes` | Vote of the member: yes, no, abstain or no_show | `yes` |
+| `voted_against_faction` | `mp_votes` | Member voted against the majority of the group | `false` |
+| `procedure_type` | `parliamentary_procedures` | Type of the procedure, e.g. legislation, motion or minor interpellation | `Gesetzgebung` |
+| `electoral_period` | `parliamentary_procedures` | Electoral period of the Bundestag | `21` |
+| `title` | `parliamentary_procedures` | Title of the procedure | `Gesetz zur Änderung des Tabaksteuergesetzes` |
+| `initiators` | `parliamentary_procedures` | Initiators, e.g. the federal government, the Bundesrat or a parliamentary group | `["Bundesregierung"]` |
+| `subject_areas` | `parliamentary_procedures` | Subject areas (Sachgebiete) of the DIP | `["Gesundheit", "Öffentliche Finanzen, Steuern und Abgaben"]` |
+| `descriptors` | `parliamentary_procedures` | Subject descriptors of the DIP thesaurus | `["Ordnungsruf", "Parlamentarische Ordnung"]` |
+| `consent_required` | `parliamentary_procedures` | Consent of the Bundesrat required | `false` |
+| `status` | `parliamentary_procedures` | Current status (Beratungsstand) | `Verkündet` |
+| `latest_document_date` | `parliamentary_procedures` | Date of the latest document of the procedure | `2026-10-16` |
+| `name` | `politicians` | Full name | `Alexander Dobrindt` |
+| `party` | `politicians` | Current party as party code (`NONE` without a party) | `CSU` |
+| `sex` | `politicians` | Sex as stated by abgeordnetenwatch | `male` |
+| `year_of_birth` | `politicians` | Year of birth | `1970` |
+| `mandates` | `politicians` | Current mandates: parliament, period, faction, constituency, electoral list, how the mandate was won, start and end date | `[{"parliament": "Bundestag", "period": "Bundestag 2025 - 2029", "faction": "CDU_CSU", "constituency": "225 - Weilheim", "electoral_list": "Landesliste Bayern", "start_date": null, "end_date": null, "mandate_won": "constituency"}]` |
 
 ## Dataset Overview
 <!-- DATASET_OVERVIEW_START -->
