@@ -1,11 +1,11 @@
 {
 "version": 1,
 "collectors": {
-"feeds": {"consecutive_failures": 0, "cursor": {}, "first_run": "2026-10-20", "last_complete": "2026-10-27T06:11:17Z", "last_error": null, "last_run": "2026-10-27T06:11:17Z", "last_success": "2026-10-27T06:11:17Z"},
-"parliamentary_procedures": {"consecutive_failures": 0, "cursor": {"aktualisiert": "2026-10-27T06:11:17+00:00"}, "first_run": "2026-10-19", "last_complete": "2026-10-27T06:11:17Z", "last_error": null, "last_run": "2026-10-27T06:11:17Z", "last_success": "2026-10-27T06:11:17Z"},
+"feeds": {"consecutive_failures": 0, "cursor": {}, "first_run": "2026-10-20", "last_complete": "2026-10-30T06:59:45Z", "last_error": null, "last_run": "2026-10-30T06:59:45Z", "last_success": "2026-10-30T06:59:45Z"},
+"parliamentary_procedures": {"consecutive_failures": 0, "cursor": {"aktualisiert": "2026-10-30T07:55:55+01:00"}, "first_run": "2026-10-19", "last_complete": "2026-10-30T06:59:45Z", "last_error": null, "last_run": "2026-10-30T06:59:45Z", "last_success": "2026-10-30T06:59:45Z"},
 "politicians": {"consecutive_failures": 0, "cursor": {}, "first_run": "2026-10-19", "last_complete": "2026-10-27T06:11:17Z", "last_error": null, "last_run": "2026-10-27T06:11:17Z", "last_success": "2026-10-27T06:11:17Z"},
-"polls": {"consecutive_failures": 0, "cursor": {"last_update": "2026-10-27T07:24:05+01:00"}, "first_run": "2026-10-19", "last_complete": "2026-10-27T06:11:17Z", "last_error": null, "last_run": "2026-10-27T06:11:17Z", "last_success": "2026-10-27T06:11:17Z"},
-"roll_call_votes": {"consecutive_failures": 0, "cursor": {"backfill_periods": [], "period": "161"}, "first_run": "2026-10-19", "last_complete": "2026-10-27T06:11:17Z", "last_error": null, "last_run": "2026-10-27T06:11:17Z", "last_success": "2026-10-27T06:11:17Z"},
+"polls": {"consecutive_failures": 0, "cursor": {"last_update": "2026-10-27T21:55:24+01:00"}, "first_run": "2026-10-19", "last_complete": "2026-10-30T06:59:45Z", "last_error": null, "last_run": "2026-10-30T06:59:45Z", "last_success": "2026-10-30T06:59:45Z"},
+"roll_call_votes": {"consecutive_failures": 0, "cursor": {"backfill_periods": [], "period": "161"}, "first_run": "2026-10-19", "last_complete": "2026-10-30T06:59:45Z", "last_error": null, "last_run": "2026-10-30T06:59:45Z", "last_success": "2026-10-30T06:59:45Z"},
 "wikipedia_pageviews": {"consecutive_failures": 0, "cursor": {}, "first_run": "2026-10-19", "last_complete": "2026-10-27T06:11:17Z", "last_error": null, "last_run": "2026-10-27T06:11:17Z", "last_success": "2026-10-27T06:11:17Z"}
 }
 }
