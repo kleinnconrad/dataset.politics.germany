@@ -856,6 +856,17 @@ feeds = ["https://www.berlin.de/rbmskzl/index.php/rss"]
 fetch_pages = true
 added = 2026-10-20
 
+# source review 2026-11-01: 42 items in the last 60 days
+[[press_source]]
+id = "bundeskanzler"
+name = "Bundeskanzleramt"
+homepage = "https://www.bundeskanzler.de"
+actor_type = "federal_government"
+jurisdiction = "DE"
+feeds = ["https://www.bundeskanzler.de/service/rss/bk-de/1859752/feed.xml", "https://www.bundeskanzler.de/service/rss/bk-de/1859754/feed.xml", "https://www.bundeskanzler.de/service/rss/bk-de/1859760/feed.xml"]
+fetch_pages = true
+added = 2026-11-01
+
 # Candidates that were checked and not admitted. The source review does not propose them again (see the header).
 [[excluded]]
 id = "faz"
@@ -896,18 +907,6 @@ homepage = "https://www.rnd.de/"
 status = "blocked"
 reason = "blocks automated requests, as do the regional titles of the RND network"
 checked = 2026-10-19
-
-[[excluded]]
-id = "bundeskanzler"
-name = "Bundeskanzleramt"
-homepage = "https://www.bundeskanzler.de"
-kind = "press_source"
-actor_type = "federal_government"
-jurisdiction = "DE"
-feeds = ["https://www.bundeskanzler.de/SiteGlobals/Functions/RSSFeed/DE/RSSNewsfeed/rssnewsfeed_aktuelles_node.xml"]
-status = "no_feed"
-reason = "no readable feed found"
-checked = 2026-10-20
 
 [[excluded]]
 id = "auswaertiges_amt"
@@ -1053,3 +1052,15 @@ feeds = ["https://www.schleswig-holstein.de/DE/Landesregierung/RSS-Feeds/rss_lan
 status = "robots"
 reason = "robots.txt crawl delay 180 s"
 checked = 2026-10-20
+
+[[excluded]]
+id = "state_he"
+name = "Hessische Staatskanzlei"
+homepage = "https://staatskanzlei.hessen.de/"
+kind = "press_source"
+actor_type = "state_government"
+jurisdiction = "DE-HE"
+feeds = ["https://staatskanzlei.hessen.de/presse/news-archiv?type=rss"]
+status = "no_feed"
+reason = "no readable feed found"
+checked = 2026-11-01
