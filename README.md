@@ -4,7 +4,7 @@
 > [!IMPORTANT]
 > **The DIP API key expires on 31 May 2027.** Before that date, take the current key from the [DIP help page](https://dip.bundestag.de/%C3%BCber-dip/hilfe/api), replace the repository secret `DIP_API_KEY` (**Settings > Secrets and variables > Actions**) and the value in your local `.env`, and update the expiry date in `.github/workflows/pipeline.yml` (`DIP_KEY_VALID_UNTIL`) and in this note. The pipeline workflow shows a warning from 45 days before the date and fails from 14 days before, so that GitHub sends a notification.
 
-A dataset of German politics for political analysis and the prediction of elections and other political events. A pipeline in GitHub Actions runs twice a week (Tuesdays and Fridays) for at most 30 minutes. It collects opinion polls, roll-call votes, parliamentary procedures, Wikipedia pageviews, news articles and press releases from public APIs, feeds and websites without bot protection, labels the news and press releases with Google Gemini (`gemini-2.5-flash`), and stores everything as partitioned JSON files in this repository.
+A dataset of German politics for political analysis and the prediction of elections and other political events. A pipeline in GitHub Actions runs twice a week (Tuesdays and Fridays) for at most 30 minutes. It collects opinion polls, roll-call votes, parliamentary procedures, Wikipedia pageviews, news articles and press releases from public APIs, feeds and websites without bot protection, labels the news and press releases with Google Gemini (`gemini-3.5-flash-lite`), and stores everything as partitioned JSON files in this repository.
 
 ## Table of Contents
 - [Variable Overview](#variable-overview)
@@ -1365,7 +1365,7 @@ The input `collectors` restricts a manual run to a comma-separated list of colle
 |---|---|---|
 | `GEMINI_API_KEY` | none | Gemini API key (required for news and press releases) |
 | `DIP_API_KEY` | none | Bundestag DIP API key (required for the procedures) |
-| `GEMINI_MODEL` | `gemini-2.5-flash` | Model for the annotation; stored in every annotation record |
+| `GEMINI_MODEL` | `gemini-3.5-flash-lite` | Model for the annotation and the search of the source review; stored in every annotation record. A Gemini 3 or later model: the requests set a thinking level, which Gemini 2.5 models reject |
 | `MAX_GEMINI_CALLS_PER_RUN` | 50 | Gemini requests per run, including retries |
 | `MAX_ANNOTATIONS_PER_RUN` | 400 | News articles and press releases annotated per run; further new items are stored without labels |
 | `GEMINI_CONCURRENCY` | 4 | Gemini requests sent at the same time; 1 for the free tier of the Gemini API |
