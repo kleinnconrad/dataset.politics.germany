@@ -49,9 +49,8 @@ logger = logging.getLogger(__name__)
 
 COLLECTOR_ORDER = ("politicians", "feeds", "bundestag_votes", "parliamentary_procedures", "polls",
                    "wikipedia_pageviews")
-# Collectors that run only when selected explicitly. bundestag_votes stays here until the Deutscher Bundestag
-# confirms that its roll-call lists may be redistributed.
-OPT_IN_COLLECTORS = frozenset({"bundestag_votes"})
+# Collectors that run only when selected explicitly; empty while every collector runs in the scheduled runs
+OPT_IN_COLLECTORS: frozenset[str] = frozenset()
 # Collectors of a backfill run: all except the feeds, whose items are not available for the past, and the
 # opt-in collectors
 BACKFILL_COLLECTORS = tuple(name for name in COLLECTOR_ORDER if name != "feeds" and name not in OPT_IN_COLLECTORS)

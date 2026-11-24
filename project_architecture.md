@@ -124,7 +124,7 @@ Variables that follow from these fields, such as the weekday, the hour or the de
 |---|---|---|---|
 | DAWUM | `api.dawum.de`, whole database as one JSON file; `last_update.txt` for change checks | ODbL | `polls` |
 | abgeordnetenwatch API v2 | JSON, at most 30 requests per minute; answers automated requests with a bot-protection challenge since 2026-11-24 | CC0 | `politicians`; `roll_call_votes` and `mp_votes` until 2026-11-13 |
-| Deutscher Bundestag, roll-call lists | www.bundestag.de: the list of roll-call votes and one XLSX list per vote; robots.txt allows them, no crawl delay, no TDM reservation, no bot protection (checked 2026-11-24) | official works (§ 5 UrhG); confirmation of the redistribution requested | `roll_call_votes` and `mp_votes` from 2026-11-14 |
+| Deutscher Bundestag, roll-call lists | www.bundestag.de: the list of roll-call votes and one XLSX list per vote; robots.txt allows them, no crawl delay, no TDM reservation, no bot protection (checked 2026-11-24) | official works (§ 5 UrhG): the results with the names of the members are part of the plenary minutes; source: Deutscher Bundestag | `roll_call_votes` and `mp_votes` from 2026-11-14 |
 | Bundestag DIP API | JSON, API key, filter by update time | DIP terms of use | `parliamentary_procedures` |
 | Wikimedia Pageviews API | JSON, descriptive User-Agent | CC0 | `wikipedia_pageviews` |
 | MediaWiki API (de.wikipedia), Wikidata API | JSON | CC0 | article titles for `wikipedia_pageviews` |
@@ -234,7 +234,7 @@ dataset.politics.germany/
    3. Select up to MAX_ANNOTATIONS_PER_RUN items: press releases first, then news items in turns across the outlets.
    4. Process the selected items in turns across the sources: fetch the page where permitted (JSON-LD metadata, canonical URL, lead text), annotate ten items per Gemini request with up to GEMINI_CONCURRENCY requests at the same time, resolve the politicians, and write items and annotations every 100 items, in the order of the batches.
    5. Write the other new items from the feed data without labels.
-3. **bundestag_votes** (only when selected in `COLLECTORS` until the Bundestag confirms the redistribution): reads the list of roll-call votes on www.bundestag.de until it reaches stored votes or 2026-11-14, downloads the XLSX list of each new vote, and writes the vote and the individual votes, matched to the politician registry by name. The collector `roll_call_votes`, which read the votes from abgeordnetenwatch, is no longer run.
+3. **bundestag_votes:** reads the list of roll-call votes on www.bundestag.de until it reaches stored votes or 2026-11-14, downloads the XLSX list of each new vote, and writes the vote and the individual votes, matched to the politician registry by name. The collector `roll_call_votes`, which read the votes from abgeordnetenwatch, is no longer run.
 4. **parliamentary_procedures:** reads the DIP procedures of the current electoral period that were updated since the previous run and writes new procedures and changes.
 5. **polls:** downloads the DAWUM database if `last_update.txt` changed and writes new and corrected polls.
 6. **wikipedia_pageviews** (once a week): resolves the article titles and fetches the days since the last stored day per article (about 1,000 requests, about 5 minutes).
@@ -285,5 +285,5 @@ dataset.politics.germany/
 | Feature tables for model training (`scripts/build_features.py`) | planned |
 | Review sheet for the annotation and a hand-labelled sample to measure agreement | planned |
 | Office holders without a mandate (federal ministers, state premiers) in the politician registry | planned |
-| Roll-call votes from the lists of the Bundestag (`bundestag_votes`) | implemented; runs only when selected until the Bundestag confirms that the lists may be redistributed. Then remove it from `OPT_IN_COLLECTORS` in `pipeline.py` and add the source to `data/LICENSE.md` |
+| Roll-call votes from the lists of the Bundestag (`bundestag_votes`) | implemented; runs in the scheduled runs since 2026-11-24 |
 | Roll-call votes of the state parliaments | planned |
