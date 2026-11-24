@@ -1,11 +1,11 @@
 {
 "version": 1,
 "collectors": {
-"feeds": {"consecutive_failures": 0, "cursor": {}, "first_run": "2026-10-20", "last_complete": "2026-11-20T08:24:10Z", "last_error": null, "last_run": "2026-11-20T08:24:10Z", "last_success": "2026-11-20T08:24:10Z"},
-"parliamentary_procedures": {"consecutive_failures": 0, "cursor": {"aktualisiert": "2026-11-20T08:24:10+00:00"}, "first_run": "2026-10-19", "last_complete": "2026-11-20T08:24:10Z", "last_error": null, "last_run": "2026-11-20T08:24:10Z", "last_success": "2026-11-20T08:24:10Z"},
-"politicians": {"consecutive_failures": 0, "cursor": {}, "first_run": "2026-10-19", "last_complete": "2026-11-17T09:04:03Z", "last_error": null, "last_run": "2026-11-17T09:04:03Z", "last_success": "2026-11-17T09:04:03Z"},
-"polls": {"consecutive_failures": 0, "cursor": {"last_update": "2026-11-19T09:30:09+01:00"}, "first_run": "2026-10-19", "last_complete": "2026-11-20T08:24:10Z", "last_error": null, "last_run": "2026-11-20T08:24:10Z", "last_success": "2026-11-20T08:24:10Z"},
-"roll_call_votes": {"consecutive_failures": 0, "cursor": {"backfill_periods": [], "period": "161"}, "first_run": "2026-10-19", "last_complete": "2026-11-20T08:24:10Z", "last_error": null, "last_run": "2026-11-20T08:24:10Z", "last_success": "2026-11-20T08:24:10Z"},
-"wikipedia_pageviews": {"consecutive_failures": 0, "cursor": {}, "first_run": "2026-10-19", "last_complete": "2026-11-17T09:04:03Z", "last_error": null, "last_run": "2026-11-17T09:04:03Z", "last_success": "2026-11-17T09:04:03Z"}
+"feeds": {"consecutive_failures": 0, "cursor": {}, "first_run": "2026-10-20", "last_complete": "2026-11-24T10:50:06Z", "last_error": null, "last_run": "2026-11-24T10:50:06Z", "last_success": "2026-11-24T10:50:06Z"},
+"parliamentary_procedures": {"consecutive_failures": 0, "cursor": {"aktualisiert": "2026-11-24T10:50:06+00:00"}, "first_run": "2026-10-19", "last_complete": "2026-11-24T10:50:06Z", "last_error": null, "last_run": "2026-11-24T10:50:06Z", "last_success": "2026-11-24T10:50:06Z"},
+"politicians": {"consecutive_failures": 1, "cursor": {}, "first_run": "2026-10-19", "last_complete": "2026-11-17T09:04:03Z", "last_error": "BlockedError: blocked (HTTP 403): https://www.abgeordnetenwatch.de/api/v2/parliaments", "last_run": "2026-11-24T10:50:06Z", "last_success": "2026-11-17T09:04:03Z"},
+"polls": {"consecutive_failures": 0, "cursor": {"last_update": "2026-11-21T18:49:22+01:00"}, "first_run": "2026-10-19", "last_complete": "2026-11-24T10:50:06Z", "last_error": null, "last_run": "2026-11-24T10:50:06Z", "last_success": "2026-11-24T10:50:06Z"},
+"roll_call_votes": {"consecutive_failures": 1, "cursor": {"backfill_periods": [], "period": "161"}, "first_run": "2026-10-19", "last_complete": "2026-11-20T08:24:10Z", "last_error": "BlockedError: blocked (HTTP 403): https://www.abgeordnetenwatch.de/api/v2/parliament-periods", "last_run": "2026-11-24T10:50:06Z", "last_success": "2026-11-20T08:24:10Z"},
+"wikipedia_pageviews": {"consecutive_failures": 0, "cursor": {}, "first_run": "2026-10-19", "last_complete": "2026-11-24T10:50:06Z", "last_error": null, "last_run": "2026-11-24T10:50:06Z", "last_success": "2026-11-24T10:50:06Z"}
 }
 }
