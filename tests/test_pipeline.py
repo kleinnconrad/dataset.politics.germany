@@ -5,7 +5,8 @@ from datetime import datetime, timedelta, timezone
 
 from collectors.base import Collector, CollectorResult, CollectorSkipped, RunContext
 from conftest import RUN_STARTED, read_dataset
-from pipeline import COLLECTOR_ORDER, build_collectors, run_pipeline
+import pipeline
+from pipeline import BACKFILL_COLLECTORS, COLLECTOR_ORDER, OPT_IN_COLLECTORS, build_collectors, run_pipeline
 from schema import PollRecord
 from settings import Settings
 from sources import SourceHealthStore
@@ -201,6 +202,23 @@ def test_collectors_after_the_run_deadline_are_skipped(tmp_path, fake_web) -> No
     assert "run deadline" in (summary.collectors["writer"].error or "")
     assert summary.failed == ["writer"]
     assert not (settings.output_dir / "polls").exists()
+
+
+def test_opt_in_collector_runs_only_when_selected(tmp_path, fake_web, monkeypatch) -> None:
+    monkeypatch.setattr(pipeline, "OPT_IN_COLLECTORS", frozenset({"writer"}))
+
+    default = run_pipeline(settings_for(tmp_path), [WritingCollector()], web=fake_web.client(),
+                           clock=lambda: RUN_STARTED)
+    selected = run_pipeline(settings_for(tmp_path, collectors=("writer",)), [WritingCollector()],
+                            web=fake_web.client(), clock=lambda: RUN_STARTED)
+
+    assert "writer" not in default.collectors
+    assert selected.collectors["writer"].status == "ok"
+
+
+def test_bundestag_votes_is_opt_in_and_not_in_the_default_backfill() -> None:
+    assert "bundestag_votes" in COLLECTOR_ORDER and "roll_call_votes" not in COLLECTOR_ORDER
+    assert "bundestag_votes" in OPT_IN_COLLECTORS and "bundestag_votes" not in BACKFILL_COLLECTORS
 
 
 def test_build_collectors_follows_the_order() -> None:

@@ -52,7 +52,7 @@ PARTIES: tuple[Party, ...] = (
           ("Christlich-Soziale Union in Bayern",)),
     Party("SPD", "Sozialdemokratische Partei Deutschlands", ("Sozialdemokraten",), ("2",),
           ("Sozialdemokratische Partei Deutschlands",)),
-    Party("GRUENE", "Bündnis 90/Die Grünen", ("Grüne", "Die Grünen", "B90/Grüne", "Bündnis 90/Grüne", "Gruene"),
+    Party("GRUENE", "Bündnis 90/Die Grünen", ("Grüne", "Die Grünen", "B90/Grüne", "Bündnis 90/Grüne", "Gruene", "BÜ90/GR"),
           ("4",), ("Bündnis 90/Die Grünen",)),
     Party("FDP", "Freie Demokratische Partei", ("Liberale", "FDP/DVP"), ("3",), ("Freie Demokratische Partei",)),
     Party("AFD", "Alternative für Deutschland", ("AfD",), ("7",), ("Alternative für Deutschland",)),

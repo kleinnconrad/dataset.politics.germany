@@ -21,7 +21,14 @@ each vote is read once. The first run imports the current and the previous
 electoral period; at most ``MAX_NEW_POLLS_PER_RUN`` votes are read per run
 (no limit in a backfill run), and the rest follow in later runs. The
 collector also stops at the run deadline; the remaining votes follow in the
-next run.
+next run. It is not run since 2026-11-24, when abgeordnetenwatch began to
+answer automated requests with a bot-protection challenge; the votes from
+2026-11-14 on come from the lists of the Bundestag
+(``collectors/bundestag_votes.py``). The collector is kept so that it can be
+run again if the API becomes available.
+
+The helpers ``MemberVote``, ``tally_votes``, ``group_majorities`` and
+``voted_against_group`` are shared with ``collectors/bundestag_votes.py``.
 """
 import html
 import logging
@@ -579,7 +586,10 @@ def select_periods(legislatures: list[dict[str, Any]], today: date) -> tuple[dic
 
 
 class RollCallVotesCollector(Collector):
-    """Writes the roll-call votes of the Bundestag and the votes of the single members."""
+    """Writes the roll-call votes of the Bundestag and the votes of the single members.
+
+    Not in COLLECTOR_ORDER since 2026-11-24 (see the module docstring).
+    """
     name = "roll_call_votes"
     datasets = (VOTES_DATASET, MP_VOTES_DATASET)
     source_id = SOURCE_ID

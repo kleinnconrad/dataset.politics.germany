@@ -20,6 +20,9 @@ A collector with a ``source_id`` whose source refuses automated requests
 (``BlockedError``) fails once and sets the source to ``blocked`` in
 ``state/sources.json``; later runs do not run it until the entry is reset by
 hand, and report it with the status ``blocked``.
+
+Collectors in OPT_IN_COLLECTORS run only when they are selected explicitly
+(``COLLECTORS``), not in the scheduled runs and not in the default backfill.
 """
 import logging
 import traceback
@@ -31,9 +34,10 @@ from typing import Any, Optional
 
 from annotation import GeminiAnnotator
 from collectors.base import Collector, CollectorSkipped, RunContext, utc_now
+from collectors.bundestag_votes import BundestagVotesCollector
 from collectors.feeds import FeedsCollector
 from collectors.pageviews import PageviewsCollector
-from collectors.parliament import PoliticiansCollector, RollCallVotesCollector
+from collectors.parliament import PoliticiansCollector
 from collectors.polls import PollsCollector
 from collectors.procedures import ProceduresCollector
 from settings import Settings
@@ -43,10 +47,14 @@ from web import BlockedError, WebClient
 
 logger = logging.getLogger(__name__)
 
-COLLECTOR_ORDER = ("politicians", "feeds", "roll_call_votes", "parliamentary_procedures", "polls",
+COLLECTOR_ORDER = ("politicians", "feeds", "bundestag_votes", "parliamentary_procedures", "polls",
                    "wikipedia_pageviews")
-# Collectors of a backfill run: all except the feeds, whose items are not available for the past
-BACKFILL_COLLECTORS = tuple(name for name in COLLECTOR_ORDER if name != "feeds")
+# Collectors that run only when selected explicitly. bundestag_votes stays here until the Deutscher Bundestag
+# confirms that its roll-call lists may be redistributed.
+OPT_IN_COLLECTORS = frozenset({"bundestag_votes"})
+# Collectors of a backfill run: all except the feeds, whose items are not available for the past, and the
+# opt-in collectors
+BACKFILL_COLLECTORS = tuple(name for name in COLLECTOR_ORDER if name != "feeds" and name not in OPT_IN_COLLECTORS)
 # Request intervals per host: abgeordnetenwatch allows 30 requests per minute;
 # the Wikimedia REST API allows far more than the default of one per second.
 HOST_INTERVALS = {"www.abgeordnetenwatch.de": 2.1, "wikimedia.org": 0.1}
@@ -120,7 +128,7 @@ def build_collectors(annotator: Optional[GeminiAnnotator]) -> list[Collector]:
     """
     collectors: dict[str, Collector] = {
         collector.name: collector for collector in (
-            PoliticiansCollector(), RollCallVotesCollector(), ProceduresCollector(), PollsCollector(),
+            PoliticiansCollector(), BundestagVotesCollector(), ProceduresCollector(), PollsCollector(),
             PageviewsCollector(), FeedsCollector(annotator),
         )
     }
@@ -160,6 +168,9 @@ def run_pipeline(
     try:
         for collector in collectors:
             if settings.collectors and collector.name not in settings.collectors:
+                continue
+            if not settings.collectors and collector.name in OPT_IN_COLLECTORS:
+                logger.info("Collector %s runs only when selected (COLLECTORS).", collector.name)
                 continue
             blocked = _blocked_source(ctx, collector)
             if blocked is not None:
