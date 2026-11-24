@@ -21,7 +21,8 @@ The datasets contain data from the following sources. The field `license` of eve
 | Source | Datasets | License or terms |
 |---|---|---|
 | DAWUM (https://dawum.de/) | `polls` | Open Database License (ODbL) 1.0. Contains information from DAWUM, which is made available under the ODbL. |
-| abgeordnetenwatch.de (https://www.abgeordnetenwatch.de/) | `politicians`, `roll_call_votes`, `mp_votes` | CC0 1.0 |
+| abgeordnetenwatch.de (https://www.abgeordnetenwatch.de/) | `politicians`; `roll_call_votes` and `mp_votes` until 2026-11-13 | CC0 1.0 |
+| Deutscher Bundestag, roll-call lists (https://www.bundestag.de/parlament/plenum/abstimmung/liste) | `roll_call_votes` and `mp_votes` from 2026-11-14 | Official works (§ 5 UrhG): the results with the names of the members are part of the plenary minutes. Source: Deutscher Bundestag. |
 | Deutscher Bundestag, DIP (https://dip.bundestag.de/) | `parliamentary_procedures` | Terms of use of the DIP |
 | Wikimedia Foundation, Pageviews API (https://wikimedia.org/api/rest_v1/) | `wikipedia_pageviews` | CC0 1.0 |
 | Wikidata (https://www.wikidata.org/) | article titles of `wikipedia_pageviews` | CC0 1.0 |
@@ -37,7 +38,7 @@ The labels in `text_annotations` were produced with Google Gemini by this projec
 
 In summary, and without replacing the license text:
 
-- **Attribution:** state that the data comes from this dataset and keep the attribution of DAWUM for poll data.
+- **Attribution:** state that the data comes from this dataset and keep the attribution of DAWUM for poll data and of the Deutscher Bundestag for the roll-call votes from 2026-11-14.
 - **Share-alike:** a database that is derived from this dataset and used publicly must be published under the ODbL.
 - **Produced works:** charts, model predictions or articles created from the data require a notice that names the dataset and the ODbL, but do not have to be published under the ODbL.
 - **No technical restrictions:** a derived database that is published with technical restrictions must also be offered without them.

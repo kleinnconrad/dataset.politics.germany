@@ -1266,7 +1266,7 @@ The values are unchanged from the data files, where each record is one line; her
 ## Sources and Fetch Rules
 
 - **APIs:** DAWUM (polls), abgeordnetenwatch.de API v2 (politicians, and roll-call votes until 2026-11-13; at most 30 requests per minute), Bundestag DIP API (procedures; API key), Wikimedia Pageviews API, MediaWiki and Wikidata APIs (article titles). These documented APIs are used under their API terms.
-- **Roll-call lists of the Bundestag:** from 2026-11-14 the roll-call votes come from the XLSX lists that the Deutscher Bundestag publishes for each vote on www.bundestag.de, requested under its robots.txt. The collector `bundestag_votes` runs only when it is selected in `COLLECTORS` until the Bundestag confirms that the lists may be redistributed.
+- **Roll-call lists of the Bundestag:** from 2026-11-14 the roll-call votes come from the XLSX lists that the Deutscher Bundestag publishes for each vote on www.bundestag.de, requested under its robots.txt. The results with the names of the members are also part of the plenary minutes, which are official works without copyright protection (§ 5 UrhG); the records name the Deutscher Bundestag as their source.
 - **Websites:** the news outlets and press-release sources in [config/sources.toml](config/sources.toml), read through RSS/Atom feeds, news sitemaps and, where permitted, the article pages.
 - **robots.txt:** every website request is checked against the robots.txt of its host for the user agent `GermanPoliticsDataset`, with the longest-match rule of RFC 9309. A crawl delay is honored; a host that requires more than 120 seconds is not fetched. A host whose robots.txt cannot be fetched is not requested again in the same run.
 - **Bot protection:** a source that answers with HTTP 401/403, a challenge page or a CAPTCHA is set to `blocked` and is not fetched again until it is reset by hand. This includes the abgeordnetenwatch API and the roll-call lists of the Bundestag: their collectors then have the status `blocked` in the run log. The pipeline does not use a headless browser.
@@ -1373,7 +1373,7 @@ The input `collectors` restricts a manual run to a comma-separated list of colle
 | `NEWS_LOOKBACK_HOURS` | 96 | Age limit of new feed and sitemap items |
 | `NEWS_FETCH_PAGES` | on | Fetch article pages for metadata and lead text |
 | `RUN_DEADLINE_MINUTES` | 25 | Minutes after the start after which the collectors start no new work (85 in `backfill` runs) |
-| `COLLECTORS` | all due | Comma-separated list of collectors to run; listed collectors run even if they are not due. `bundestag_votes` runs only when it is listed here |
+| `COLLECTORS` | all due | Comma-separated list of collectors to run; listed collectors run even if they are not due |
 
 Fixed thresholds, such as the source status rules, are constants in the modules that use them.
 

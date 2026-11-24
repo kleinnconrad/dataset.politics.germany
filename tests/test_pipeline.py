@@ -216,9 +216,9 @@ def test_opt_in_collector_runs_only_when_selected(tmp_path, fake_web, monkeypatc
     assert selected.collectors["writer"].status == "ok"
 
 
-def test_bundestag_votes_is_opt_in_and_not_in_the_default_backfill() -> None:
+def test_bundestag_votes_runs_in_the_scheduled_runs_and_the_backfill() -> None:
     assert "bundestag_votes" in COLLECTOR_ORDER and "roll_call_votes" not in COLLECTOR_ORDER
-    assert "bundestag_votes" in OPT_IN_COLLECTORS and "bundestag_votes" not in BACKFILL_COLLECTORS
+    assert "bundestag_votes" not in OPT_IN_COLLECTORS and "bundestag_votes" in BACKFILL_COLLECTORS
 
 
 def test_build_collectors_follows_the_order() -> None:
