@@ -19,6 +19,10 @@ The health of the sources is kept in ``state/sources.json`` and follows fixed ru
   source is retried once every BROKEN_RETRY_DAYS days and becomes active
   again when a feed works.
 - ``active``: all other sources.
+
+The file also holds the APIs and websites that collectors read directly
+(``Collector.source_id``, e.g. ``abgeordnetenwatch``). For them only the
+``blocked`` rule applies, which the pipeline sets and checks.
 """
 import logging
 import tomllib

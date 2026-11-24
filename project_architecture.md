@@ -123,7 +123,8 @@ Variables that follow from these fields, such as the weekday, the hour or the de
 | Source | Access | License or terms | Datasets |
 |---|---|---|---|
 | DAWUM | `api.dawum.de`, whole database as one JSON file; `last_update.txt` for change checks | ODbL | `polls` |
-| abgeordnetenwatch API v2 | JSON, at most 30 requests per minute | CC0 | `politicians`, `roll_call_votes`, `mp_votes` |
+| abgeordnetenwatch API v2 | JSON, at most 30 requests per minute; answers automated requests with a bot-protection challenge since 2026-11-24 | CC0 | `politicians`; `roll_call_votes` and `mp_votes` until 2026-11-13 |
+| Deutscher Bundestag, roll-call lists | www.bundestag.de: the list of roll-call votes and one XLSX list per vote; robots.txt allows them, no crawl delay, no TDM reservation, no bot protection (checked 2026-11-24) | official works (§ 5 UrhG); confirmation of the redistribution requested | `roll_call_votes` and `mp_votes` from 2026-11-14 |
 | Bundestag DIP API | JSON, API key, filter by update time | DIP terms of use | `parliamentary_procedures` |
 | Wikimedia Pageviews API | JSON, descriptive User-Agent | CC0 | `wikipedia_pageviews` |
 | MediaWiki API (de.wikipedia), Wikidata API | JSON | CC0 | article titles for `wikipedia_pageviews` |
@@ -138,12 +139,14 @@ The news outlets and press-release sources are listed in [config/sources.toml](c
 
 **Reservations in plain text.** No host publishes a machine-readable TDMRep file, but 26 of the 40 outlets (including all ARD broadcasters) state a reservation under § 44b UrhG in plain-text comments of their robots.txt. For these outlets, `fetch_pages` is false: their article pages are not fetched, and their items are annotated from title and teaser only. Outlets that declare a machine-readable reservation (FAZ, B.Z.) or block automated requests (Die Zeit, Stern, the RND titles) are not included.
 
+**Change of the source of the roll-call votes.** The votes until 2026-11-13 come from abgeordnetenwatch (`source_id` abgeordnetenwatch, `vote_id` the poll id), the votes from 2026-11-14 on from the XLSX lists of the Bundestag (`source_id` bundestag, `vote_id` electoral period, session and vote number, e.g. `21-109-4`; `schema_version` 1.1). The records of the Bundestag have the Bundestag's title of the vote, no `topics` or `committees`, no `printed_papers`, and `accepted` null; an invalid vote counts as `no_show`. The lists contain no member ids: `politician_id` is assigned by matching the name to the politician registry (full name; else first given name and last name within the parliamentary group; else `config/politician_aliases.toml`), and members without a match are counted in the totals but get no `mp_votes` record. A comparison of the 279 lists of the 20th and 21st electoral periods with the abgeordnetenwatch data on 2026-11-24 found: the same 94 votes in the 21st period; 186 votes of the Bundestag against 162 of abgeordnetenwatch in the 20th period; identical totals for 232 votes, of which 4 are dated one day apart; identical vote and group for 109,947 of 109,968 matched member votes (the differences are the members of Die Linke listed without group on 2024-02-02, the day the group dissolved, and single corrected votes); and 99.25% of the member votes of the 21st period matched, the rest by members who left the Bundestag before the registry was built.
+
 **Known data issues.** Some feeds state wrong time zones ("CEST" read as UTC, local time marked as "Z", winter offsets in summer); the collector parses German zone abbreviations and treats publication times more than 15 minutes in the future as unknown. Titles of the Funke group share central articles, so the same article can appear under several outlets. abgeordnetenwatch keeps the 2021-2026 periods of Berlin and Mecklenburg-Vorpommern as current until it switches to the new periods. The DIP electoral period is the constant `ELECTORAL_PERIOD = 21` in `collectors/procedures.py` and must be raised when the 22nd period starts.
 
 **Fetch rules** ([src/web.py](src/web.py)):
 - **robots.txt** is checked for every website request (feeds, sitemaps, pages) with the user agent `GermanPoliticsDataset`. The parser follows RFC 9309: the longest matching rule decides, so that `Allow: /SiteGlobals/Functions/RSSFeed` overrides `Disallow: /SiteGlobals/` on the government sites (Python's `urllib.robotparser` applies the first matching rule and would block these feeds). The documented APIs above are offered for programmatic use; their robots.txt files exclude crawlers from the API paths, so they are called under their API terms and rate limits instead (`respect_robots=False`).
 - **Text-and-data-mining reservations** (TDMRep header, `/.well-known/tdmrep.json`, `tdm-reservation` meta tag) exclude a source (`tdm_reserved`).
-- **Bot protection:** HTTP 401 or 403, a challenge page or a CAPTCHA sets the source to `blocked`; it is re-enabled only by hand in `data/state/sources.json`. Article pages that are blocked while the feed works are skipped for the rest of the run. No headless browser is used.
+- **Bot protection:** HTTP 401 or 403, a challenge page or a CAPTCHA sets the source to `blocked`; it is re-enabled only by hand in `data/state/sources.json`. Article pages that are blocked while the feed works are skipped for the rest of the run. The same applies to the APIs and websites that collectors read directly (`abgeordnetenwatch`, and `bundestag` for the roll-call lists): the collector fails once, and its source is set to `blocked`, so that the collectors that read it are not run until the entry is reset (status `blocked` in the run log). No headless browser is used.
 - **Pacing:** one request per second per host, longer if robots.txt sets a crawl delay (several government sites ask for 30 or 60 seconds); 2.1 seconds for abgeordnetenwatch. A host that requires a crawl delay of more than 120 seconds is not fetched. Server errors, rate limits and network errors are retried twice. The feeds collector loads the robots.txt of all feed hosts before it reads the feeds, so that a crawl delay usually passes while other hosts are read; the two sources with a crawl delay of 30 or 60 seconds (Bundesrat, BMUKN) are read from one feed each, without article pages. A host whose robots.txt cannot be fetched within 10 seconds is not requested again in the same run.
 - **Broken sources:** after 7 consecutive failed runs a source is `broken` and is retried once a week.
 
@@ -160,7 +163,7 @@ data/
 └── state/
     ├── seen/<dataset>.json   # written items with content hash and revision
     ├── collectors.json       # first run, last run, failures, cursor per collector
-    ├── sources.json          # health status per news and press source
+    ├── sources.json          # health status per news and press source, and of the APIs read directly
     ├── politicians.json      # politician registry
     └── run_log.jsonl         # one line per run
 ```
@@ -185,7 +188,8 @@ dataset.politics.germany/
 │       ├── pipeline.yml        # due collectors, Tuesdays and Fridays 02:07 Europe/Berlin; backfill by hand
 │       └── source_review.yml   # monthly review of the sources as a pull request
 ├── config/
-│   └── sources.toml            # curated news outlets and press-release sources
+│   ├── sources.toml            # curated news outlets and press-release sources
+│   └── politician_aliases.toml # names in the roll-call lists of the Bundestag that need a manual match
 ├── data/                       # datasets, state and data license, committed by the workflow
 ├── src/
 │   ├── main.py                 # entry point
@@ -202,7 +206,8 @@ dataset.politics.germany/
 │   ├── source_review.py        # monthly review of config/sources.toml
 │   └── collectors/
 │       ├── base.py             # collector interface and run context
-│       ├── parliament.py       # politicians, roll-call votes (abgeordnetenwatch)
+│       ├── parliament.py       # politicians, roll-call votes until 2026-11-13 (abgeordnetenwatch)
+│       ├── bundestag_votes.py  # roll-call votes from 2026-11-14 (lists of the Bundestag)
 │       ├── procedures.py       # parliamentary procedures (DIP)
 │       ├── polls.py            # polls (DAWUM)
 │       ├── pageviews.py        # Wikipedia pageviews
@@ -229,7 +234,7 @@ dataset.politics.germany/
    3. Select up to MAX_ANNOTATIONS_PER_RUN items: press releases first, then news items in turns across the outlets.
    4. Process the selected items in turns across the sources: fetch the page where permitted (JSON-LD metadata, canonical URL, lead text), annotate ten items per Gemini request with up to GEMINI_CONCURRENCY requests at the same time, resolve the politicians, and write items and annotations every 100 items, in the order of the batches.
    5. Write the other new items from the feed data without labels.
-3. **roll_call_votes:** reads the roll-call votes of the current and the previous electoral period that are not yet stored, with the individual votes; at most 120 new votes per run (no limit in a backfill run).
+3. **bundestag_votes** (only when selected in `COLLECTORS` until the Bundestag confirms the redistribution): reads the list of roll-call votes on www.bundestag.de until it reaches stored votes or 2026-11-14, downloads the XLSX list of each new vote, and writes the vote and the individual votes, matched to the politician registry by name. The collector `roll_call_votes`, which read the votes from abgeordnetenwatch, is no longer run.
 4. **parliamentary_procedures:** reads the DIP procedures of the current electoral period that were updated since the previous run and writes new procedures and changes.
 5. **polls:** downloads the DAWUM database if `last_update.txt` changed and writes new and corrected polls.
 6. **wikipedia_pageviews** (once a week): resolves the article titles and fetches the days since the last stored day per article (about 1,000 requests, about 5 minutes).
@@ -247,7 +252,7 @@ dataset.politics.germany/
 | politicians | 2.5 min | not due |
 | feeds: reading | 5 min | 5 min |
 | feeds: pages and Gemini (400 items) | 5 to 6 min | 5 to 6 min |
-| roll_call_votes, parliamentary_procedures, polls | 2 min | 2 min |
+| bundestag_votes, parliamentary_procedures, polls | 2 min | 2 min |
 | wikipedia_pageviews | 5 min | not due |
 | Total | about 21 min | about 14 min |
 
@@ -257,6 +262,7 @@ dataset.politics.germany/
 
 - **A collector fails:** the error is logged, recorded in `collectors.json` and the run log, and the next collector starts. Data already written stays. The run exits with code 1.
 - **A source fails:** the other sources continue; the source health rules apply (`broken`, `blocked`, `tdm_reserved`).
+- **An API or website read by a collector refuses automated requests** (abgeordnetenwatch, the roll-call lists of the Bundestag): the collector fails, and the API is set to `blocked` in `sources.json`. Later runs do not run the collectors that read it and report them with the status `blocked`, which does not mark the run as failed. Reset the entry by hand to read the API again.
 - **Gemini returns an unusable response:** the batch is split in halves down to single items; items without usable labels are written without annotation.
 - **Gemini quota, call budget or API error:** the annotation stops; the remaining items are written without annotation. A quota or API error marks the collector as failed; reaching the call budget does not.
 - **Run deadline:** after `RUN_DEADLINE_MINUTES` the collectors start no new work. A collector that stops early has the status `partial` and continues in the next run (roll-call votes: the remaining votes; procedures: the previous cursor is kept; pageviews: the remaining articles; feeds: the remaining items are written without annotation). A collector that has not started by the deadline is skipped, which marks the run as failed. Requests in progress at the deadline finish within their timeouts (Gemini: at most three attempts of 60 seconds; other requests: 20 seconds per attempt), so that the workflow commits before its timeout.
@@ -279,4 +285,5 @@ dataset.politics.germany/
 | Feature tables for model training (`scripts/build_features.py`) | planned |
 | Review sheet for the annotation and a hand-labelled sample to measure agreement | planned |
 | Office holders without a mandate (federal ministers, state premiers) in the politician registry | planned |
+| Roll-call votes from the lists of the Bundestag (`bundestag_votes`) | implemented; runs only when selected until the Bundestag confirms that the lists may be redistributed. Then remove it from `OPT_IN_COLLECTORS` in `pipeline.py` and add the source to `data/LICENSE.md` |
 | Roll-call votes of the state parliaments | planned |

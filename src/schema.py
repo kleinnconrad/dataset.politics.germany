@@ -15,7 +15,7 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-SCHEMA_VERSION = "1.0"
+SCHEMA_VERSION = "1.1"
 
 # ISO 3166-2 codes of Germany and its states
 StateCode = Literal["DE-BW", "DE-BY", "DE-BE", "DE-BB", "DE-HB", "DE-HH", "DE-HE", "DE-MV", "DE-NI", "DE-NW",
@@ -253,14 +253,14 @@ class TextAnnotationRecord(RecordBase):
 
 class RollCallVoteRecord(RecordBase):
     """One roll-call vote (namentliche Abstimmung) in the Bundestag."""
-    vote_id: str = Field(description="Id of the vote at abgeordnetenwatch.")
+    vote_id: str = Field(description="Id of the vote at the source: the poll id at abgeordnetenwatch (source_id abgeordnetenwatch, votes until 2026-11-13), or electoral period, session and vote number of the Bundestag, e.g. '21-109-4' (source_id bundestag).")
     parliament_period: str = Field(description="Electoral period, e.g. 'Bundestag 2025 - 2029'.")
     vote_date: date = Field(description="Date of the vote.")
     title: str = Field(description="Title of the vote.")
-    topics: list[str] = Field(description="Topics assigned by abgeordnetenwatch.")
-    committees: list[str] = Field(description="Committees in charge.")
-    printed_papers: list[str] = Field(description="Numbers of the Bundestag printed papers (Drucksachen) linked in the description of the vote, e.g. '21/7869'. They link the vote to procedures in the DIP (filter f.dokumentnummer).")
-    accepted: Optional[bool] = Field(description="Whether the motion was accepted.")
+    topics: list[str] = Field(description="Topics assigned by abgeordnetenwatch; empty for votes from the Bundestag.")
+    committees: list[str] = Field(description="Committees in charge; empty for votes from the Bundestag.")
+    printed_papers: list[str] = Field(description="Numbers of the Bundestag printed papers (Drucksachen) linked in the description of the vote, e.g. '21/7869'. They link the vote to procedures in the DIP (filter f.dokumentnummer). Empty for votes from the Bundestag.")
+    accepted: Optional[bool] = Field(description="Whether the motion was accepted; null for votes from the Bundestag.")
     yes: int = Field(description="Number of yes votes.")
     no: int = Field(description="Number of no votes.")
     abstain: int = Field(description="Number of abstentions.")
@@ -272,9 +272,9 @@ class RollCallVoteRecord(RecordBase):
 
 class MpVoteRecord(RecordBase):
     """The vote of one member in one roll-call vote."""
-    vote_id: str = Field(description="Id of the vote at abgeordnetenwatch.")
+    vote_id: str = Field(description="Id of the vote at the source, as in roll_call_votes.")
     vote_date: date = Field(description="Date of the vote.")
-    politician_id: str = Field(description="Id of the politician at abgeordnetenwatch.")
+    politician_id: str = Field(description="Id of the politician at abgeordnetenwatch. For votes from the Bundestag, assigned by matching the member's name to the politician registry.")
     faction: str = Field(description="Parliamentary group at the time of the vote as party code, NONE for members without a group.")
     vote: VoteChoice = Field(description="The member's vote.")
     voted_against_faction: bool = Field(description="True if the member voted yes while the group cast more no than yes votes, or no while it cast more yes than no votes. Always false for members without a group.")

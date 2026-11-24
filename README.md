@@ -92,7 +92,7 @@ The table lists the variables that carry content and the dataset (table) that st
 | `parliament_period` | `roll_call_votes` | Electoral period of the Bundestag | `Bundestag 2025 - 2029` |
 | `vote_date` | `roll_call_votes` | Date of the vote | `2026-10-15` |
 | `title` | `roll_call_votes` | Title of the vote | `Verlängerung des Bundeswehreinsatzes im Südsudan (UNMISS)` |
-| `topics` | `roll_call_votes` | Topics assigned by abgeordnetenwatch | `["Außenpolitik und internationale Beziehungen", "Verteidigung"]` |
+| `topics` | `roll_call_votes` | Topics assigned by abgeordnetenwatch (empty for votes from the Bundestag) | `["Außenpolitik und internationale Beziehungen", "Verteidigung"]` |
 | `committees` | `roll_call_votes` | Committees in charge | `["Auswärtiger Ausschuss", "Haushaltsausschuss"]` |
 | `accepted` | `roll_call_votes` | Motion accepted | `true` |
 | `yes` | `roll_call_votes` | Number of yes votes | `496` |
@@ -439,14 +439,14 @@ The table lists the variables that carry content and the dataset (table) that st
 | `license` | License or terms of the source. | 100.0% (256) | 1 |
 | `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (256) | 1 |
 | `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (256) | 2 |
-| `vote_id` | Id of the vote at abgeordnetenwatch. | 100.0% (256) | 256 |
+| `vote_id` | Id of the vote at the source: the poll id at abgeordnetenwatch (source_id abgeordnetenwatch, votes until 2026-11-13), or electoral period, session and vote number of the Bundestag, e.g. '21-109-4' (source_id bundestag). | 100.0% (256) | 256 |
 | `parliament_period` | Electoral period, e.g. 'Bundestag 2025 - 2029'. | 100.0% (256) | 2 |
 | `vote_date` | Date of the vote. | 100.0% (256) | 126 |
 | `title` | Title of the vote. | 100.0% (256) | 248 |
-| `topics` | Topics assigned by abgeordnetenwatch. | 99.2% (254) | 29 |
-| `committees` | Committees in charge. | 78.9% (202) | 27 |
-| `printed_papers` | Numbers of the Bundestag printed papers (Drucksachen) linked in the description of the vote, e.g. '21/7869'. They link the vote to procedures in the DIP (filter f.dokumentnummer). | 99.2% (254) | 437 |
-| `accepted` | Whether the motion was accepted. | 100.0% (256) | 2 |
+| `topics` | Topics assigned by abgeordnetenwatch; empty for votes from the Bundestag. | 99.2% (254) | 29 |
+| `committees` | Committees in charge; empty for votes from the Bundestag. | 78.9% (202) | 27 |
+| `printed_papers` | Numbers of the Bundestag printed papers (Drucksachen) linked in the description of the vote, e.g. '21/7869'. They link the vote to procedures in the DIP (filter f.dokumentnummer). Empty for votes from the Bundestag. | 99.2% (254) | 437 |
+| `accepted` | Whether the motion was accepted; null for votes from the Bundestag. | 100.0% (256) | 2 |
 | `yes` | Number of yes votes. | 100.0% (256) | 186 |
 | `no` | Number of no votes. | 100.0% (256) | 183 |
 | `abstain` | Number of abstentions. | 100.0% (256) | 48 |
@@ -472,9 +472,9 @@ The table lists the variables that carry content and the dataset (table) that st
 | `license` | License or terms of the source. | 100.0% (178,347) | 1 |
 | `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (178,347) | 1 |
 | `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (178,347) | 2 |
-| `vote_id` | Id of the vote at abgeordnetenwatch. | 100.0% (178,347) | 256 |
+| `vote_id` | Id of the vote at the source, as in roll_call_votes. | 100.0% (178,347) | 256 |
 | `vote_date` | Date of the vote. | 100.0% (178,347) | 126 |
-| `politician_id` | Id of the politician at abgeordnetenwatch. | 100.0% (178,347) | 1,008 |
+| `politician_id` | Id of the politician at abgeordnetenwatch. For votes from the Bundestag, assigned by matching the member's name to the politician registry. | 100.0% (178,347) | 1,008 |
 | `faction` | Parliamentary group at the time of the vote as party code, NONE for members without a group. | 100.0% (178,347) | 8 |
 | `vote` | The member's vote. | 100.0% (178,347) | 4 |
 | `voted_against_faction` | True if the member voted yes while the group cast more no than yes votes, or no while it cast more yes than no votes. Always false for members without a group. | 100.0% (178,347) | 2 |
@@ -548,8 +548,8 @@ The table lists the variables that carry content and the dataset (table) that st
 | `news_items` | Metadata of political news articles of German outlets | RSS feeds, news sitemaps, article pages | event |
 | `press_releases` | Metadata of press releases of the federal government, ministries, parliaments, parliamentary groups, parties and courts | RSS feeds | event |
 | `text_annotations` | Gemini labels of up to 400 news articles and press releases per run (press releases first): topic, event types, parties and politicians with role and tone, frame, conflicts, polls, upcoming events | Gemini | event |
-| `roll_call_votes` | Roll-call votes of the Bundestag with counts, cohesion and defectors per parliamentary group, and the printed papers (Drucksachen) they refer to | abgeordnetenwatch.de | event |
-| `mp_votes` | The vote of each member in each roll-call vote | abgeordnetenwatch.de | event |
+| `roll_call_votes` | Roll-call votes of the Bundestag with counts, cohesion and defectors per parliamentary group, and the printed papers (Drucksachen) they refer to | abgeordnetenwatch.de (until 2026-11-13), Deutscher Bundestag (from 2026-11-14) | event |
+| `mp_votes` | The vote of each member in each roll-call vote | abgeordnetenwatch.de (until 2026-11-13), Deutscher Bundestag (from 2026-11-14) | event |
 | `parliamentary_procedures` | Procedures of the Bundestag and Bundesrat (bills, motions, interpellations), recorded when they appear or change | Bundestag DIP | change |
 | `politicians` | Members of the Bundestag and the 16 state parliaments with party, mandates and Wikidata id, recorded when they appear or change | abgeordnetenwatch.de | change |
 
@@ -660,7 +660,7 @@ erDiagram
         list mandates "current mandates: parliament, period, faction, constituency, list"
     }
     roll_call_votes {
-        string vote_id PK "abgeordnetenwatch id of the vote"
+        string vote_id PK "id of the vote at the source"
         string parliament_period "e.g. Bundestag 2025 - 2029"
         date vote_date "date of the vote"
         string title "subject of the vote"
@@ -1266,10 +1266,11 @@ The values are unchanged from the data files, where each record is one line; her
 
 ## Sources and Fetch Rules
 
-- **APIs:** DAWUM (polls), abgeordnetenwatch.de API v2 (politicians, roll-call votes; at most 30 requests per minute), Bundestag DIP API (procedures; API key), Wikimedia Pageviews API, MediaWiki and Wikidata APIs (article titles). These documented APIs are used under their API terms.
+- **APIs:** DAWUM (polls), abgeordnetenwatch.de API v2 (politicians, and roll-call votes until 2026-11-13; at most 30 requests per minute), Bundestag DIP API (procedures; API key), Wikimedia Pageviews API, MediaWiki and Wikidata APIs (article titles). These documented APIs are used under their API terms.
+- **Roll-call lists of the Bundestag:** from 2026-11-14 the roll-call votes come from the XLSX lists that the Deutscher Bundestag publishes for each vote on www.bundestag.de, requested under its robots.txt. The collector `bundestag_votes` runs only when it is selected in `COLLECTORS` until the Bundestag confirms that the lists may be redistributed.
 - **Websites:** the news outlets and press-release sources in [config/sources.toml](config/sources.toml), read through RSS/Atom feeds, news sitemaps and, where permitted, the article pages.
 - **robots.txt:** every website request is checked against the robots.txt of its host for the user agent `GermanPoliticsDataset`, with the longest-match rule of RFC 9309. A crawl delay is honored; a host that requires more than 120 seconds is not fetched. A host whose robots.txt cannot be fetched is not requested again in the same run.
-- **Bot protection:** a source that answers with HTTP 401/403, a challenge page or a CAPTCHA is set to `blocked` and is not fetched again until it is reset by hand. The pipeline does not use a headless browser.
+- **Bot protection:** a source that answers with HTTP 401/403, a challenge page or a CAPTCHA is set to `blocked` and is not fetched again until it is reset by hand. This includes the abgeordnetenwatch API and the roll-call lists of the Bundestag: their collectors then have the status `blocked` in the run log. The pipeline does not use a headless browser.
 - **Text and data mining reservations:** a source whose host or pages declare a machine-readable reservation (TDMRep header, `/.well-known/tdmrep.json` or meta tag) is set to `tdm_reserved` and is not used. For outlets whose robots.txt states a reservation under § 44b UrhG in plain text, article pages are not fetched (`fetch_pages = false`); their feed items are used with title and teaser only.
 - **Pacing:** at most one request per second per host (abgeordnetenwatch: one per 2.1 seconds), retries for server errors and rate limits.
 - **Broken sources:** a source whose feeds fail on 7 consecutive runs is `broken` and is retried weekly.
@@ -1282,6 +1283,7 @@ sequenceDiagram
     participant Action as GitHub Actions
     participant Run as main.py / pipeline.py
     participant AW as abgeordnetenwatch
+    participant BT as www.bundestag.de
     participant DIP as Bundestag DIP
     participant DAWUM as DAWUM
     participant Wiki as Wikimedia / Wikidata
@@ -1299,7 +1301,7 @@ sequenceDiagram
         Run->>Store: Items and annotations (every 100 items)
     end
     Run->>Store: Further new items without labels
-    Run->>AW: New roll-call votes and the individual votes
+    Run->>BT: New roll-call votes and the XLSX lists of the individual votes
     Run->>DIP: Procedures updated since the previous run
     Run->>DAWUM: Poll database, if it changed
     Run->>Wiki: Daily views since the last stored day (once a week)
@@ -1319,7 +1321,7 @@ Each collector runs in isolation: a failure is logged in `data/state/collectors.
 | `data/<dataset>/year=YYYY/month=MM/<dataset>_YYYY-MM-DD.json` | Records of a dataset observed on one UTC day |
 | `data/state/seen/<dataset>.json` | Items already written, with content hash and revision |
 | `data/state/collectors.json` | First run, last run, failures and cursor per collector |
-| `data/state/sources.json` | Health status of the news and press-release sources |
+| `data/state/sources.json` | Health status of the news and press-release sources and of the APIs and websites read directly (`abgeordnetenwatch`, `bundestag`) |
 | `data/state/politicians.json` | Politician registry used to resolve names in the annotations |
 | `data/state/run_log.jsonl` | One line per run with the outcome and counters of each collector |
 | `data/LICENSE.md` | License and attribution of the data |
@@ -1372,7 +1374,7 @@ The input `collectors` restricts a manual run to a comma-separated list of colle
 | `NEWS_LOOKBACK_HOURS` | 96 | Age limit of new feed and sitemap items |
 | `NEWS_FETCH_PAGES` | on | Fetch article pages for metadata and lead text |
 | `RUN_DEADLINE_MINUTES` | 25 | Minutes after the start after which the collectors start no new work (85 in `backfill` runs) |
-| `COLLECTORS` | all due | Comma-separated list of collectors to run; listed collectors run even if they are not due |
+| `COLLECTORS` | all due | Comma-separated list of collectors to run; listed collectors run even if they are not due. `bundestag_votes` runs only when it is listed here |
 
 Fixed thresholds, such as the source status rules, are constants in the modules that use them.
 
@@ -1413,7 +1415,7 @@ uv run pytest
 
 1. Add the repository secrets `GEMINI_API_KEY` and `DIP_API_KEY` under **Settings > Secrets and variables > Actions**. The current public DIP key is listed on the [DIP help page](https://dip.bundestag.de/%C3%BCber-dip/hilfe/api); it is replaced from time to time.
 2. Under **Settings > Actions > General > Workflow permissions**, choose read and write permissions, so that the workflows can push, and allow GitHub Actions to create and approve pull requests, so that the source review can open its pull request.
-3. Start `pipeline.yml` once by hand in the mode `backfill` before the first scheduled run. It imports the history: all polls since 2017, the pageviews of the party articles since July 2015 and of the members of parliament for one year, all procedures of the current electoral period, and the roll-call votes of the current and the previous electoral period (about 250, at the rate limit of abgeordnetenwatch). It takes about 40 minutes. The regular runs then fetch only the changes; without the backfill, they import the history over several runs, at most 120 roll-call votes per run and within the run deadline.
+3. Start `pipeline.yml` once by hand in the mode `backfill` before the first scheduled run. It imports the history: all polls since 2017, the pageviews of the party articles since July 2015 and of the members of parliament for one year, and all procedures of the current electoral period. It takes about 40 minutes. The regular runs then fetch only the changes; without the backfill, they import the history over several runs within the run deadline. The roll-call votes until 2026-11-13 were imported from abgeordnetenwatch, which no longer answers automated requests; `bundestag_votes` reads the votes from 2026-11-14 on.
 
 ## License
 - **Data** (`data/`): Open Database License (ODbL) 1.0, individual contents under the Database Contents License (DbCL) 1.0, see [data/LICENSE.md](data/LICENSE.md). The poll data comes from [DAWUM](https://dawum.de/) under the ODbL. Titles and URLs of news articles and press releases remain subject to the rights of their publishers.

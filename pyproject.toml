@@ -6,9 +6,11 @@ requires-python = ">=3.11"
 # Same versions as in dataset.fashion, so that the shared modules run on a tested set
 dependencies = [
     "beautifulsoup4==4.15.0",
+    "defusedxml==0.7.1",
     "feedparser==6.0.14",
     "google-genai==3.3.0",
     "httpx==0.28.1",
+    "openpyxl==3.1.5",
     "pydantic==2.14.3",
     "python-dotenv==1.2.4",
 ]

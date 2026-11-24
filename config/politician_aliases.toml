@@ -1,0 +1,15 @@
+# Names of members of the Bundestag whose spelling in the roll-call lists of the Bundestag
+# (www.bundestag.de) does not match their entry in the politician registry, and which the
+# matching rules of src/collectors/bundestag_votes.py (full name; first given name and last
+# name within the parliamentary group) do not resolve. The collector logs such members with
+# a warning ("members without a politician id").
+#
+# name: first and last name as in the columns Vorname and Name of the list, without a suffix
+#       such as "(Fulda)"
+# politician_id: abgeordnetenwatch id of the politician in data/state/politicians.json; check
+#       it against the registry before adding the entry
+#
+# Example:
+# [[alias]]
+# name = "Vorname Nachname"
+# politician_id = "123456"
