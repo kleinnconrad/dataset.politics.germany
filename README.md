@@ -1269,7 +1269,7 @@ The values are unchanged from the data files, where each record is one line; her
 - **APIs:** DAWUM (polls), abgeordnetenwatch.de API v2 (politicians, roll-call votes; at most 30 requests per minute), Bundestag DIP API (procedures; API key), Wikimedia Pageviews API, MediaWiki and Wikidata APIs (article titles). These documented APIs are used under their API terms.
 - **Websites:** the news outlets and press-release sources in [config/sources.toml](config/sources.toml), read through RSS/Atom feeds, news sitemaps and, where permitted, the article pages.
 - **robots.txt:** every website request is checked against the robots.txt of its host for the user agent `GermanPoliticsDataset`, with the longest-match rule of RFC 9309. A crawl delay is honored; a host that requires more than 120 seconds is not fetched. A host whose robots.txt cannot be fetched is not requested again in the same run.
-- **Bot protection:** a source that answers with HTTP 401/403, a challenge page or a CAPTCHA is set to `blocked` and is not fetched again until it is reset by hand. The pipeline does not use a headless browser.
+- **Bot protection:** a source that answers with HTTP 401/403, a challenge page or a CAPTCHA is set to `blocked` and is not fetched again until it is reset by hand. This includes the abgeordnetenwatch API: its collectors then have the status `blocked` in the run log. The pipeline does not use a headless browser.
 - **Text and data mining reservations:** a source whose host or pages declare a machine-readable reservation (TDMRep header, `/.well-known/tdmrep.json` or meta tag) is set to `tdm_reserved` and is not used. For outlets whose robots.txt states a reservation under § 44b UrhG in plain text, article pages are not fetched (`fetch_pages = false`); their feed items are used with title and teaser only.
 - **Pacing:** at most one request per second per host (abgeordnetenwatch: one per 2.1 seconds), retries for server errors and rate limits.
 - **Broken sources:** a source whose feeds fail on 7 consecutive runs is `broken` and is retried weekly.
@@ -1319,7 +1319,7 @@ Each collector runs in isolation: a failure is logged in `data/state/collectors.
 | `data/<dataset>/year=YYYY/month=MM/<dataset>_YYYY-MM-DD.json` | Records of a dataset observed on one UTC day |
 | `data/state/seen/<dataset>.json` | Items already written, with content hash and revision |
 | `data/state/collectors.json` | First run, last run, failures and cursor per collector |
-| `data/state/sources.json` | Health status of the news and press-release sources |
+| `data/state/sources.json` | Health status of the news and press-release sources and of the APIs read directly (`abgeordnetenwatch`) |
 | `data/state/politicians.json` | Politician registry used to resolve names in the annotations |
 | `data/state/run_log.jsonl` | One line per run with the outcome and counters of each collector |
 | `data/LICENSE.md` | License and attribution of the data |

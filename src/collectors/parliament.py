@@ -297,6 +297,7 @@ class PoliticiansCollector(Collector):
     name = "politicians"
     datasets = (POLITICIANS_DATASET,)
     min_days_between_runs = 6
+    source_id = SOURCE_ID
 
     def collect(self, ctx: RunContext, entry: CollectorEntry) -> CollectorResult:
         """Reads the current mandates of the Bundestag and the state parliaments and their politicians.
@@ -581,6 +582,7 @@ class RollCallVotesCollector(Collector):
     """Writes the roll-call votes of the Bundestag and the votes of the single members."""
     name = "roll_call_votes"
     datasets = (VOTES_DATASET, MP_VOTES_DATASET)
+    source_id = SOURCE_ID
 
     def collect(self, ctx: RunContext, entry: CollectorEntry) -> CollectorResult:
         """Reads the polls of the current period (and of periods still to import) and emits the new ones.

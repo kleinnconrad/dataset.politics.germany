@@ -15,6 +15,11 @@ that the workflow commits the data before its timeout. Collectors with
 ``min_days_between_runs`` run only when that many days have passed since
 their last complete run. A backfill run imports the history of the
 structured collectors without the per-run caps and ignores these intervals.
+
+A collector with a ``source_id`` whose source refuses automated requests
+(``BlockedError``) fails once and sets the source to ``blocked`` in
+``state/sources.json``; later runs do not run it until the entry is reset by
+hand, and report it with the status ``blocked``.
 """
 import logging
 import traceback
@@ -32,8 +37,9 @@ from collectors.parliament import PoliticiansCollector, RollCallVotesCollector
 from collectors.polls import PollsCollector
 from collectors.procedures import ProceduresCollector
 from settings import Settings
+from sources import SourceHealthStore
 from state import CollectorStates, append_run_log
-from web import WebClient
+from web import BlockedError, WebClient
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +60,8 @@ class CollectorOutcome:
 
     Attributes:
         status (str): ok; partial if the collector stopped at the run deadline;
-            not_due if it is not due in this run; failed or skipped.
+            not_due if it is not due in this run; blocked if its source refused
+            automated requests in an earlier run; failed or skipped.
         records (dict[str, int]): Records written per dataset.
         counters (dict): Counters reported by the collector.
         error (Optional[str]): Error message for failed and skipped collectors.
@@ -154,6 +161,10 @@ def run_pipeline(
         for collector in collectors:
             if settings.collectors and collector.name not in settings.collectors:
                 continue
+            blocked = _blocked_source(ctx, collector)
+            if blocked is not None:
+                summary.collectors[collector.name] = CollectorOutcome(status="blocked", error=blocked)
+                continue
             if _not_due(ctx, states, collector):
                 summary.collectors[collector.name] = CollectorOutcome(status="not_due")
                 continue
@@ -186,6 +197,42 @@ def _not_due(ctx: RunContext, states: CollectorStates, collector: Collector) -> 
     return True
 
 
+def _blocked_source(ctx: RunContext, collector: Collector) -> Optional[str]:
+    """Tells whether the source of a collector is blocked.
+
+    Args:
+        ctx: The run context.
+        collector: The collector.
+
+    Returns:
+        Optional[str]: A message if the collector's source is blocked, else None.
+    """
+    if collector.source_id is None:
+        return None
+    health = SourceHealthStore.load(ctx.settings.state_dir).get(collector.source_id)
+    if health.status != "blocked":
+        return None
+    message = f"source {collector.source_id} blocked since {health.last_attempt}: {health.last_error}"
+    logger.warning("Collector %s not run: %s. Reset the entry %s in state/sources.json to fetch it again.",
+                   collector.name, message, collector.source_id)
+    return message
+
+
+def _set_blocked(ctx: RunContext, source_id: str, error: BlockedError) -> None:
+    """Sets a source to blocked in the source health file (not in dry-run mode).
+
+    Args:
+        ctx: The run context.
+        source_id: The source.
+        error: The refusal.
+    """
+    if ctx.dry_run:
+        return
+    health = SourceHealthStore.load(ctx.settings.state_dir)
+    health.record_failure(source_id, ctx.today, str(error), status="blocked")
+    health.save()
+
+
 def _run_collector(ctx: RunContext, states: CollectorStates, collector: Collector, started: datetime) -> CollectorOutcome:
     """Runs one collector and records its outcome in the collector states."""
     entry = states.entry(collector.name, ctx.today)
@@ -205,6 +252,8 @@ def _run_collector(ctx: RunContext, states: CollectorStates, collector: Collecto
     # Isolation boundary: an unexpected error of one collector must not stop the others.
     except Exception as e:
         logger.error("Collector %s failed: %s\n%s", collector.name, e, traceback.format_exc())
+        if isinstance(e, BlockedError) and collector.source_id is not None:
+            _set_blocked(ctx, collector.source_id, e)
         states.record_failure(collector.name, started, f"{e.__class__.__name__}: {e}")
         written = {name: count - before[name] for name, count in ctx.written.items() if count - before[name]}
         return CollectorOutcome(status="failed", records=written, error=f"{e.__class__.__name__}: {e}")

@@ -196,10 +196,16 @@ class Collector(ABC):
         min_days_between_runs: Days that must pass after the last complete run
             before the collector runs again; 0 runs it in every run. Applies only
             to collectors whose data can be fetched later without loss.
+        source_id: Id of the API or website the collector reads, for collectors
+            that do not track their sources themselves. If the source refuses
+            automated requests, the pipeline sets it to ``blocked`` in
+            ``state/sources.json`` and does not run the collector again until
+            the entry is reset by hand. None for collectors without this rule.
     """
     name: ClassVar[str]
     datasets: ClassVar[tuple[str, ...]]
     min_days_between_runs: ClassVar[int] = 0
+    source_id: ClassVar[Optional[str]] = None
 
     @abstractmethod
     def collect(self, ctx: RunContext, entry: CollectorEntry) -> CollectorResult:

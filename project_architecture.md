@@ -143,7 +143,7 @@ The news outlets and press-release sources are listed in [config/sources.toml](c
 **Fetch rules** ([src/web.py](src/web.py)):
 - **robots.txt** is checked for every website request (feeds, sitemaps, pages) with the user agent `GermanPoliticsDataset`. The parser follows RFC 9309: the longest matching rule decides, so that `Allow: /SiteGlobals/Functions/RSSFeed` overrides `Disallow: /SiteGlobals/` on the government sites (Python's `urllib.robotparser` applies the first matching rule and would block these feeds). The documented APIs above are offered for programmatic use; their robots.txt files exclude crawlers from the API paths, so they are called under their API terms and rate limits instead (`respect_robots=False`).
 - **Text-and-data-mining reservations** (TDMRep header, `/.well-known/tdmrep.json`, `tdm-reservation` meta tag) exclude a source (`tdm_reserved`).
-- **Bot protection:** HTTP 401 or 403, a challenge page or a CAPTCHA sets the source to `blocked`; it is re-enabled only by hand in `data/state/sources.json`. Article pages that are blocked while the feed works are skipped for the rest of the run. No headless browser is used.
+- **Bot protection:** HTTP 401 or 403, a challenge page or a CAPTCHA sets the source to `blocked`; it is re-enabled only by hand in `data/state/sources.json`. Article pages that are blocked while the feed works are skipped for the rest of the run. The same applies to the APIs and websites that collectors read directly (`abgeordnetenwatch`): the collector fails once, and its source is set to `blocked`, so that the collectors that read it are not run until the entry is reset (status `blocked` in the run log). No headless browser is used.
 - **Pacing:** one request per second per host, longer if robots.txt sets a crawl delay (several government sites ask for 30 or 60 seconds); 2.1 seconds for abgeordnetenwatch. A host that requires a crawl delay of more than 120 seconds is not fetched. Server errors, rate limits and network errors are retried twice. The feeds collector loads the robots.txt of all feed hosts before it reads the feeds, so that a crawl delay usually passes while other hosts are read; the two sources with a crawl delay of 30 or 60 seconds (Bundesrat, BMUKN) are read from one feed each, without article pages. A host whose robots.txt cannot be fetched within 10 seconds is not requested again in the same run.
 - **Broken sources:** after 7 consecutive failed runs a source is `broken` and is retried once a week.
 
@@ -160,7 +160,7 @@ data/
 └── state/
     ├── seen/<dataset>.json   # written items with content hash and revision
     ├── collectors.json       # first run, last run, failures, cursor per collector
-    ├── sources.json          # health status per news and press source
+    ├── sources.json          # health status per news and press source, and of the APIs read directly
     ├── politicians.json      # politician registry
     └── run_log.jsonl         # one line per run
 ```
@@ -257,6 +257,7 @@ dataset.politics.germany/
 
 - **A collector fails:** the error is logged, recorded in `collectors.json` and the run log, and the next collector starts. Data already written stays. The run exits with code 1.
 - **A source fails:** the other sources continue; the source health rules apply (`broken`, `blocked`, `tdm_reserved`).
+- **An API refuses automated requests:** the collector fails, and the API is set to `blocked` in `sources.json`. Later runs do not run the collectors that read it and report them with the status `blocked`, which does not mark the run as failed. Reset the entry by hand to read the API again.
 - **Gemini returns an unusable response:** the batch is split in halves down to single items; items without usable labels are written without annotation.
 - **Gemini quota, call budget or API error:** the annotation stops; the remaining items are written without annotation. A quota or API error marks the collector as failed; reaching the call budget does not.
 - **Run deadline:** after `RUN_DEADLINE_MINUTES` the collectors start no new work. A collector that stops early has the status `partial` and continues in the next run (roll-call votes: the remaining votes; procedures: the previous cursor is kept; pageviews: the remaining articles; feeds: the remaining items are written without annotation). A collector that has not started by the deadline is skipped, which marks the run as failed. Requests in progress at the deadline finish within their timeouts (Gemini: at most three attempts of 60 seconds; other requests: 20 seconds per attempt), so that the workflow commits before its timeout.
