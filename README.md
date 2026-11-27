@@ -123,28 +123,28 @@ The table lists the variables that carry content and the dataset (table) that st
 
 ## Dataset Overview
 <!-- DATASET_OVERVIEW_START -->
-**Last updated:** 2026-11-24 12:45 UTC
+**Last updated:** 2026-11-27 09:49 UTC
 
 | Dataset | Records | Items | Files | Observed | Content |
 |---|---|---|---|---|---|
-| `polls` | 4,017 | 4,017 | 11 | 2026-10-19 to 2026-11-24 | One published opinion poll (Sonntagsfrage). |
+| `polls` | 4,020 | 4,020 | 12 | 2026-10-19 to 2026-11-27 | One published opinion poll (Sonntagsfrage). |
 | `wikipedia_pageviews` | 5,923 | 5,923 | 6 | 2026-10-19 to 2026-11-24 | Daily views of the German Wikipedia article of a party or politician. |
-| `news_items` | 31,068 | 31,052 | 11 | 2026-10-20 to 2026-11-24 | Metadata of one news article. The text is not stored. |
-| `press_releases` | 1,404 | 1,398 | 11 | 2026-10-20 to 2026-11-24 | Metadata of one press release. The text is not stored. |
-| `text_annotations` | 4,635 | 4,635 | 11 | 2026-10-20 to 2026-11-24 | Gemini labels of one news article or press release. |
-| `roll_call_votes` | 256 | 256 | 3 | 2026-10-19 to 2026-11-17 | One roll-call vote (namentliche Abstimmung) in the Bundestag. |
-| `mp_votes` | 178,347 | 178,347 | 3 | 2026-10-19 to 2026-11-17 | The vote of one member in one roll-call vote. |
-| `parliamentary_procedures` | 21,489 | 20,601 | 11 | 2026-10-19 to 2026-11-24 | One parliamentary procedure (Vorgang) in the DIP, recorded when it appears or changes. |
+| `news_items` | 33,770 | 33,753 | 12 | 2026-10-20 to 2026-11-27 | Metadata of one news article. The text is not stored. |
+| `press_releases` | 1,560 | 1,554 | 12 | 2026-10-20 to 2026-11-27 | Metadata of one press release. The text is not stored. |
+| `text_annotations` | 5,035 | 5,035 | 12 | 2026-10-20 to 2026-11-27 | Gemini labels of one news article or press release. |
+| `roll_call_votes` | 257 | 257 | 4 | 2026-10-19 to 2026-11-27 | One roll-call vote (namentliche Abstimmung) in the Bundestag. |
+| `mp_votes` | 178,977 | 178,977 | 4 | 2026-10-19 to 2026-11-27 | The vote of one member in one roll-call vote. |
+| `parliamentary_procedures` | 21,718 | 20,777 | 12 | 2026-10-19 to 2026-11-27 | One parliamentary procedure (Vorgang) in the DIP, recorded when it appears or changes. |
 | `politicians` | 2,749 | 2,624 | 5 | 2026-10-19 to 2026-11-17 | A politician with a current mandate, recorded when the entry appears or changes. |
 
 **Runs**
 
-- **Latest run:** 2026-11-24 12:41 UTC (normal)
-  - `bundestag_votes`: ok
-  - `feeds`: ok (news_items 19, press_releases 2, text_annotations 21)
-  - `parliamentary_procedures`: ok (parliamentary_procedures 2)
+- **Latest run:** 2026-11-27 09:36 UTC (normal)
+  - `bundestag_votes`: ok (mp_votes 630, roll_call_votes 1)
+  - `feeds`: ok (news_items 2,702, press_releases 156, text_annotations 400)
+  - `parliamentary_procedures`: ok (parliamentary_procedures 229)
   - `politicians`: blocked; source abgeordnetenwatch blocked since 2026-11-24: blocked (HTTP 403): https://www.abgeordnetenwatch.de/api/v2/parliaments
-  - `polls`: ok
+  - `polls`: ok (polls 3)
   - `wikipedia_pageviews`: not_due
 
 **Sources**
@@ -157,46 +157,46 @@ The table lists the variables that carry content and the dataset (table) that st
 
 | Source | Type | Status | Items | Last 30 days | Annotated | With lead text | Latest publication |
 |---|---|---|---|---|---|---|---|
-| Augsburger Allgemeine | regional daily | active | 1,041 | 856 | 7.8% (81) | 0.0% (0) | 2026-11-24 |
-| Berliner Zeitung | regional daily | active | 507 | 440 | 15.6% (79) | 15.6% (79) | 2026-11-24 |
-| Bild | tabloid | active | 1,779 | 1,459 | 4.9% (88) | 4.9% (88) | 2026-11-24 |
-| BR24 | public broadcaster regional | active | 407 | 337 | 21.9% (89) | 0.0% (0) | 2026-11-24 |
-| buten un binnen | public broadcaster regional | active | 79 | 72 | 81.0% (64) | 0.0% (0) | 2026-11-24 |
-| Der Spiegel | weekly magazine | active | 929 | 761 | 8.8% (82) | 0.0% (0) | 2026-11-24 |
-| Der Tagesspiegel | national daily | active | 1,382 | 1,142 | 6.1% (84) | 0.0% (0) | 2026-11-24 |
-| Deutschlandfunk | public broadcaster national | active | 128 | 113 | 62.5% (80) | 62.5% (80) | 2026-11-24 |
-| Die Welt | national daily | active | 2,388 | 1,971 | 4.2% (101) | 3.2% (77) | 2026-11-24 |
-| Focus Online | weekly magazine | active | 1,235 | 1,014 | 7.1% (88) | 6.9% (85) | 2026-11-24 |
-| Freie Presse | regional daily | active | 186 | 164 | 40.3% (75) | 0.0% (0) | 2026-11-24 |
-| Hamburger Abendblatt | regional daily | active | 1,269 | 1,051 | 5.3% (67) | 2.9% (37) | 2026-11-24 |
-| Handelsblatt | business | active | 845 | 699 | 10.2% (86) | 10.1% (85) | 2026-11-24 |
-| hessenschau.de | public broadcaster regional | active | 153 | 140 | 47.7% (73) | 0.0% (0) | 2026-11-23 |
-| Lausitzer Rundschau | regional daily | active | 518 | 425 | 15.1% (78) | 0.0% (0) | 2026-11-24 |
-| MDR | public broadcaster regional | active | 546 | 464 | 15.0% (82) | 0.0% (0) | 2026-11-24 |
-| n-tv.de | online only | active | 1,434 | 1,205 | 6.3% (90) | 6.3% (90) | 2026-11-24 |
-| NDR | public broadcaster regional | active | 200 | 165 | 41.5% (83) | 0.0% (0) | 2026-11-24 |
-| Neue Osnabrücker Zeitung | regional daily | active | 3,026 | 2,524 | 3.1% (94) | 0.0% (0) | 2026-11-24 |
-| Nordkurier | regional daily | active | 899 | 741 | 8.6% (77) | 8.6% (77) | 2026-11-24 |
-| Nürnberger Nachrichten | regional daily | active | 366 | 308 | 22.1% (81) | 0.0% (0) | 2026-11-24 |
-| rbb24 | public broadcaster regional | active | 153 | 125 | 50.3% (77) | 0.0% (0) | 2026-11-24 |
-| Rheinische Post | regional daily | active | 1,000 | 816 | 8.2% (82) | 0.0% (0) | 2026-11-24 |
-| Saarbrücker Zeitung | regional daily | active | 172 | 145 | 44.8% (77) | 44.8% (77) | 2026-11-24 |
-| shz.de | regional daily | active | 1,106 | 924 | 7.7% (85) | 0.0% (0) | 2026-11-24 |
-| Stuttgarter Zeitung | regional daily | active | 620 | 502 | 13.1% (81) | 0.0% (0) | 2026-11-24 |
-| SWR Aktuell | public broadcaster regional | active | 155 | 128 | 51.6% (80) | 0.0% (0) | 2026-11-24 |
-| Süddeutsche Zeitung | national daily | active | 264 | 217 | 33.0% (87) | 0.0% (0) | 2026-11-24 |
-| Südkurier | regional daily | active | 598 | 501 | 13.4% (80) | 0.0% (0) | 2026-11-24 |
-| t-online | online only | active | 777 | 634 | 10.8% (84) | 0.0% (0) | 2026-11-24 |
-| tagesschau.de | public broadcaster national | active | 684 | 562 | 12.0% (82) | 0.0% (0) | 2026-11-24 |
-| taz | national daily | active | 632 | 526 | 13.3% (84) | 0.0% (0) | 2026-11-24 |
-| Thüringer Allgemeine | regional daily | active | 1,025 | 840 | 6.7% (69) | 2.3% (24) | 2026-11-24 |
-| Trierischer Volksfreund | regional daily | active | 252 | 204 | 29.8% (75) | 29.8% (75) | 2026-11-24 |
-| Volksstimme | regional daily | active | 1,230 | 1,023 | 6.2% (76) | 0.0% (0) | 2026-11-24 |
-| WAZ | regional daily | active | 879 | 717 | 8.3% (73) | 2.8% (25) | 2026-11-24 |
-| WDR | public broadcaster regional | active | 319 | 256 | 25.1% (80) | 0.0% (0) | 2026-11-24 |
-| Weser-Kurier | regional daily | active | 200 | 167 | 39.5% (79) | 0.0% (0) | 2026-11-24 |
-| Wiesbadener Kurier | regional daily | active | 942 | 822 | 8.5% (80) | 0.0% (0) | 2026-11-24 |
-| ZDFheute | public broadcaster national | active | 743 | 612 | 11.4% (85) | 8.7% (65) | 2026-11-24 |
+| Augsburger Allgemeine | regional daily | active | 1,114 | 843 | 7.8% (87) | 0.0% (0) | 2026-11-27 |
+| Berliner Zeitung | regional daily | active | 557 | 454 | 15.3% (85) | 15.3% (85) | 2026-11-27 |
+| Bild | tabloid | active | 1,944 | 1,477 | 4.8% (94) | 4.8% (94) | 2026-11-27 |
+| BR24 | public broadcaster regional | active | 455 | 359 | 21.1% (96) | 0.0% (0) | 2026-11-27 |
+| buten un binnen | public broadcaster regional | active | 85 | 74 | 82.4% (70) | 0.0% (0) | 2026-11-26 |
+| Der Spiegel | weekly magazine | active | 1,014 | 763 | 8.7% (88) | 0.0% (0) | 2026-11-27 |
+| Der Tagesspiegel | national daily | active | 1,499 | 1,160 | 6.0% (90) | 0.0% (0) | 2026-11-27 |
+| Deutschlandfunk | public broadcaster national | active | 137 | 103 | 63.5% (87) | 63.5% (87) | 2026-11-26 |
+| Die Welt | national daily | active | 2,589 | 1,962 | 4.1% (107) | 3.2% (83) | 2026-11-27 |
+| Focus Online | weekly magazine | active | 1,346 | 1,020 | 7.0% (94) | 6.8% (91) | 2026-11-27 |
+| Freie Presse | regional daily | active | 201 | 167 | 40.3% (81) | 0.0% (0) | 2026-11-27 |
+| Hamburger Abendblatt | regional daily | active | 1,360 | 1,035 | 5.4% (73) | 3.0% (41) | 2026-11-27 |
+| Handelsblatt | business | active | 927 | 719 | 9.9% (92) | 9.8% (91) | 2026-11-27 |
+| hessenschau.de | public broadcaster regional | active | 158 | 140 | 49.4% (78) | 0.0% (0) | 2026-11-26 |
+| Lausitzer Rundschau | regional daily | active | 545 | 417 | 15.4% (84) | 0.0% (0) | 2026-11-27 |
+| MDR | public broadcaster regional | active | 596 | 477 | 14.9% (89) | 0.0% (0) | 2026-11-27 |
+| n-tv.de | online only | active | 1,570 | 1,213 | 6.1% (96) | 6.1% (96) | 2026-11-27 |
+| NDR | public broadcaster regional | active | 214 | 167 | 42.1% (90) | 0.0% (0) | 2026-11-27 |
+| Neue Osnabrücker Zeitung | regional daily | active | 3,302 | 2,579 | 3.0% (100) | 0.0% (0) | 2026-11-27 |
+| Nordkurier | regional daily | active | 966 | 743 | 8.6% (83) | 8.6% (83) | 2026-11-27 |
+| Nürnberger Nachrichten | regional daily | active | 391 | 305 | 22.3% (87) | 0.0% (0) | 2026-11-27 |
+| rbb24 | public broadcaster regional | active | 170 | 132 | 48.8% (83) | 0.0% (0) | 2026-11-27 |
+| Rheinische Post | regional daily | active | 1,092 | 835 | 8.1% (88) | 0.0% (0) | 2026-11-27 |
+| Saarbrücker Zeitung | regional daily | active | 192 | 149 | 43.2% (83) | 43.2% (83) | 2026-11-27 |
+| shz.de | regional daily | active | 1,224 | 964 | 7.4% (91) | 0.0% (0) | 2026-11-27 |
+| Stuttgarter Zeitung | regional daily | active | 656 | 490 | 13.3% (87) | 0.0% (0) | 2026-11-27 |
+| SWR Aktuell | public broadcaster regional | active | 163 | 116 | 52.8% (86) | 0.0% (0) | 2026-11-27 |
+| Süddeutsche Zeitung | national daily | active | 287 | 220 | 32.4% (93) | 0.0% (0) | 2026-11-27 |
+| Südkurier | regional daily | active | 646 | 502 | 13.3% (86) | 0.0% (0) | 2026-11-27 |
+| t-online | online only | active | 842 | 640 | 10.7% (90) | 0.0% (0) | 2026-11-27 |
+| tagesschau.de | public broadcaster national | active | 742 | 563 | 12.0% (89) | 0.0% (0) | 2026-11-27 |
+| taz | national daily | active | 687 | 528 | 13.1% (90) | 0.0% (0) | 2026-11-27 |
+| Thüringer Allgemeine | regional daily | active | 1,104 | 834 | 6.8% (75) | 2.4% (26) | 2026-11-27 |
+| Trierischer Volksfreund | regional daily | active | 275 | 206 | 29.5% (81) | 29.5% (81) | 2026-11-27 |
+| Volksstimme | regional daily | active | 1,359 | 1,079 | 6.0% (82) | 0.0% (0) | 2026-11-27 |
+| WAZ | regional daily | active | 951 | 708 | 8.3% (79) | 2.8% (27) | 2026-11-27 |
+| WDR | public broadcaster regional | active | 349 | 261 | 24.6% (86) | 0.0% (0) | 2026-11-27 |
+| Weser-Kurier | regional daily | active | 213 | 164 | 39.9% (85) | 0.0% (0) | 2026-11-27 |
+| Wiesbadener Kurier | regional daily | active | 1,026 | 833 | 8.4% (86) | 0.0% (0) | 2026-11-27 |
+| ZDFheute | public broadcaster national | active | 822 | 631 | 11.2% (92) | 8.6% (71) | 2026-11-27 |
 
 </details>
 
@@ -205,56 +205,56 @@ The table lists the variables that carry content and the dataset (table) that st
 
 | Source | Type | Status | Items | Last 30 days | Annotated | With lead text | Latest publication |
 |---|---|---|---|---|---|---|---|
-| AfD | party | active | 19 | 14 | 100.0% (19) | 100.0% (19) | 2026-11-18 |
-| AfD-Fraktion im Bundestag | parliamentary group | active | 87 | 70 | 100.0% (87) | 100.0% (87) | 2026-11-23 |
-| Bayerische Staatsregierung | state government | active | 374 | 290 | 100.0% (374) | 91.7% (343) | 2026-11-24 |
-| Bundeskanzleramt | federal government | active | 42 | 42 | 100.0% (42) | 100.0% (42) | 2026-11-23 |
-| Bundesministerium der Justiz und für Verbraucherschutz | federal ministry | active | 10 | 8 | 100.0% (10) | 100.0% (10) | 2026-11-19 |
-| Bundesministerium der Verteidigung | federal ministry | active | 46 | 36 | 100.0% (46) | 0.0% (0) | 2026-11-24 |
-| Bundesministerium des Innern | federal ministry | active | 8 | 8 | 100.0% (8) | 87.5% (7) | 2026-11-19 |
-| Bundesministerium für Bildung, Familie, Senioren, Frauen und Jugend | federal ministry | active | 45 | 42 | 100.0% (45) | 100.0% (45) | 2026-11-24 |
+| AfD | party | active | 22 | 16 | 100.0% (22) | 100.0% (22) | 2026-11-27 |
+| AfD-Fraktion im Bundestag | parliamentary group | active | 97 | 75 | 100.0% (97) | 100.0% (97) | 2026-11-26 |
+| Bayerische Staatsregierung | state government | active | 430 | 317 | 100.0% (430) | 92.8% (399) | 2026-11-27 |
+| Bundeskanzleramt | federal government | active | 45 | 45 | 100.0% (45) | 100.0% (45) | 2026-11-26 |
+| Bundesministerium der Justiz und für Verbraucherschutz | federal ministry | active | 11 | 8 | 100.0% (11) | 100.0% (11) | 2026-11-24 |
+| Bundesministerium der Verteidigung | federal ministry | active | 48 | 35 | 100.0% (48) | 0.0% (0) | 2026-11-25 |
+| Bundesministerium des Innern | federal ministry | active | 9 | 8 | 100.0% (9) | 88.9% (8) | 2026-11-26 |
+| Bundesministerium für Bildung, Familie, Senioren, Frauen und Jugend | federal ministry | active | 49 | 46 | 100.0% (49) | 100.0% (49) | 2026-11-27 |
 | Bundesministerium für Digitales und Staatsmodernisierung | federal ministry | active | 12 | 11 | 100.0% (12) | 100.0% (12) | 2026-11-20 |
 | Bundesministerium für Gesundheit | federal ministry | active | 5 | 5 | 100.0% (5) | 100.0% (5) | 2026-11-16 |
-| Bundesministerium für Umwelt, Klimaschutz, Naturschutz und nukleare Sicherheit | federal ministry | active | 26 | 21 | 100.0% (26) | 0.0% (0) | 2026-11-23 |
-| Bundesministerium für wirtschaftliche Zusammenarbeit und Entwicklung | federal ministry | active | 10 | 10 | 100.0% (10) | 100.0% (10) | 2026-11-22 |
-| Bundesministerium für Wohnen, Stadtentwicklung und Bauwesen | federal ministry | active | 1 | 1 | 100.0% (1) | 100.0% (1) | 2026-11-06 |
+| Bundesministerium für Umwelt, Klimaschutz, Naturschutz und nukleare Sicherheit | federal ministry | active | 26 | 19 | 100.0% (26) | 0.0% (0) | 2026-11-23 |
+| Bundesministerium für wirtschaftliche Zusammenarbeit und Entwicklung | federal ministry | active | 10 | 8 | 100.0% (10) | 100.0% (10) | 2026-11-22 |
+| Bundesministerium für Wohnen, Stadtentwicklung und Bauwesen | federal ministry | active | 2 | 2 | 100.0% (2) | 100.0% (2) | 2026-11-25 |
 | Bundesrat | bundesrat | active | 7 | 7 | 100.0% (7) | 0.0% (0) | 2026-11-11 |
-| Bundesregierung | federal government | active | 120 | 100 | 100.0% (120) | 100.0% (120) | 2026-11-24 |
-| Bündnis 90/Die Grünen Bundestagsfraktion | parliamentary group | active | 20 | 14 | 100.0% (20) | 100.0% (20) | 2026-11-23 |
+| Bundesregierung | federal government | active | 133 | 110 | 100.0% (133) | 100.0% (133) | 2026-11-26 |
+| Bündnis 90/Die Grünen Bundestagsfraktion | parliamentary group | active | 23 | 17 | 100.0% (23) | 100.0% (23) | 2026-11-26 |
 | Bündnis Sahra Wagenknecht | party | broken | 1 | 0 | 100.0% (1) | 100.0% (1) | 2026-10-20 |
-| CDU | party | active | 23 | 19 | 100.0% (23) | 100.0% (23) | 2026-11-23 |
-| CSU | party | active | 1 | 1 | 100.0% (1) | 100.0% (1) | 2026-10-24 |
-| Deutscher Bundestag | bundestag | active | 279 | 224 | 100.0% (279) | 100.0% (279) | 2026-11-24 |
-| Die Linke | party | active | 22 | 21 | 100.0% (22) | 100.0% (22) | 2026-11-21 |
-| FDP | party | active | 77 | 65 | 100.0% (77) | 100.0% (77) | 2026-11-23 |
-| Fraktion Die Linke im Bundestag | parliamentary group | active | 101 | 84 | 100.0% (101) | 99.0% (100) | 2026-11-24 |
-| Niedersächsische Landesregierung | state government | active | 28 | 28 | 100.0% (28) | 92.9% (26) | 2026-11-23 |
+| CDU | party | active | 27 | 22 | 100.0% (27) | 100.0% (27) | 2026-11-25 |
+| CSU | party | active | 1 | 0 | 100.0% (1) | 100.0% (1) | 2026-10-24 |
+| Deutscher Bundestag | bundestag | active | 309 | 236 | 100.0% (309) | 100.0% (309) | 2026-11-27 |
+| Die Linke | party | active | 26 | 24 | 100.0% (26) | 100.0% (26) | 2026-11-27 |
+| FDP | party | active | 87 | 66 | 100.0% (87) | 100.0% (87) | 2026-11-27 |
+| Fraktion Die Linke im Bundestag | parliamentary group | active | 110 | 88 | 100.0% (110) | 99.1% (109) | 2026-11-26 |
+| Niedersächsische Landesregierung | state government | active | 29 | 27 | 100.0% (29) | 93.1% (27) | 2026-11-23 |
 | Saarländische Landesregierung | state government | removed | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
 | Senatskanzlei Berlin | state government | active | 12 | 6 | 100.0% (12) | 75.0% (9) | 2026-11-24 |
 | SPD | party | active | 0 | 0 | 0.0% (0) | 0.0% (0) | none |
-| SPD-Bundestagsfraktion | parliamentary group | active | 28 | 27 | 100.0% (28) | 100.0% (28) | 2026-11-24 |
+| SPD-Bundestagsfraktion | parliamentary group | active | 29 | 28 | 100.0% (29) | 100.0% (29) | 2026-11-25 |
 
 </details>
 
 **Annotations**
 
-- **Annotated items:** 4,642 of 32,472 (14.3%)
-- **Text seen by the model:** title_only 16,291, title_teaser 13,930, lead_text 2,251
+- **Annotated items:** 5,043 of 35,330 (14.3%)
+- **Text seen by the model:** title_only 17,765, title_teaser 15,085, lead_text 2,480
 
-**Main topics of political items, last 30 days** (3,430 items)
+**Main topics of political items, last 30 days** (3,444 items)
 
 | Topic | Items | Share |
 |---|---|---|
-| Government operations | 722 | 21.0% |
-| International affairs | 426 | 12.4% |
-| Macroeconomics | 337 | 9.8% |
-| Law and crime | 299 | 8.7% |
-| Civil rights and liberties | 230 | 6.7% |
-| Defense | 217 | 6.3% |
-| Education | 142 | 4.1% |
-| Health | 124 | 3.6% |
-| Culture | 124 | 3.6% |
-| Environment | 121 | 3.5% |
+| Government operations | 684 | 19.9% |
+| Macroeconomics | 391 | 11.4% |
+| International affairs | 380 | 11.0% |
+| Law and crime | 304 | 8.8% |
+| Civil rights and liberties | 233 | 6.8% |
+| Defense | 221 | 6.4% |
+| Education | 140 | 4.1% |
+| Culture | 138 | 4.0% |
+| Health | 132 | 3.8% |
+| Social welfare | 121 | 3.5% |
 
 **Fields** (Filled: records with a value that is not null and not empty)
 
@@ -263,27 +263,27 @@ The table lists the variables that carry content and the dataset (table) that st
 
 | Field | Description | Filled | Distinct values |
 |---|---|---|---|
-| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (4,017) | 4,017 |
-| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (4,017) | 1 |
-| `dataset` | Name of the dataset. | 100.0% (4,017) | 1 |
-| `schema_version` | Version of the record schema. | 100.0% (4,017) | 1 |
-| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (4,017) | 12 |
-| `source_id` | Id of the source (API, outlet or press source). | 100.0% (4,017) | 1 |
-| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (4,017) | 1 |
-| `license` | License or terms of the source. | 100.0% (4,017) | 1 |
-| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (4,017) | 17 |
-| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (4,017) | 2 |
-| `poll_id` | Id of the poll at DAWUM. | 100.0% (4,017) | 4,017 |
-| `parliament` | Parliament the poll asks about. | 100.0% (4,017) | 3 |
-| `institute` | Polling institute. | 100.0% (4,017) | 22 |
-| `tasker` | Client that commissioned the poll. | 100.0% (4,017) | 119 |
-| `method` | Survey method. | 100.0% (4,017) | 6 |
-| `fieldwork_start` | First day of the fieldwork. | 100.0% (4,017) | 2,184 |
-| `fieldwork_end` | Last day of the fieldwork. | 100.0% (4,017) | 2,228 |
-| `published_date` | Publication date of the poll. | 100.0% (4,017) | 2,454 |
-| `sample_size` | Number of respondents. | 100.0% (4,017) | 1,063 |
-| `results` | Vote intention in percent by party code, without the others. | 100.0% (4,017) | 26 |
-| `others_share` | Share of all other parties in percent. | 100.0% (4,017) | 64 |
+| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (4,020) | 4,020 |
+| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (4,020) | 1 |
+| `dataset` | Name of the dataset. | 100.0% (4,020) | 1 |
+| `schema_version` | Version of the record schema. | 100.0% (4,020) | 2 |
+| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (4,020) | 13 |
+| `source_id` | Id of the source (API, outlet or press source). | 100.0% (4,020) | 1 |
+| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (4,020) | 1 |
+| `license` | License or terms of the source. | 100.0% (4,020) | 1 |
+| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (4,020) | 17 |
+| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (4,020) | 2 |
+| `poll_id` | Id of the poll at DAWUM. | 100.0% (4,020) | 4,020 |
+| `parliament` | Parliament the poll asks about. | 100.0% (4,020) | 3 |
+| `institute` | Polling institute. | 100.0% (4,020) | 22 |
+| `tasker` | Client that commissioned the poll. | 100.0% (4,020) | 119 |
+| `method` | Survey method. | 100.0% (4,020) | 6 |
+| `fieldwork_start` | First day of the fieldwork. | 100.0% (4,020) | 2,187 |
+| `fieldwork_end` | Last day of the fieldwork. | 100.0% (4,020) | 2,230 |
+| `published_date` | Publication date of the poll. | 100.0% (4,020) | 2,456 |
+| `sample_size` | Number of respondents. | 100.0% (4,020) | 1,063 |
+| `results` | Vote intention in percent by party code, without the others. | 100.0% (4,020) | 26 |
+| `others_share` | Share of all other parties in percent. | 100.0% (4,020) | 64 |
 
 </details>
 
@@ -315,36 +315,36 @@ The table lists the variables that carry content and the dataset (table) that st
 
 | Field | Description | Filled | Distinct values |
 |---|---|---|---|
-| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (31,068) | 31,052 |
-| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (31,068) | 1 |
-| `dataset` | Name of the dataset. | 100.0% (31,068) | 1 |
-| `schema_version` | Version of the record schema. | 100.0% (31,068) | 2 |
-| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (31,068) | 788 |
-| `source_id` | Id of the source (API, outlet or press source). | 100.0% (31,068) | 40 |
-| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (31,068) | 31,052 |
-| `license` | License or terms of the source. | 100.0% (31,068) | 1 |
-| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (31,068) | 17 |
-| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (31,068) | 1 |
-| `outlet_id` | Id of the outlet. | 100.0% (31,068) | 40 |
-| `outlet_type` | Type of the outlet. | 100.0% (31,068) | 8 |
-| `owner_group` | Publisher group of the outlet, or 'public' for public broadcasters. | 100.0% (31,068) | 20 |
-| `home_state` | State of a regional outlet; null for national outlets. | 57.4% (17,848) | 16 |
-| `channel` | Where the article was found: RSS/Atom feed or news sitemap. | 100.0% (31,068) | 2 |
-| `url` | URL of the article. | 100.0% (31,068) | 31,052 |
-| `canonical_url` | Canonical URL declared by the article page. | 3.6% (1,130) | 1,125 |
-| `title` | Title of the article. | 100.0% (31,068) | 25,999 |
-| `published_at` | Publication time (UTC). | 100.0% (31,059) | 25,539 |
-| `updated_at` | Last modification time from the article page (UTC). | 3.1% (950) | 865 |
-| `section` | Section of the outlet, from the page, the feed or the URL path. | 34.7% (10,784) | 694 |
-| `feed_categories` | Categories of the item in the feed. | 34.2% (10,615) | 3,379 |
-| `keywords` | Keywords from the article page or the news sitemap. | 27.6% (8,570) | 12,287 |
-| `jsonld_type` | schema.org type of the article page, e.g. NewsArticle or OpinionNewsArticle. | 3.1% (978) | 3 |
-| `is_agency_copy` | True if the article is credited to a news agency (dpa, AFP, Reuters, epd, KNA, AP). Null without page data. | 3.1% (978) | 2 |
-| `author_count` | Number of named authors. Author names are not stored. Null without page data. | 3.1% (978) | 8 |
+| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (33,770) | 33,753 |
+| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (33,770) | 1 |
+| `dataset` | Name of the dataset. | 100.0% (33,770) | 1 |
+| `schema_version` | Version of the record schema. | 100.0% (33,770) | 2 |
+| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (33,770) | 846 |
+| `source_id` | Id of the source (API, outlet or press source). | 100.0% (33,770) | 40 |
+| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (33,770) | 33,753 |
+| `license` | License or terms of the source. | 100.0% (33,770) | 1 |
+| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (33,770) | 17 |
+| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (33,770) | 1 |
+| `outlet_id` | Id of the outlet. | 100.0% (33,770) | 40 |
+| `outlet_type` | Type of the outlet. | 100.0% (33,770) | 8 |
+| `owner_group` | Publisher group of the outlet, or 'public' for public broadcasters. | 100.0% (33,770) | 20 |
+| `home_state` | State of a regional outlet; null for national outlets. | 57.3% (19,364) | 16 |
+| `channel` | Where the article was found: RSS/Atom feed or news sitemap. | 100.0% (33,770) | 2 |
+| `url` | URL of the article. | 100.0% (33,770) | 33,753 |
+| `canonical_url` | Canonical URL declared by the article page. | 3.6% (1,216) | 1,211 |
+| `title` | Title of the article. | 100.0% (33,770) | 28,325 |
+| `published_at` | Publication time (UTC). | 100.0% (33,761) | 27,779 |
+| `updated_at` | Last modification time from the article page (UTC). | 3.0% (1,019) | 927 |
+| `section` | Section of the outlet, from the page, the feed or the URL path. | 34.6% (11,688) | 737 |
+| `feed_categories` | Categories of the item in the feed. | 34.1% (11,505) | 3,554 |
+| `keywords` | Keywords from the article page or the news sitemap. | 27.8% (9,383) | 13,084 |
+| `jsonld_type` | schema.org type of the article page, e.g. NewsArticle or OpinionNewsArticle. | 3.1% (1,051) | 3 |
+| `is_agency_copy` | True if the article is credited to a news agency (dpa, AFP, Reuters, epd, KNA, AP). Null without page data. | 3.1% (1,051) | 2 |
+| `author_count` | Number of named authors. Author names are not stored. Null without page data. | 3.1% (1,051) | 8 |
 | `word_count` | Word count from the article page. Null if not given. | 0.0% (0) | 0 |
-| `is_paywalled` | True if the page marks the article as not accessible for free. Null without page data. | 2.2% (691) | 2 |
-| `has_video` | True if the article page embeds a video. Null without page data. | 3.6% (1,132) | 2 |
-| `content_basis` | Text available for the annotation: title only, title and teaser, or lead text of the page. | 100.0% (31,068) | 3 |
+| `is_paywalled` | True if the page marks the article as not accessible for free. Null without page data. | 2.2% (742) | 2 |
+| `has_video` | True if the article page embeds a video. Null without page data. | 3.6% (1,218) | 2 |
+| `content_basis` | Text available for the annotation: title only, title and teaser, or lead text of the page. | 100.0% (33,770) | 3 |
 
 </details>
 
@@ -353,25 +353,25 @@ The table lists the variables that carry content and the dataset (table) that st
 
 | Field | Description | Filled | Distinct values |
 |---|---|---|---|
-| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (1,404) | 1,398 |
-| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (1,404) | 1 |
-| `dataset` | Name of the dataset. | 100.0% (1,404) | 1 |
-| `schema_version` | Version of the record schema. | 100.0% (1,404) | 2 |
-| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (1,404) | 1,218 |
-| `source_id` | Id of the source (API, outlet or press source). | 100.0% (1,404) | 26 |
-| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (1,404) | 1,398 |
-| `license` | License or terms of the source. | 100.0% (1,404) | 1 |
-| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (1,404) | 4 |
-| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (1,404) | 1 |
-| `press_source_id` | Id of the press source. | 100.0% (1,404) | 26 |
-| `actor_type` | Type of the issuing actor. | 100.0% (1,404) | 7 |
-| `party` | Party of a party or parliamentary group; null for other actors. | 27.0% (379) | 8 |
-| `url` | URL of the press release. | 100.0% (1,404) | 1,398 |
-| `canonical_url` | Canonical URL declared by the page. | 45.9% (645) | 640 |
-| `title` | Title of the press release. | 100.0% (1,404) | 1,327 |
-| `published_at` | Publication time (UTC). | 98.4% (1,382) | 1,011 |
-| `feed_categories` | Categories of the item in the feed. | 30.7% (431) | 156 |
-| `content_basis` | Text available for the annotation. | 100.0% (1,404) | 3 |
+| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (1,560) | 1,554 |
+| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (1,560) | 1 |
+| `dataset` | Name of the dataset. | 100.0% (1,560) | 1 |
+| `schema_version` | Version of the record schema. | 100.0% (1,560) | 2 |
+| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (1,560) | 1,355 |
+| `source_id` | Id of the source (API, outlet or press source). | 100.0% (1,560) | 26 |
+| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (1,560) | 1,554 |
+| `license` | License or terms of the source. | 100.0% (1,560) | 1 |
+| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (1,560) | 4 |
+| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (1,560) | 1 |
+| `press_source_id` | Id of the press source. | 100.0% (1,560) | 26 |
+| `actor_type` | Type of the issuing actor. | 100.0% (1,560) | 7 |
+| `party` | Party of a party or parliamentary group; null for other actors. | 27.1% (423) | 8 |
+| `url` | URL of the press release. | 100.0% (1,560) | 1,554 |
+| `canonical_url` | Canonical URL declared by the page. | 45.6% (711) | 706 |
+| `title` | Title of the press release. | 100.0% (1,560) | 1,472 |
+| `published_at` | Publication time (UTC). | 98.6% (1,538) | 1,124 |
+| `feed_categories` | Categories of the item in the feed. | 30.3% (472) | 163 |
+| `content_basis` | Text available for the annotation. | 100.0% (1,560) | 3 |
 
 </details>
 
@@ -380,47 +380,47 @@ The table lists the variables that carry content and the dataset (table) that st
 
 | Field | Description | Filled | Distinct values |
 |---|---|---|---|
-| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (4,635) | 4,635 |
-| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (4,635) | 1 |
-| `dataset` | Name of the dataset. | 100.0% (4,635) | 1 |
-| `schema_version` | Version of the record schema. | 100.0% (4,635) | 2 |
-| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (4,635) | 379 |
-| `source_id` | Id of the source (API, outlet or press source). | 100.0% (4,635) | 66 |
-| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (4,635) | 4,627 |
-| `license` | License or terms of the source. | 100.0% (4,635) | 1 |
-| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (4,635) | 17 |
-| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (4,635) | 1 |
-| `item_dataset` | Dataset of the annotated item. | 100.0% (4,635) | 2 |
-| `item_id` | record_id of the annotated item. | 100.0% (4,635) | 4,627 |
-| `model` | Gemini model that produced the labels. | 100.0% (4,635) | 2 |
-| `extraction_hash` | Hash of the prompt, response schema and model settings. Labels with the same hash were produced under the same conditions. | 100.0% (4,635) | 6 |
-| `content_basis` | Text the model saw: title only, title and teaser, or lead text. | 100.0% (4,635) | 3 |
-| `is_political` | Whether the item is about politics. | 100.0% (4,635) | 2 |
-| `political_level` | Main political level of the item. | 100.0% (4,635) | 6 |
-| `states_concerned` | States the item is mainly about. | 32.1% (1,487) | 16 |
-| `cap_topic` | Main policy topic (Comparative Agendas Project). | 100.0% (4,635) | 22 |
-| `cap_topics_secondary` | Further policy topics. | 60.5% (2,806) | 22 |
-| `issue_detail` | Specific issue in a few words. | 89.7% (4,157) | 3,375 |
-| `article_type` | Form of the item. | 100.0% (4,635) | 8 |
-| `event_types` | Types of political events reported. | 73.4% (3,401) | 19 |
-| `event_status` | Stage of the main event. | 100.0% (4,635) | 4 |
-| `government_involved` | Whether a government or its members act or are addressed. | 100.0% (4,635) | 2 |
-| `mentioned_parties` | Parties the item refers to. | 39.0% (1,807) | 13 |
-| `party_roles` | Role of each mentioned party. | 39.0% (1,807) | 13 |
-| `party_tone` | Tone toward each mentioned party. | 39.0% (1,807) | 13 |
-| `quoted_parties` | Parties whose representatives are quoted. | 14.5% (674) | 11 |
-| `mentioned_politicians` | abgeordnetenwatch ids of the named politicians that are in the entity registry. | 28.9% (1,338) | 363 |
-| `politician_tone` | Tone toward each resolved politician, by abgeordnetenwatch id. | 28.9% (1,338) | 363 |
-| `unresolved_person_count` | Number of named persons that are not in the entity registry. Their names are not stored. | 100.0% (4,635) | 9 |
-| `overall_tone` | Overall tone of the item. | 100.0% (4,635) | 4 |
-| `government_tone` | Tone toward the federal government. | 100.0% (4,635) | 5 |
-| `frame` | Dominant news frame (Semetko and Valkenburg). | 100.0% (4,635) | 6 |
-| `conflict_pairs` | Pairs of parties reported in dispute, each pair sorted. | 5.1% (238) | 37 |
-| `reports_poll` | Whether poll results are reported. | 100.0% (4,635) | 2 |
-| `poll_institute` | Polling institute of a reported poll. | 1.5% (70) | 37 |
-| `upcoming_events` | Future events with event_type and date (YYYY-MM-DD). | 9.5% (439) | 192 |
-| `communication_type` | Purpose of a press release; 'Not applicable' for news. | 100.0% (4,635) | 9 |
-| `populism_markers` | Populist rhetoric in a press release. | 4.5% (207) | 3 |
+| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (5,035) | 5,035 |
+| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (5,035) | 1 |
+| `dataset` | Name of the dataset. | 100.0% (5,035) | 1 |
+| `schema_version` | Version of the record schema. | 100.0% (5,035) | 2 |
+| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (5,035) | 416 |
+| `source_id` | Id of the source (API, outlet or press source). | 100.0% (5,035) | 66 |
+| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (5,035) | 5,027 |
+| `license` | License or terms of the source. | 100.0% (5,035) | 1 |
+| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (5,035) | 17 |
+| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (5,035) | 1 |
+| `item_dataset` | Dataset of the annotated item. | 100.0% (5,035) | 2 |
+| `item_id` | record_id of the annotated item. | 100.0% (5,035) | 5,027 |
+| `model` | Gemini model that produced the labels. | 100.0% (5,035) | 2 |
+| `extraction_hash` | Hash of the prompt, response schema and model settings. Labels with the same hash were produced under the same conditions. | 100.0% (5,035) | 6 |
+| `content_basis` | Text the model saw: title only, title and teaser, or lead text. | 100.0% (5,035) | 3 |
+| `is_political` | Whether the item is about politics. | 100.0% (5,035) | 2 |
+| `political_level` | Main political level of the item. | 100.0% (5,035) | 6 |
+| `states_concerned` | States the item is mainly about. | 32.5% (1,635) | 16 |
+| `cap_topic` | Main policy topic (Comparative Agendas Project). | 100.0% (5,035) | 22 |
+| `cap_topics_secondary` | Further policy topics. | 60.6% (3,051) | 22 |
+| `issue_detail` | Specific issue in a few words. | 89.9% (4,526) | 3,687 |
+| `article_type` | Form of the item. | 100.0% (5,035) | 8 |
+| `event_types` | Types of political events reported. | 73.2% (3,688) | 19 |
+| `event_status` | Stage of the main event. | 100.0% (5,035) | 4 |
+| `government_involved` | Whether a government or its members act or are addressed. | 100.0% (5,035) | 2 |
+| `mentioned_parties` | Parties the item refers to. | 39.6% (1,995) | 13 |
+| `party_roles` | Role of each mentioned party. | 39.6% (1,995) | 13 |
+| `party_tone` | Tone toward each mentioned party. | 39.6% (1,995) | 13 |
+| `quoted_parties` | Parties whose representatives are quoted. | 15.1% (759) | 11 |
+| `mentioned_politicians` | abgeordnetenwatch ids of the named politicians that are in the entity registry. | 29.5% (1,485) | 382 |
+| `politician_tone` | Tone toward each resolved politician, by abgeordnetenwatch id. | 29.5% (1,485) | 382 |
+| `unresolved_person_count` | Number of named persons that are not in the entity registry. Their names are not stored. | 100.0% (5,035) | 9 |
+| `overall_tone` | Overall tone of the item. | 100.0% (5,035) | 4 |
+| `government_tone` | Tone toward the federal government. | 100.0% (5,035) | 5 |
+| `frame` | Dominant news frame (Semetko and Valkenburg). | 100.0% (5,035) | 6 |
+| `conflict_pairs` | Pairs of parties reported in dispute, each pair sorted. | 5.5% (278) | 37 |
+| `reports_poll` | Whether poll results are reported. | 100.0% (5,035) | 2 |
+| `poll_institute` | Polling institute of a reported poll. | 1.6% (81) | 40 |
+| `upcoming_events` | Future events with event_type and date (YYYY-MM-DD). | 9.5% (477) | 210 |
+| `communication_type` | Purpose of a press release; 'Not applicable' for news. | 100.0% (5,035) | 9 |
+| `populism_markers` | Populist rhetoric in a press release. | 4.6% (233) | 3 |
 
 </details>
 
@@ -429,31 +429,31 @@ The table lists the variables that carry content and the dataset (table) that st
 
 | Field | Description | Filled | Distinct values |
 |---|---|---|---|
-| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (256) | 256 |
-| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (256) | 1 |
-| `dataset` | Name of the dataset. | 100.0% (256) | 1 |
-| `schema_version` | Version of the record schema. | 100.0% (256) | 1 |
-| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (256) | 15 |
-| `source_id` | Id of the source (API, outlet or press source). | 100.0% (256) | 1 |
-| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (256) | 256 |
-| `license` | License or terms of the source. | 100.0% (256) | 1 |
-| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (256) | 1 |
-| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (256) | 2 |
-| `vote_id` | Id of the vote at the source: the poll id at abgeordnetenwatch (source_id abgeordnetenwatch, votes until 2026-11-13), or electoral period, session and vote number of the Bundestag, e.g. '21-109-4' (source_id bundestag). | 100.0% (256) | 256 |
-| `parliament_period` | Electoral period, e.g. 'Bundestag 2025 - 2029'. | 100.0% (256) | 2 |
-| `vote_date` | Date of the vote. | 100.0% (256) | 126 |
-| `title` | Title of the vote. | 100.0% (256) | 248 |
-| `topics` | Topics assigned by abgeordnetenwatch; empty for votes from the Bundestag. | 99.2% (254) | 29 |
-| `committees` | Committees in charge; empty for votes from the Bundestag. | 78.9% (202) | 27 |
-| `printed_papers` | Numbers of the Bundestag printed papers (Drucksachen) linked in the description of the vote, e.g. '21/7869'. They link the vote to procedures in the DIP (filter f.dokumentnummer). Empty for votes from the Bundestag. | 99.2% (254) | 437 |
-| `accepted` | Whether the motion was accepted; null for votes from the Bundestag. | 100.0% (256) | 2 |
-| `yes` | Number of yes votes. | 100.0% (256) | 186 |
-| `no` | Number of no votes. | 100.0% (256) | 183 |
-| `abstain` | Number of abstentions. | 100.0% (256) | 48 |
-| `no_show` | Number of members who did not vote. | 100.0% (256) | 104 |
-| `by_faction` | Counts of yes, no, abstain and no_show by parliamentary group at the time of the vote (party code, NONE for members without a group). | 100.0% (256) | 8 |
-| `cohesion` | Rice index \|yes - no\| / (yes + no) per parliamentary group; null if the group cast no yes or no votes. Members without a group (NONE) are not included. | 100.0% (256) | 7 |
-| `defectors` | Members per parliamentary group who voted yes while the group cast more no than yes votes, or no while it cast more yes than no votes. Members without a group (NONE) are not included. | 100.0% (256) | 7 |
+| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (257) | 257 |
+| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (257) | 1 |
+| `dataset` | Name of the dataset. | 100.0% (257) | 1 |
+| `schema_version` | Version of the record schema. | 100.0% (257) | 2 |
+| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (257) | 16 |
+| `source_id` | Id of the source (API, outlet or press source). | 100.0% (257) | 2 |
+| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (257) | 257 |
+| `license` | License or terms of the source. | 100.0% (257) | 2 |
+| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (257) | 1 |
+| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (257) | 2 |
+| `vote_id` | Id of the vote at the source: the poll id at abgeordnetenwatch (source_id abgeordnetenwatch, votes until 2026-11-13), or electoral period, session and vote number of the Bundestag, e.g. '21-109-4' (source_id bundestag). | 100.0% (257) | 257 |
+| `parliament_period` | Electoral period, e.g. 'Bundestag 2025 - 2029'. | 100.0% (257) | 2 |
+| `vote_date` | Date of the vote. | 100.0% (257) | 127 |
+| `title` | Title of the vote. | 100.0% (257) | 249 |
+| `topics` | Topics assigned by abgeordnetenwatch; empty for votes from the Bundestag. | 98.8% (254) | 29 |
+| `committees` | Committees in charge; empty for votes from the Bundestag. | 78.6% (202) | 27 |
+| `printed_papers` | Numbers of the Bundestag printed papers (Drucksachen) linked in the description of the vote, e.g. '21/7869'. They link the vote to procedures in the DIP (filter f.dokumentnummer). Empty for votes from the Bundestag. | 98.8% (254) | 437 |
+| `accepted` | Whether the motion was accepted; null for votes from the Bundestag. | 99.6% (256) | 2 |
+| `yes` | Number of yes votes. | 100.0% (257) | 187 |
+| `no` | Number of no votes. | 100.0% (257) | 183 |
+| `abstain` | Number of abstentions. | 100.0% (257) | 48 |
+| `no_show` | Number of members who did not vote. | 100.0% (257) | 104 |
+| `by_faction` | Counts of yes, no, abstain and no_show by parliamentary group at the time of the vote (party code, NONE for members without a group). | 100.0% (257) | 8 |
+| `cohesion` | Rice index \|yes - no\| / (yes + no) per parliamentary group; null if the group cast no yes or no votes. Members without a group (NONE) are not included. | 100.0% (257) | 7 |
+| `defectors` | Members per parliamentary group who voted yes while the group cast more no than yes votes, or no while it cast more yes than no votes. Members without a group (NONE) are not included. | 100.0% (257) | 7 |
 
 </details>
 
@@ -462,22 +462,22 @@ The table lists the variables that carry content and the dataset (table) that st
 
 | Field | Description | Filled | Distinct values |
 |---|---|---|---|
-| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (178,347) | 178,347 |
-| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (178,347) | 1 |
-| `dataset` | Name of the dataset. | 100.0% (178,347) | 1 |
-| `schema_version` | Version of the record schema. | 100.0% (178,347) | 1 |
-| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (178,347) | 18 |
-| `source_id` | Id of the source (API, outlet or press source). | 100.0% (178,347) | 1 |
-| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (178,347) | 178,347 |
-| `license` | License or terms of the source. | 100.0% (178,347) | 1 |
-| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (178,347) | 1 |
-| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (178,347) | 2 |
-| `vote_id` | Id of the vote at the source, as in roll_call_votes. | 100.0% (178,347) | 256 |
-| `vote_date` | Date of the vote. | 100.0% (178,347) | 126 |
-| `politician_id` | Id of the politician at abgeordnetenwatch. For votes from the Bundestag, assigned by matching the member's name to the politician registry. | 100.0% (178,347) | 1,008 |
-| `faction` | Parliamentary group at the time of the vote as party code, NONE for members without a group. | 100.0% (178,347) | 8 |
-| `vote` | The member's vote. | 100.0% (178,347) | 4 |
-| `voted_against_faction` | True if the member voted yes while the group cast more no than yes votes, or no while it cast more yes than no votes. Always false for members without a group. | 100.0% (178,347) | 2 |
+| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (178,977) | 178,977 |
+| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (178,977) | 1 |
+| `dataset` | Name of the dataset. | 100.0% (178,977) | 1 |
+| `schema_version` | Version of the record schema. | 100.0% (178,977) | 2 |
+| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (178,977) | 19 |
+| `source_id` | Id of the source (API, outlet or press source). | 100.0% (178,977) | 2 |
+| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (178,977) | 178,348 |
+| `license` | License or terms of the source. | 100.0% (178,977) | 2 |
+| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (178,977) | 1 |
+| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (178,977) | 2 |
+| `vote_id` | Id of the vote at the source, as in roll_call_votes. | 100.0% (178,977) | 257 |
+| `vote_date` | Date of the vote. | 100.0% (178,977) | 127 |
+| `politician_id` | Id of the politician at abgeordnetenwatch. For votes from the Bundestag, assigned by matching the member's name to the politician registry. | 100.0% (178,977) | 1,009 |
+| `faction` | Parliamentary group at the time of the vote as party code, NONE for members without a group. | 100.0% (178,977) | 8 |
+| `vote` | The member's vote. | 100.0% (178,977) | 4 |
+| `voted_against_faction` | True if the member voted yes while the group cast more no than yes votes, or no while it cast more yes than no votes. Always false for members without a group. | 100.0% (178,977) | 2 |
 
 </details>
 
@@ -486,30 +486,30 @@ The table lists the variables that carry content and the dataset (table) that st
 
 | Field | Description | Filled | Distinct values |
 |---|---|---|---|
-| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (21,489) | 20,601 |
-| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (21,489) | 5 |
-| `dataset` | Name of the dataset. | 100.0% (21,489) | 1 |
-| `schema_version` | Version of the record schema. | 100.0% (21,489) | 2 |
-| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (21,489) | 33 |
-| `source_id` | Id of the source (API, outlet or press source). | 100.0% (21,489) | 1 |
-| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (21,489) | 20,601 |
-| `license` | License or terms of the source. | 100.0% (21,489) | 1 |
-| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (21,489) | 1 |
-| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (21,489) | 1 |
-| `procedure_id` | Id of the procedure in the DIP. | 100.0% (21,489) | 20,601 |
-| `change` | new for the first observation, status_changed if the status changed, updated for other tracked changes. | 100.0% (21,489) | 3 |
-| `procedure_type` | Type of the procedure, e.g. Gesetzgebung, Antrag, Kleine Anfrage. | 100.0% (21,489) | 43 |
-| `electoral_period` | Electoral period of the Bundestag. | 100.0% (21,489) | 1 |
-| `title` | Title of the procedure. | 100.0% (21,489) | 20,350 |
-| `initiators` | Initiators, e.g. Bundesregierung, Bundesrat or a parliamentary group. | 41.8% (8,972) | 86 |
-| `subject_areas` | Subject areas (Sachgebiete) of the DIP. | 27.9% (5,991) | 28 |
-| `descriptors` | Subject descriptors of the DIP thesaurus. | 88.1% (18,925) | 8,021 |
-| `consent_required` | Whether the consent of the Bundesrat is required, from the latest statement of the DIP (bill, Bundestag decision or promulgation); null if not stated. | 2.7% (590) | 2 |
-| `status` | Current status (Beratungsstand). | 84.0% (18,050) | 26 |
-| `previous_status` | Status at the previous observation; null for new procedures. | 3.9% (835) | 15 |
-| `gesta_id` | GESTA id of a bill. | 2.7% (590) | 459 |
-| `dip_updated_at` | Last update of the procedure in the DIP (UTC). | 100.0% (21,489) | 9,734 |
-| `latest_document_date` | Date of the latest document of the procedure (DIP field datum), e.g. of the printed paper or plenary record that set the current status. | 100.0% (21,484) | 409 |
+| `record_id` | Stable id of the item. Together with revision it identifies a record. | 100.0% (21,718) | 20,777 |
+| `revision` | 0 for the first observation; incremented each time the source changes the item. | 100.0% (21,718) | 6 |
+| `dataset` | Name of the dataset. | 100.0% (21,718) | 1 |
+| `schema_version` | Version of the record schema. | 100.0% (21,718) | 2 |
+| `observed_at` | UTC time at which the pipeline observed this version of the item. Filtering observed_at <= t gives the state of knowledge at time t. | 100.0% (21,718) | 34 |
+| `source_id` | Id of the source (API, outlet or press source). | 100.0% (21,718) | 1 |
+| `source_url` | URL of the item or of the API resource it was read from. | 100.0% (21,718) | 20,777 |
+| `license` | License or terms of the source. | 100.0% (21,718) | 1 |
+| `jurisdiction` | DE for the federal level, ISO 3166-2 code for a state. | 100.0% (21,718) | 1 |
+| `backfilled` | True if the item is older than the start of collection for its dataset, so that observed_at does not reflect when it became public. | 100.0% (21,718) | 1 |
+| `procedure_id` | Id of the procedure in the DIP. | 100.0% (21,718) | 20,777 |
+| `change` | new for the first observation, status_changed if the status changed, updated for other tracked changes. | 100.0% (21,718) | 3 |
+| `procedure_type` | Type of the procedure, e.g. Gesetzgebung, Antrag, Kleine Anfrage. | 100.0% (21,718) | 43 |
+| `electoral_period` | Electoral period of the Bundestag. | 100.0% (21,718) | 1 |
+| `title` | Title of the procedure. | 100.0% (21,718) | 20,519 |
+| `initiators` | Initiators, e.g. Bundesregierung, Bundesrat or a parliamentary group. | 41.8% (9,085) | 86 |
+| `subject_areas` | Subject areas (Sachgebiete) of the DIP. | 27.9% (6,070) | 28 |
+| `descriptors` | Subject descriptors of the DIP thesaurus. | 88.0% (19,115) | 8,043 |
+| `consent_required` | Whether the consent of the Bundesrat is required, from the latest statement of the DIP (bill, Bundestag decision or promulgation); null if not stated. | 2.8% (601) | 2 |
+| `status` | Current status (Beratungsstand). | 84.1% (18,262) | 26 |
+| `previous_status` | Status at the previous observation; null for new procedures. | 4.1% (884) | 15 |
+| `gesta_id` | GESTA id of a bill. | 2.8% (601) | 459 |
+| `dip_updated_at` | Last update of the procedure in the DIP (UTC). | 100.0% (21,718) | 9,877 |
+| `latest_document_date` | Date of the latest document of the procedure (DIP field datum), e.g. of the printed paper or plenary record that set the current status. | 100.0% (21,710) | 411 |
 
 </details>
 
